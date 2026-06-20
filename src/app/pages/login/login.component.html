@@ -1,0 +1,380 @@
+<section class="min-h-screen flex flex-col lg:flex-row bg-background font-body-md text-body-md text-on-surface">
+
+  <!-- ── Left Brand Panel ─────────────────────────────── -->
+  <div
+    class="w-full lg:w-1/2 bg-primary flex flex-col justify-between p-8 lg:p-12 text-white relative min-h-[400px] lg:h-screen lg:max-h-screen lg:sticky lg:top-0">
+
+    <!-- Top Brand Header with Logo -->
+    <div class="flex items-center gap-3">
+      <div
+        class="bg-[#003366] px-4 py-2.5 rounded-lg shadow-sm flex items-center justify-center transition-transform hover:scale-105">
+        <img src="/logo.png" alt="ATU Logo" class="h-7 w-auto object-contain" />
+      </div>
+      <div class="h-8 w-[1px] bg-white/20"></div>
+      <div>
+        <p class="font-label-sm text-label-sm text-primary-fixed-dim mt-1 leading-none">Plataforma Digital de Subsidios
+        </p>
+      </div>
+    </div>
+
+    <!-- Main Title Section -->
+    <div class="my-auto py-12">
+      <span
+        class="inline-flex items-center gap-1.5 px-3 py-1 rounded bg-secondary-container/20 border border-secondary-fixed-dim/20 text-secondary-fixed-dim font-label-sm text-label-sm mb-6 uppercase tracking-wider">
+        <span class="material-symbols-outlined text-sm" data-weight="fill">shield</span>
+        Decreto de Urgencia N° 004-2026
+      </span>
+      <h2 class="font-headline-lg text-headline-lg font-bold tracking-tight text-white leading-tight mb-4">
+        Plataforma Digital de Subsidios al Transporte
+      </h2>
+      <p class="text-body-lg text-white/80 max-w-lg mb-8">
+        Gestión eficiente, transparente e integrada de subsidios para vehículos de transporte público autorizado a nivel
+        regional y municipal.
+      </p>
+
+      <!-- Platform Features List -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-xl">
+        <div class="flex gap-3">
+          <div class="w-10 h-10 rounded bg-white/10 flex items-center justify-center flex-shrink-0">
+            <span class="material-symbols-outlined text-primary-fixed-dim">upload_file</span>
+          </div>
+          <div>
+            <h4 class="font-semibold text-white">Carga Masiva</h4>
+            <p class="text-sm text-white/70">Suba y procese registros en lotes mediante archivos .xlsx</p>
+          </div>
+        </div>
+
+        <div class="flex gap-3">
+          <div class="w-10 h-10 rounded bg-white/10 flex items-center justify-center flex-shrink-0">
+            <span class="material-symbols-outlined text-primary-fixed-dim">verified</span>
+          </div>
+          <div>
+            <h4 class="font-semibold text-white">Validación Automática</h4>
+            <p class="text-sm text-white/70">Cruce inmediato con TUC y autorizaciones vigentes</p>
+          </div>
+        </div>
+
+        <div class="flex gap-3">
+          <div class="w-10 h-10 rounded bg-white/10 flex items-center justify-center flex-shrink-0">
+            <span class="material-symbols-outlined text-primary-fixed-dim">send</span>
+          </div>
+          <div>
+            <h4 class="font-semibold text-white">Envío Directo</h4>
+            <p class="text-sm text-white/70">Remisión formal con firma electrónica a los servidores de ATU</p>
+          </div>
+        </div>
+
+        <div class="flex gap-3">
+          <div class="w-10 h-10 rounded bg-white/10 flex items-center justify-center flex-shrink-0">
+            <span class="material-symbols-outlined text-primary-fixed-dim">history</span>
+          </div>
+          <div>
+            <h4 class="font-semibold text-white">Trazabilidad Total</h4>
+            <p class="text-sm text-white/70">Historial completo con constancias y reportes generados</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer of Brand Panel -->
+    <div class="text-xs text-white/50 flex justify-between items-center border-t border-white/10 pt-4">
+      <span>Autoridad de Transporte Urbano para Lima y Callao - ATU</span>
+      <span>© 2026</span>
+    </div>
+  </div>
+
+  <!-- ── Right Form Panel ──────────────────────────────── -->
+  <div class="w-full lg:w-1/2 bg-background flex flex-col items-center justify-center p-6 lg:p-12 min-h-screen">
+
+    <div
+      class="w-full max-w-md bg-surface-container-lowest border border-outline-variant rounded-xl shadow-sm overflow-hidden flex flex-col">
+
+      <!-- Card header -->
+      <div class="bg-primary text-white p-6 flex items-center justify-between gap-4">
+        <div class="text-left">
+          <h3 class="font-headline-sm text-headline-sm font-bold text-white leading-none">SIGT - ATU</h3>
+          <p class="font-label-sm text-label-sm text-primary-fixed-dim mt-1.5 leading-none">Plataforma Digital de Subsidios</p>
+        </div>
+        <div class="bg-[#003366] px-3.5 py-2 rounded-lg border border-outline-variant/10 shadow-sm flex items-center justify-center flex-shrink-0 transition-transform hover:scale-105">
+          <img src="/logo.png" alt="ATU Logo" class="h-6 w-auto object-contain" />
+        </div>
+      </div>
+
+      <div class="p-6 flex-1">
+        <!-- Alert message -->
+        @if (alert) {
+        <div class="mb-5 p-4 rounded text-sm flex gap-3 border" [class.bg-error-container]="alert.type === 'error'"
+          [class.text-on-error-container]="alert.type === 'error'" [class.border-error]="alert.type === 'error'"
+          [class.bg-success-container]="alert.type === 'success'"
+          [class.text-on-secondary-fixed-variant]="alert.type === 'success'"
+          [class.border-secondary]="alert.type === 'success'" [class.bg-surface-container]="alert.type === 'info'"
+          [class.text-on-surface-variant]="alert.type === 'info'"
+          [class.border-outline-variant]="alert.type === 'info'">
+          <span class="material-symbols-outlined text-lg flex-shrink-0">{{ alertIcon }}</span>
+          <div class="leading-tight">{{ alert.message }}</div>
+        </div>
+        }
+
+        <!-- ══ LOGIN FORM ══ -->
+        @if (activeForm === 'login') {
+        <div class="flex items-center gap-2 mb-6 text-primary">
+          <span class="material-symbols-outlined text-xl">login</span>
+          <h4 class="font-headline-sm text-headline-sm font-semibold">Iniciar sesión</h4>
+        </div>
+
+        <!-- Demo hint -->
+        <div
+          class="mb-5 p-3 rounded bg-surface-container border border-outline-variant flex gap-2 items-start text-on-surface-variant text-sm">
+          <span class="material-symbols-outlined text-secondary text-lg flex-shrink-0"
+            data-weight="fill">lightbulb</span>
+          <div class="leading-normal">
+            Acceso de prueba:<br>
+            Usuario: <code class="font-mono font-bold text-primary">demo&#64;region.gob.pe</code><br>
+            Clave: <code class="font-mono font-bold text-primary">demo123</code>
+          </div>
+        </div>
+
+        <!-- Form fields -->
+        <div class="space-y-4">
+          <div class="flex flex-col gap-baseline">
+            <label for="loginEmail" class="font-label-sm text-label-sm text-on-surface-variant">Correo electrónico <span
+                class="text-error">*</span></label>
+            <div class="relative">
+              <span
+                class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline-variant">mail</span>
+              <input id="loginEmail" type="email" [(ngModel)]="loginEmail" placeholder="funcionario@gob.pe"
+                autocomplete="email" (keydown)="onLoginKeydown($event)"
+                class="w-full border border-outline-variant rounded bg-surface-container-lowest pl-10 pr-4 py-2.5 text-body-md focus:border-secondary focus:ring-1 focus:ring-secondary outline-none transition-colors" />
+            </div>
+          </div>
+
+          <div class="flex flex-col gap-baseline">
+            <label for="loginPassword" class="font-label-sm text-label-sm text-on-surface-variant">Contraseña <span
+                class="text-error">*</span></label>
+            <div class="relative">
+              <span
+                class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline-variant">lock</span>
+              <input id="loginPassword" [type]="showPassword ? 'text' : 'password'" [(ngModel)]="loginPassword"
+                placeholder="••••••••" autocomplete="current-password" (keydown)="onLoginKeydown($event)"
+                class="w-full border border-outline-variant rounded bg-surface-container-lowest pl-10 pr-10 py-2.5 text-body-md focus:border-secondary focus:ring-1 focus:ring-secondary outline-none transition-colors" />
+              <button
+                class="absolute right-3 top-1/2 -translate-y-1/2 text-outline-variant hover:text-on-surface-variant focus:outline-none"
+                type="button" (click)="showPassword = !showPassword" tabindex="-1">
+                <span class="material-symbols-outlined text-lg">{{ showPassword ? 'visibility_off' : 'visibility'
+                  }}</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <button
+          class="w-full mt-6 bg-secondary text-white py-3 rounded flex items-center justify-center gap-2 hover:bg-secondary/90 active:scale-[0.99] transition-all font-label-md text-label-md shadow-sm disabled:opacity-50"
+          [disabled]="isLoading" (click)="onLogin()">
+          @if (isLoading) {
+          <span class="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
+          <span>Verificando credenciales...</span>
+          } @else {
+          <span class="material-symbols-outlined text-sm">login</span>
+          <span>Ingresar al sistema</span>
+          }
+        </button>
+
+        <!-- Links -->
+        <div class="flex justify-between items-center mt-6 text-sm">
+          <a (click)="showForm('recuperacion')"
+            class="text-secondary hover:underline cursor-pointer transition-colors">¿Olvidó su contraseña?</a>
+          <a (click)="showForm('registro')"
+            class="text-secondary hover:underline font-semibold cursor-pointer transition-colors">Crear una cuenta</a>
+        </div>
+        }
+
+        <!-- ══ REGISTRO FORM ══ -->
+        @if (activeForm === 'registro') {
+        <div class="flex items-center gap-2 mb-6 text-primary">
+          <span class="material-symbols-outlined text-xl">person_add</span>
+          <h4 class="font-headline-sm text-headline-sm font-semibold">Registro de funcionario</h4>
+        </div>
+
+        <div class="space-y-4">
+          <div class="flex flex-col gap-baseline">
+            <label for="regEmail" class="font-label-sm text-label-sm text-on-surface-variant">Correo institucional <span
+                class="text-error">*</span></label>
+            <div class="relative">
+              <span
+                class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline-variant">mail</span>
+              <input id="regEmail" type="email" [(ngModel)]="regEmail" placeholder="funcionario@gob.pe"
+                class="w-full border border-outline-variant rounded bg-surface-container-lowest pl-10 pr-4 py-2 text-body-md focus:border-secondary focus:ring-1 focus:ring-secondary outline-none" />
+            </div>
+          </div>
+
+          <div class="flex flex-col gap-baseline">
+            <label for="regNombre" class="font-label-sm text-label-sm text-on-surface-variant">Nombres y Apellidos <span
+                class="text-error">*</span></label>
+            <div class="relative">
+              <span
+                class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline-variant">badge</span>
+              <input id="regNombre" type="text" [(ngModel)]="regNombre" placeholder="Nombre completo"
+                class="w-full border border-outline-variant rounded bg-surface-container-lowest pl-10 pr-4 py-2 text-body-md focus:border-secondary focus:ring-1 focus:ring-secondary outline-none" />
+            </div>
+          </div>
+
+          <div class="flex flex-col gap-baseline">
+            <label class="font-label-sm text-label-sm text-on-surface-variant">Documento asignado al cargo <span
+                class="text-error">*</span></label>
+            <div class="flex items-center gap-stack-md flex-wrap mt-1">
+              <button type="button" (click)="fileCargo.click()"
+                class="bg-surface-container-highest border border-outline text-on-surface px-4 py-2 rounded text-body-md hover:bg-surface-variant transition-colors flex items-center gap-2">
+                <span class="material-symbols-outlined text-sm">upload_file</span>
+                Adjuntar PDF / Word
+              </button>
+              <input #fileCargo type="file" accept="application/pdf,.doc,.docx" (change)="onFileCargoChange($event)"
+                hidden />
+              <span class="text-body-md text-on-surface-variant max-w-[200px] truncate"
+                [title]="regDocumentoCargo || 'Sin archivos seleccionados'">
+                {{ regDocumentoCargo || 'Sin archivos seleccionados' }}
+              </span>
+            </div>
+            <span class="font-label-sm text-label-sm text-outline mt-1">Formatos permitidos: PDF, Word (.doc,
+              .docx)</span>
+          </div>
+
+          <div class="grid grid-cols-2 gap-4">
+            <div class="flex flex-col gap-baseline">
+              <label for="regPassword" class="font-label-sm text-label-sm text-on-surface-variant">Contraseña <span
+                  class="text-error">*</span></label>
+              <div class="relative">
+                <input id="regPassword" [type]="showPassword ? 'text' : 'password'" [(ngModel)]="regPassword"
+                  placeholder="Clave"
+                  class="w-full border border-outline-variant rounded bg-surface-container-lowest px-3 py-2 text-body-md focus:border-secondary focus:ring-1 focus:ring-secondary outline-none" />
+                <button
+                  class="absolute right-2 top-1/2 -translate-y-1/2 text-outline-variant hover:text-on-surface-variant"
+                  type="button" (click)="showPassword = !showPassword" tabindex="-1">
+                  <span class="material-symbols-outlined text-base">{{ showPassword ? 'visibility_off' : 'visibility'
+                    }}</span>
+                </button>
+              </div>
+            </div>
+            <div class="flex flex-col gap-baseline">
+              <label for="regPassword2" class="font-label-sm text-label-sm text-on-surface-variant">Confirmar <span
+                  class="text-error">*</span></label>
+              <div class="relative">
+                <input id="regPassword2" [type]="showPassword2 ? 'text' : 'password'" [(ngModel)]="regPassword2"
+                  placeholder="Confirmar"
+                  class="w-full border border-outline-variant rounded bg-surface-container-lowest px-3 py-2 text-body-md focus:border-secondary focus:ring-1 focus:ring-secondary outline-none" />
+                <button
+                  class="absolute right-2 top-1/2 -translate-y-1/2 text-outline-variant hover:text-on-surface-variant"
+                  type="button" (click)="showPassword2 = !showPassword2" tabindex="-1">
+                  <span class="material-symbols-outlined text-base">{{ showPassword2 ? 'visibility_off' : 'visibility'
+                    }}</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-4">
+            <div class="flex flex-col gap-baseline">
+              <label for="regTipo" class="font-label-sm text-label-sm text-on-surface-variant">Tipo entidad <span
+                  class="text-error">*</span></label>
+              <select id="regTipo" [(ngModel)]="regTipoEntidad" (ngModelChange)="actualizarEntidades()"
+                class="w-full border border-outline-variant rounded bg-surface-container-lowest px-3 py-2 text-body-md focus:border-secondary focus:ring-1 focus:ring-secondary outline-none">
+                <option value="regional">Gobierno Regional</option>
+                <option value="municipal">Municipalidad</option>
+              </select>
+            </div>
+            <div class="flex flex-col gap-baseline">
+              <label for="regEntidad" class="font-label-sm text-label-sm text-on-surface-variant">Entidad <span
+                  class="text-error">*</span></label>
+              <select id="regEntidad" [(ngModel)]="regEntidad"
+                class="w-full border border-outline-variant rounded bg-surface-container-lowest px-3 py-2 text-body-md focus:border-secondary focus:ring-1 focus:ring-secondary outline-none max-w-full text-ellipsis">
+                @for (ent of entidadesFiltradas; track ent) {
+                <option [value]="ent">{{ ent }}</option>
+                }
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <button
+          class="w-full mt-6 bg-secondary text-white py-3 rounded flex items-center justify-center gap-2 hover:bg-secondary/90 transition-all font-label-md text-label-md shadow-sm"
+          (click)="onRegister()">
+          <span class="material-symbols-outlined text-sm">person_add</span>
+          <span>Crear cuenta</span>
+        </button>
+
+        <div class="text-center mt-6 text-sm">
+          ¿Ya tiene una cuenta? <a (click)="showForm('login')"
+            class="text-secondary hover:underline font-semibold cursor-pointer">Inicie sesión aquí</a>
+        </div>
+        }
+
+        <!-- ══ RECUPERACIÓN FORM ══ -->
+        @if (activeForm === 'recuperacion') {
+        <div class="flex items-center gap-2 mb-4 text-primary">
+          <span class="material-symbols-outlined text-xl">key</span>
+          <h4 class="font-headline-sm text-headline-sm font-semibold">Recuperar contraseña</h4>
+        </div>
+
+        <p class="text-sm text-on-surface-variant mb-6 leading-relaxed">
+          Ingrese su correo electrónico registrado. Le enviaremos un enlace de recuperación para restablecer su clave.
+        </p>
+
+        <div class="flex flex-col gap-baseline mb-6">
+          <label for="recEmail" class="font-label-sm text-label-sm text-on-surface-variant">Correo institucional <span
+              class="text-error">*</span></label>
+          <div class="relative">
+            <span
+              class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline-variant">mail</span>
+            <input id="recEmail" type="email" [(ngModel)]="recEmail" placeholder="funcionario@gob.pe"
+              class="w-full border border-outline-variant rounded bg-surface-container-lowest pl-10 pr-4 py-2.5 text-body-md focus:border-secondary focus:ring-1 focus:ring-secondary outline-none" />
+          </div>
+        </div>
+
+        <button
+          class="w-full bg-secondary text-white py-3 rounded flex items-center justify-center gap-2 hover:bg-secondary/90 transition-all font-label-md text-label-md shadow-sm"
+          (click)="onRecovery()">
+          <span class="material-symbols-outlined text-sm">send</span>
+          <span>Enviar enlace</span>
+        </button>
+
+        <div class="text-center mt-6 text-sm">
+          <a (click)="showForm('login')"
+            class="text-secondary hover:underline cursor-pointer flex items-center justify-center gap-1">
+            <span class="material-symbols-outlined text-sm">arrow_back</span>
+            Volver al inicio de sesión
+          </a>
+        </div>
+        }
+
+      </div>
+
+      <!-- Footer -->
+      <div
+        class="p-4 border-t border-surface-container-high bg-surface-container-low text-center text-xs text-on-surface-variant flex items-center justify-center gap-1.5">
+        <span class="material-symbols-outlined text-sm" data-weight="fill">lock</span>
+        <span>Acceso Seguro · Servidores Encriptados</span>
+      </div>
+
+    </div>
+
+    <!-- Central de Atención al Cliente / Soporte -->
+    <div
+      class="w-full max-w-md mt-3.5 p-3 rounded-xl border border-outline-variant/40 bg-surface-container-low flex flex-col gap-1.5 shadow-sm text-[11px] text-on-surface-variant">
+      <div class="flex items-center gap-1.5 text-primary font-bold">
+        <span class="material-symbols-outlined text-sm">support_agent</span>
+        <span>Atención al Cliente · Mesa de ayuda ATU</span>
+      </div>
+      <div class="flex flex-wrap gap-x-4 gap-y-1 mt-0.5">
+        <div class="flex items-center gap-1">
+          <span class="material-symbols-outlined text-[13px] text-secondary">phone_in_talk</span>
+          <span>(01) 203-9000 anexo 4501</span>
+        </div>
+        <div class="flex items-center gap-1">
+          <span class="material-symbols-outlined text-[13px] text-secondary">mail</span>
+          <a href="mailto:soporte-sigt&#64;atu.gob.pe" class="text-secondary hover:underline font-semibold">soporte-sigt&#64;atu.gob.pe</a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</section>

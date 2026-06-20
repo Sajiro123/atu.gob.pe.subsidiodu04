@@ -1,0 +1,116 @@
+<!-- TopAppBar (Sticky Header) -->
+<header class="bg-surface-bright border-b border-outline-variant sticky top-0 z-10">
+  <div class="flex justify-between items-center w-full px-container-padding py-gutter">
+    <div class="flex items-center gap-stack-md">
+      <span class="material-symbols-outlined text-primary text-2xl" data-weight="fill">history</span>
+      <h2 class="font-headline-md text-headline-md font-bold text-primary">Historial de envíos</h2>
+    </div>
+    <div class="flex items-center gap-stack-sm">
+      <span class="px-3 py-1.5 rounded bg-surface-container border border-outline-variant text-on-surface-variant font-label-sm text-label-sm flex items-center gap-2">
+        <span class="material-symbols-outlined text-sm">article</span>
+        Plataforma de Subsidios
+      </span>
+    </div>
+  </div>
+</header>
+
+<!-- Summary Cards (Stats Row) -->
+@if (historial.length) {
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-gutter px-container-padding pt-gutter max-w-[1400px] w-full mx-auto">
+    
+    <!-- Stat 1: Total Envíos -->
+    <div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-stack-lg shadow-sm flex items-center gap-4 hover:shadow-md transition-shadow">
+      <div class="w-12 h-12 rounded bg-primary-fixed text-on-primary-fixed-variant flex items-center justify-center">
+        <span class="material-symbols-outlined text-2xl">send</span>
+      </div>
+      <div>
+        <div class="font-headline-sm text-headline-sm font-bold text-primary">{{ historial.length }}</div>
+        <div class="text-label-sm font-label-sm text-on-surface-variant uppercase tracking-wider">Envíos realizados</div>
+      </div>
+    </div>
+
+    <!-- Stat 2: Total Elegibles -->
+    <div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-stack-lg shadow-sm flex items-center gap-4 hover:shadow-md transition-shadow">
+      <div class="w-12 h-12 rounded bg-[#e8f5e9] text-[#2e7d32] flex items-center justify-center">
+        <span class="material-symbols-outlined text-2xl">verified</span>
+      </div>
+      <div>
+        <div class="font-headline-sm text-headline-sm font-bold text-[#2e7d32]">{{ totalElegibles }}</div>
+        <div class="text-label-sm font-label-sm text-on-surface-variant uppercase tracking-wider">Total elegibles</div>
+      </div>
+    </div>
+
+    <!-- Stat 3: Total Registros -->
+    <div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-stack-lg shadow-sm flex items-center gap-4 hover:shadow-md transition-shadow">
+      <div class="w-12 h-12 rounded bg-surface-container text-on-surface-variant flex items-center justify-center">
+        <span class="material-symbols-outlined text-2xl">table_chart</span>
+      </div>
+      <div>
+        <div class="font-headline-sm text-headline-sm font-bold text-primary">{{ totalRegistros }}</div>
+        <div class="text-label-sm font-label-sm text-on-surface-variant uppercase tracking-wider">Total registros</div>
+      </div>
+    </div>
+
+  </div>
+}
+
+<!-- Main Canvas -->
+<main class="flex-1 p-container-padding pb-24 bg-surface flex flex-col gap-gutter max-w-[1400px] w-full mx-auto">
+  <section class="bg-surface-container-lowest border border-outline-variant rounded-xl shadow-sm overflow-hidden flex flex-col">
+    
+    <div class="px-gutter py-stack-md border-b border-surface-container-high bg-surface-bright flex items-center gap-stack-sm text-primary">
+      <span class="material-symbols-outlined">history</span>
+      <h3 class="font-headline-sm text-headline-sm font-semibold">Registros enviados a la ATU</h3>
+    </div>
+
+    <div class="overflow-x-auto w-full">
+      <table class="w-full border-collapse text-left">
+        <thead>
+          <tr class="bg-surface-container border-b border-outline-variant text-on-surface-variant font-label-sm text-label-sm uppercase font-semibold">
+            <th class="px-6 py-3 w-40">N° Envío</th>
+            <th class="px-6 py-3">Entidad remitente</th>
+            <th class="px-6 py-3 w-44">Fecha de envío</th>
+            <th class="px-6 py-3 text-center w-28">Registros</th>
+            <th class="px-6 py-3 text-center w-28">Elegibles</th>
+            <th class="px-6 py-3 text-center w-36">Estado</th>
+          </tr>
+        </thead>
+        <tbody>
+          @if (!historial.length) {
+            <tr>
+              <td colspan="6" class="px-6 py-12 text-center text-on-surface-variant bg-surface-container-lowest">
+                <div class="flex flex-col items-center justify-center gap-3">
+                  <span class="material-symbols-outlined text-4xl text-outline-variant">inbox</span>
+                  <p class="font-semibold text-body-lg text-on-surface">No hay envíos registrados</p>
+                  <p class="text-sm">Realiza la carga y validación de información en el módulo correspondiente.</p>
+                </div>
+              </td>
+            </tr>
+          }
+          @for (h of historial; track h.id) {
+            <tr class="border-b border-outline-variant/60 hover:bg-surface-container-low transition-colors">
+              <td class="px-6 py-4">
+                <span class="px-2.5 py-1 bg-primary-fixed text-on-primary-fixed-variant rounded font-mono font-bold text-xs">
+                  {{ getEnvioId(h.id) }}
+                </span>
+              </td>
+              <td class="px-6 py-4 text-sm font-medium text-on-surface">{{ h.entidad }}</td>
+              <td class="px-6 py-4 text-sm text-on-surface-variant">{{ h.fecha }}</td>
+              <td class="px-6 py-4 text-sm text-center font-bold text-on-surface-variant">{{ h.total }}</td>
+              <td class="px-6 py-4 text-sm text-center">
+                <span class="font-bold text-[#2e7d32]">{{ h.elegibles }}</span>
+              </td>
+              <td class="px-6 py-4 text-center">
+                <span class="inline-flex items-center gap-1 px-2.5 py-0.5 bg-[#e8f5e9] text-[#2e7d32] rounded-full text-xs font-semibold">
+                  <span class="material-symbols-outlined text-[14px]">check</span>
+                  {{ h.estado }}
+                </span>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+    
+  </section>
+</main>

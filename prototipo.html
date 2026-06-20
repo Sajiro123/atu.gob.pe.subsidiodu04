@@ -1,0 +1,1002 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>SIGT – Plataforma Digital de Subsidios DU 004-2026</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"/>
+    <style>
+        /* (Mismos estilos que antes, sin cambios) */
+        *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+        :root {
+            --azul-estado: #0a2a4a;
+            --azul-medio: #1a4a7a;
+            --azul-claro: #2a7ab0;
+            --azul-suave: #eef6fe;
+            --verde: #0b6e4f;
+            --verde-claro: #e6f7f0;
+            --rojo: #b91c1c;
+            --rojo-claro: #fee2e2;
+            --amarillo: #854d0e;
+            --amarillo-claro: #fef9c3;
+            --gris-bg: #f4f7fc;
+            --gris-borde: #e2e8f0;
+            --gris-texto: #475569;
+            --blanco: #ffffff;
+        }
+        body { font-family:'Segoe UI',Roboto,system-ui,sans-serif; background:var(--gris-bg); color:#1e293b; min-height:100vh; }
+
+        /* Login styles */
+        .login-container { display:flex; justify-content:center; align-items:center; min-height:100vh; background: linear-gradient(135deg, var(--azul-estado) 0%, var(--azul-medio) 100%); padding:20px; }
+        .login-card { background:var(--blanco); border-radius:24px; padding:40px 36px; max-width:420px; width:100%; box-shadow:0 20px 60px rgba(0,0,0,0.3); }
+        .login-card .logo { text-align:center; margin-bottom:28px; }
+        .login-card .logo h1 { font-size:1.6rem; font-weight:700; color:var(--azul-estado); }
+        .login-card .logo h1 i { color:var(--azul-claro); margin-right:8px; }
+        .login-card .logo p { font-size:0.8rem; color:var(--gris-texto); margin-top:4px; }
+        .login-card .form-group { margin-bottom:16px; }
+        .login-card .form-group label { display:block; font-size:0.8rem; font-weight:600; color:#374151; margin-bottom:4px; }
+        .login-card .form-group input { width:100%; padding:10px 14px; border-radius:10px; border:1.5px solid var(--gris-borde); font-size:0.95rem; transition:border-color .2s; }
+        .login-card .form-group input:focus { outline:none; border-color:var(--azul-claro); box-shadow:0 0 0 3px rgba(42,122,176,0.12); }
+        .login-card .btn-login { width:100%; padding:12px; border:none; border-radius:40px; font-weight:700; font-size:1rem; background:var(--azul-estado); color:#fff; cursor:pointer; transition:background .15s; }
+        .login-card .btn-login:hover { background:var(--azul-medio); }
+        .login-card .links { display:flex; justify-content:space-between; margin-top:14px; font-size:0.85rem; }
+        .login-card .links a { color:var(--azul-claro); text-decoration:none; cursor:pointer; }
+        .login-card .links a:hover { text-decoration:underline; }
+        .login-card .registro-link { text-align:center; margin-top:18px; border-top:1px solid var(--gris-borde); padding-top:18px; font-size:0.9rem; }
+        .login-card .registro-link a { color:var(--azul-claro); font-weight:600; cursor:pointer; }
+        .login-card .alert { padding:10px 14px; border-radius:8px; font-size:0.85rem; margin-bottom:14px; display:flex; align-items:center; gap:8px; }
+        .alert-error { background:var(--rojo-claro); color:var(--rojo); border:1px solid #fca5a5; }
+        .alert-success { background:var(--verde-claro); color:var(--verde); border:1px solid #a7f3d0; }
+
+        /* Layout */
+        .layout { display:grid; grid-template-columns:260px 1fr; min-height:100vh; }
+        @media(max-width:900px){ .layout{ grid-template-columns:1fr; } .sidebar{ display:none; } }
+        .sidebar { background:var(--azul-estado); color:#fff; padding:0; display:flex; flex-direction:column; position:sticky; top:0; height:100vh; overflow-y:auto; }
+        .sidebar-logo { padding:24px 20px 16px; border-bottom:1px solid rgba(255,255,255,0.1); }
+        .sidebar-logo h2 { font-size:1rem; font-weight:700; letter-spacing:.5px; color:#7abfff; }
+        .sidebar-logo p { font-size:0.72rem; color:rgba(255,255,255,0.5); margin-top:3px; }
+        .sidebar-section { padding:12px 16px 4px; font-size:0.65rem; font-weight:700; letter-spacing:1.5px; color:rgba(255,255,255,0.35); text-transform:uppercase; }
+        .sidebar nav a { display:flex; align-items:center; gap:10px; padding:10px 20px; color:rgba(255,255,255,0.7); text-decoration:none; font-size:0.85rem; border-left:3px solid transparent; transition:all .15s; cursor:pointer; }
+        .sidebar nav a:hover { background:rgba(255,255,255,0.07); color:#fff; }
+        .sidebar nav a.active { background:rgba(42,122,176,0.25); color:#7abfff; border-left-color:#7abfff; }
+        .sidebar nav a .api-dot { width:8px; height:8px; border-radius:50%; margin-left:auto; flex-shrink:0; background:#7abfff; }
+        .sidebar-footer { margin-top:auto; padding:16px; font-size:0.72rem; color:rgba(255,255,255,0.3); border-top:1px solid rgba(255,255,255,0.08); }
+        .sidebar-footer .logout-btn { color:rgba(255,255,255,0.5); cursor:pointer; display:inline-flex; align-items:center; gap:6px; margin-top:8px; }
+        .sidebar-footer .logout-btn:hover { color:#fff; }
+
+        .main { padding:28px 32px; overflow-x:hidden; }
+        @media(max-width:700px){ .main{ padding:16px; } }
+
+        .topbar { display:flex; align-items:center; justify-content:space-between; margin-bottom:24px; flex-wrap:wrap; gap:12px; }
+        .topbar h1 { font-size:1.35rem; font-weight:700; color:var(--azul-estado); display:flex; align-items:center; gap:10px; }
+        .topbar h1 i { color:var(--azul-claro); }
+        .topbar-meta { display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
+        .chip { padding:5px 14px; border-radius:40px; font-size:0.75rem; font-weight:600; border:1.5px solid; }
+        .chip-blue { color:var(--azul-claro); border-color:var(--azul-claro); background:var(--azul-suave); }
+        .chip-green { color:var(--verde); border-color:var(--verde); background:var(--verde-claro); }
+
+        .card { background:var(--blanco); border-radius:16px; padding:24px 28px; box-shadow:0 2px 8px rgba(0,0,0,0.05); border:1px solid var(--gris-borde); margin-bottom:24px; }
+        .card-header { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px; margin-bottom:18px; }
+        .card-title { font-size:1.05rem; font-weight:700; color:var(--azul-estado); display:flex; align-items:center; gap:10px; }
+        .card-title i { color:var(--azul-claro); }
+        .card-subtitle { font-size:0.8rem; color:var(--gris-texto); margin-top:2px; }
+
+        .api-badge { display:inline-flex; align-items:center; gap:6px; padding:4px 12px; border-radius:40px; font-size:0.72rem; font-weight:700; letter-spacing:.3px; background:var(--azul-suave); color:var(--azul-claro); }
+
+        .form-row { display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:14px; margin-bottom:14px; }
+        .form-group label { display:block; font-size:0.78rem; font-weight:600; color:#374151; margin-bottom:4px; }
+        .form-group input, .form-group select, .form-group textarea { width:100%; padding:9px 12px; border-radius:8px; border:1.5px solid #cbd5e1; font-size:0.88rem; background:var(--blanco); color:#1e293b; transition:border-color .15s; }
+        .form-group input:focus, .form-group select:focus { outline:none; border-color:var(--azul-claro); box-shadow:0 0 0 3px rgba(42,122,176,0.12); }
+        .form-group .hint { font-size:0.7rem; color:var(--gris-texto); margin-top:3px; }
+        .required::after { content:" *"; color:var(--rojo); }
+
+        .btn { padding:9px 20px; border:none; border-radius:40px; font-weight:600; font-size:0.85rem; cursor:pointer; display:inline-flex; align-items:center; gap:8px; transition:all .15s; }
+        .btn-primary { background:var(--azul-estado); color:#fff; }
+        .btn-primary:hover { background:var(--azul-medio); }
+        .btn-success { background:var(--verde); color:#fff; }
+        .btn-success:hover { background:#0e835f; }
+        .btn-outline { background:transparent; border:1.5px solid #cbd5e1; color:#374151; }
+        .btn-outline:hover { background:#f1f5f9; }
+        .btn-ghost { background:transparent; color:var(--azul-claro); border:1.5px solid var(--azul-claro); }
+        .btn-ghost:hover { background:var(--azul-suave); }
+        .btn:disabled { opacity:.5; cursor:not-allowed; }
+        .btn-sm { padding:5px 12px; font-size:0.75rem; }
+        .btn-xs { padding:3px 9px; font-size:0.7rem; border-radius:30px; }
+
+        .table-wrap { overflow-x:auto; border-radius:10px; border:1px solid var(--gris-borde); }
+        table { width:100%; border-collapse:collapse; font-size:0.82rem; }
+        th { background:#f8fafc; padding:11px 12px; text-align:left; font-weight:700; color:var(--azul-estado); white-space:nowrap; border-bottom:2px solid var(--gris-borde); }
+        td { padding:9px 12px; border-bottom:1px solid #f1f5f9; vertical-align:middle; }
+        tr:hover td { background:#fafcff; }
+        .empty-row td { text-align:center; color:#94a3b8; padding:28px; font-style:italic; }
+
+        .badge { display:inline-flex; align-items:center; gap:4px; padding:2px 10px; border-radius:40px; font-size:0.7rem; font-weight:700; text-transform:uppercase; letter-spacing:.2px; }
+        .badge-green { background:#dcfce7; color:#166534; }
+        .badge-red { background:var(--rojo-claro); color:var(--rojo); }
+        .badge-yellow { background:var(--amarillo-claro); color:var(--amarillo); }
+        .badge-blue { background:var(--azul-suave); color:var(--azul-claro); }
+        .badge-gray { background:#f1f5f9; color:#475569; }
+
+        .summary-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(140px,1fr)); gap:12px; margin-bottom:20px; }
+        .summary-item { border-radius:10px; padding:14px 16px; border:1.5px solid var(--gris-borde); }
+        .summary-item .num { font-size:1.6rem; font-weight:800; color:var(--azul-estado); line-height:1; }
+        .summary-item .lbl { font-size:0.72rem; color:var(--gris-texto); margin-top:2px; }
+
+        .upload-area { border:2px dashed #cbd5e1; border-radius:12px; padding:28px 20px; text-align:center; background:#fafcff; transition:.2s; cursor:pointer; position:relative; }
+        .upload-area:hover, .upload-area.dragover { border-color:var(--azul-claro); background:var(--azul-suave); }
+        .upload-area i { font-size:2.5rem; color:#94a3b8; margin-bottom:8px; }
+        .upload-area input[type=file] { position:absolute; inset:0; opacity:0; cursor:pointer; }
+
+        .notif { padding:12px 16px; border-radius:10px; font-size:0.85rem; display:flex; align-items:flex-start; gap:10px; margin-bottom:12px; }
+        .notif-info { background:var(--azul-suave); color:var(--azul-claro); border:1px solid #bfdbfe; }
+        .notif-success { background:var(--verde-claro); color:var(--verde); border:1px solid #a7f3d0; }
+        .notif-warning { background:var(--amarillo-claro); color:var(--amarillo); border:1px solid #fde68a; }
+        .notif-error { background:var(--rojo-claro); color:var(--rojo); border:1px solid #fca5a5; }
+        .notif i { margin-top:1px; flex-shrink:0; }
+
+        .flex { display:flex; } .items-center { align-items:center; } .justify-between { justify-content:space-between; }
+        .gap-8 { gap:8px; } .gap-12 { gap:12px; } .gap-16 { gap:16px; }
+        .mt-12 { margin-top:12px; } .mt-16 { margin-top:16px; } .mt-20 { margin-top:20px; }
+        .mb-8 { margin-bottom:8px; } .mb-12 { margin-bottom:12px; }
+        .text-sm { font-size:0.82rem; } .text-xs { font-size:0.72rem; } .text-muted { color:var(--gris-texto); }
+        .hidden { display:none !important; }
+        .fw-bold { font-weight:700; }
+        .divider { border:none; border-top:1px solid var(--gris-borde); margin:20px 0; }
+
+        .modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.45); z-index:1000; display:none; align-items:center; justify-content:center; padding:20px; }
+        .modal-overlay.active { display:flex; }
+        .modal-box { background:var(--blanco); border-radius:16px; padding:28px; max-width:440px; width:100%; max-height:85vh; overflow-y:auto; position:relative; }
+        .modal-box h2 { font-size:1.1rem; font-weight:700; color:var(--azul-estado); margin-bottom:16px; }
+        .modal-close { position:absolute; top:16px; right:16px; background:none; border:none; font-size:1.4rem; cursor:pointer; color:#94a3b8; }
+        .modal-close:hover { color:#1e293b; }
+
+        .send-box { border:2px solid var(--verde); border-radius:16px; padding:24px; background:#f0fdf4; }
+        .send-box h3 { color:var(--verde); font-size:1rem; margin-bottom:12px; display:flex; align-items:center; gap:8px; }
+
+        /* Estilo para el input file de documento */
+        .file-input-wrapper { display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+        .file-input-wrapper input[type="file"] { width:auto; padding:6px; border:none; background:transparent; }
+        .file-input-wrapper .file-name { font-size:0.8rem; color:var(--gris-texto); }
+        .file-input-wrapper .file-name i { margin-right:4px; }
+    </style>
+</head>
+<body>
+
+<!-- ============================================================ -->
+<!-- LOGIN                                                        -->
+<!-- ============================================================ -->
+<div id="loginContainer" class="login-container">
+    <div class="login-card">
+        <div class="logo">
+            <h1><i class="fas fa-shield-alt"></i> SIGT · ATU</h1>
+            <p>Plataforma de Subsidios – DU 004-2026</p>
+        </div>
+
+        <div id="loginForm">
+            <div id="loginAlert" class="hidden"></div>
+            <div class="form-group">
+                <label>Correo electrónico</label>
+                <input type="email" id="loginEmail" placeholder="funcionario@ejemplo.com" />
+            </div>
+            <div class="form-group">
+                <label>Contraseña</label>
+                <input type="password" id="loginPassword" placeholder="••••••••" />
+            </div>
+            <button class="btn-login" onclick="iniciarSesion()"><i class="fas fa-sign-in-alt"></i> Iniciar sesión</button>
+            <div class="links">
+                <a onclick="mostrarRecuperacion()">¿Olvidaste tu contraseña?</a>
+                <a onclick="mostrarRegistro()">Crear cuenta</a>
+            </div>
+        </div>
+
+        <div id="registroForm" class="hidden">
+            <h3 style="margin-bottom:16px; font-size:1rem;">Registro de funcionario</h3>
+            <div id="registroAlert" class="hidden"></div>
+            <div class="form-group">
+                <label>Correo electrónico (usuario)</label>
+                <input type="email" id="regEmail" placeholder="funcionario@ejemplo.com" />
+            </div>
+            <div class="form-group">
+                <label>Contraseña (mín. 6 caracteres)</label>
+                <input type="password" id="regPassword" placeholder="••••••••" />
+            </div>
+            <div class="form-group">
+                <label>Confirmar contraseña</label>
+                <input type="password" id="regPassword2" placeholder="••••••••" />
+            </div>
+            <div class="form-group">
+                <label>Nombre completo</label>
+                <input type="text" id="regNombre" placeholder="Juan Pérez" />
+            </div>
+            <div class="form-group">
+                <label>Tipo de entidad</label>
+                <select id="regTipoEntidad">
+                    <option value="regional">Gobierno Regional</option>
+                    <option value="municipal">Municipalidad Provincial</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Entidad</label>
+                <select id="regEntidad"></select>
+            </div>
+            <button class="btn-login" onclick="registrarUsuario()"><i class="fas fa-user-plus"></i> Registrar</button>
+            <div class="registro-link">
+                ¿Ya tienes cuenta? <a onclick="mostrarLogin()">Inicia sesión aquí</a>
+            </div>
+        </div>
+
+        <div id="recuperacionForm" class="hidden">
+            <h3 style="margin-bottom:16px; font-size:1rem;">Recuperar contraseña</h3>
+            <div id="recuperacionAlert" class="hidden"></div>
+            <div class="form-group">
+                <label>Correo electrónico registrado</label>
+                <input type="email" id="recEmail" placeholder="funcionario@ejemplo.com" />
+            </div>
+            <button class="btn-login" onclick="enviarRecuperacion()"><i class="fas fa-paper-plane"></i> Enviar enlace de recuperación</button>
+            <div class="registro-link">
+                <a onclick="mostrarLogin()">Volver al inicio de sesión</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- APLICACIÓN PRINCIPAL                                          -->
+<!-- ============================================================ -->
+<div id="app" class="hidden">
+    <div class="layout">
+
+        <!-- SIDEBAR -->
+        <aside class="sidebar">
+            <div class="sidebar-logo">
+                <h2><i class="fas fa-shield-alt"></i> SIGT · ATU</h2>
+                <p>Plataforma Digital de Subsidios<br>DU N° 004-2026</p>
+            </div>
+            <div class="sidebar-section">Módulo GR / Municipalidades</div>
+            <nav>
+                <a class="active" onclick="showPage('pgCarga')">
+                    <i class="fas fa-upload"></i> Carga de información
+                    <span class="api-dot"></span>
+                </a>
+                <a onclick="showPage('pgHistorial')">
+                    <i class="fas fa-history"></i> Historial de envíos
+                </a>
+            </nav>
+            <div class="sidebar-footer">
+                <div><i class="fas fa-user-circle"></i> <span id="usuarioNombre">Usuario</span></div>
+                <div><i class="fas fa-building"></i> <span id="usuarioEntidad">Entidad</span></div>
+                <div class="logout-btn" onclick="cerrarSesion()"><i class="fas fa-sign-out-alt"></i> Cerrar sesión</div>
+                <hr style="margin:12px 0; border-color:rgba(255,255,255,0.08);">
+                <i class="fas fa-calendar-alt"></i> Vigencia: 28/05/2026 – 31/12/2026<br>
+                <i class="fas fa-clock"></i> Plazo solicitud: hasta 29/09/2026
+            </div>
+        </aside>
+
+        <!-- MAIN -->
+        <main class="main">
+
+            <!-- PÁGINA CARGA -->
+            <div id="pgCarga" class="page active">
+                <div class="topbar">
+                    <h1><i class="fas fa-upload"></i> Carga de información – Entidad remitente</h1>
+                    <div class="topbar-meta">
+                        <span class="chip chip-blue"><i class="fas fa-book"></i> Art. 5.2 DU 004-2026</span>
+                        <span class="chip chip-green" id="chipEntidad">GR · Sin seleccionar</span>
+                    </div>
+                </div>
+
+                <!-- Identificación entidad (con carga de documento) -->
+                <div class="card">
+                    <div class="card-header">
+                        <div>
+                            <div class="card-title"><i class="fas fa-building"></i> Identificación de la entidad remitente</div>
+                            <div class="card-subtitle">Seleccione la entidad que remite la información conforme al Art. 5.2</div>
+                        </div>
+                        <span class="api-badge"><i class="fas fa-network-wired"></i> CARGA MASIVA</span>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="required">Tipo de entidad</label>
+                            <select id="tipoEntidad" onchange="actualizarEntidades()">
+                                <option value="regional">Gobierno Regional</option>
+                                <option value="municipal">Municipalidad Provincial</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="required">Nombre de entidad</label>
+                            <select id="listaEntidades" onchange="updateChipEntidad()"></select>
+                        </div>
+                        <div class="form-group">
+                            <label>Responsable de remisión</label>
+                            <input type="text" id="responsable" placeholder="Nombres y apellidos"/>
+                        </div>
+                        <div class="form-group">
+                            <label>Cargo</label>
+                            <input type="text" id="cargo" placeholder="Ej: Director Regional"/>
+                        </div>
+                        <div class="form-group">
+                            <label>Fecha de remisión</label>
+                            <input type="date" id="fechaRemision" value="2026-06-16"/>
+                            <div class="hint">Debe estar dentro del plazo del DU</div>
+                        </div>
+                        <div class="form-group">
+                            <label>N° Oficio / Resolución</label>
+                            <input type="text" id="nOficio" placeholder="Ej: OFICIO N°123-2026-GR"/>
+                        </div>
+                        <div class="form-group">
+                            <label>Adjuntar documento escaneado</label>
+                            <div class="file-input-wrapper">
+                                <input type="file" id="docOficio" accept="image/*,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document" onchange="mostrarNombreDoc()" />
+                                <span id="docNombre" class="file-name"><i class="fas fa-paperclip"></i> Ningún archivo seleccionado</span>
+                            </div>
+                            <div class="hint">Formatos: imagen, PDF, Word</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Carga de archivo Excel -->
+                <div class="card">
+                    <div class="card-header">
+                        <div>
+                            <div class="card-title"><i class="fas fa-cloud-upload-alt"></i> Carga masiva de registros vehiculares</div>
+                            <div class="card-subtitle">Información mínima según Anexo INFORMACIÓN_MÍNIMA_REQUERIDA</div>
+                        </div>
+                        <button class="btn btn-outline btn-sm" onclick="descargarPlantilla()"><i class="fas fa-file-download"></i> Plantilla .xlsx</button>
+                    </div>
+
+                    <div class="upload-area" id="dropArea">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                        <p class="fw-bold mt-12">Arrastra o selecciona un archivo</p>
+                        <p class="text-sm text-muted mt-12">Formatos aceptados: .xlsx, .xls, .csv</p>
+                        <input type="file" id="fileInput" accept=".xlsx,.xls,.csv" onchange="handleFile(event)"/>
+                        <div id="fileInfoBadge" class="badge badge-green mt-12 hidden"><i class="fas fa-check-circle"></i> <span id="fileName"></span></div>
+                    </div>
+
+                    <div class="flex gap-12 mt-16" style="flex-wrap:wrap; align-items:center;">
+                        <button class="btn btn-success" id="btnProcesar" onclick="procesarArchivo()" disabled>
+                            <i class="fas fa-play"></i> Procesar y validar
+                        </button>
+                        <button class="btn btn-outline" onclick="limpiarCarga()"><i class="fas fa-trash-alt"></i> Limpiar</button>
+                        <span id="statusCarga" class="text-sm text-muted" style="margin-left:auto;"></span>
+                    </div>
+                </div>
+
+                <!-- Tabla registros -->
+                <div class="card" id="cardTabla">
+                    <div class="card-header">
+                        <div class="card-title"><i class="fas fa-table"></i> Registros cargados</div>
+                        <div class="flex gap-8 items-center">
+                            <span class="badge badge-blue" id="totalBadge">0 registros</span>
+                            <span class="badge badge-green" id="validosBadge">0 válidos</span>
+                            <span class="badge badge-red" id="errorBadge">0 errores</span>
+                        </div>
+                    </div>
+
+                    <div class="summary-grid" id="summaryGrid">
+                        <div class="summary-item"><div class="num" id="sTotal">0</div><div class="lbl">Total registros</div></div>
+                        <div class="summary-item"><div class="num" id="sElegibles" style="color:var(--verde)">0</div><div class="lbl">Elegibles subsidio</div></div>
+                        <div class="summary-item"><div class="num" id="sNoElegibles" style="color:var(--rojo)">0</div><div class="lbl">No elegibles</div></div>
+                        <div class="summary-item"><div class="num" id="sErrores" style="color:var(--amarillo)">0</div><div class="lbl">Con errores</div></div>
+                    </div>
+
+                    <div class="table-wrap">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>#</th><th>Placa</th><th>Cat.</th><th>TUC</th>
+                                    <th>Estado TUC</th><th>Transportista</th><th>RUC</th>
+                                    <th>Tipo servicio</th><th>Estado Aut.</th>
+                                    <th>Validación</th><th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tablaBody">
+                                <tr class="empty-row"><td colspan="11">Sin registros. Cargue un archivo para comenzar.</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="flex gap-12 mt-16" style="flex-wrap:wrap;">
+                        <button class="btn btn-primary" id="btnEnviarATU" onclick="prepararEnvio()" disabled>
+                            <i class="fas fa-paper-plane"></i> Enviar información a la ATU
+                        </button>
+                        <button class="btn btn-outline" onclick="descargarErrores()"><i class="fas fa-file-download"></i> Descargar reporte errores</button>
+                        <span class="text-xs text-muted" style="margin-left:auto; align-self:center;">
+                            <i class="fas fa-info-circle"></i> Solo registros VIGENTE + HABILITADO son elegibles para subsidio
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PÁGINA HISTORIAL -->
+            <div id="pgHistorial" class="page hidden">
+                <div class="topbar">
+                    <h1><i class="fas fa-history"></i> Historial de envíos</h1>
+                </div>
+                <div class="card">
+                    <div class="card-title"><i class="fas fa-history"></i> Registros enviados a la ATU en esta sesión</div>
+                    <div class="table-wrap mt-16">
+                        <table>
+                            <thead><tr><th>N° Envío</th><th>Entidad</th><th>Fecha</th><th>Registros</th><th>Elegibles</th><th>Estado</th></tr></thead>
+                            <tbody id="historialBody2">
+                                <tr class="empty-row"><td colspan="6">No hay envíos en esta sesión.</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- MODALES                                                      -->
+<!-- ============================================================ -->
+<div class="modal-overlay" id="modalDetalle">
+    <div class="modal-box">
+        <button class="modal-close" onclick="cerrarModal('modalDetalle')">&times;</button>
+        <h2 id="modalTitulo"><i class="fas fa-info-circle"></i> Detalle de registro</h2>
+        <div id="modalBody"></div>
+        <div class="flex gap-12 mt-16">
+            <button class="btn btn-outline" onclick="cerrarModal('modalDetalle')">Cerrar</button>
+        </div>
+    </div>
+</div>
+
+<div class="modal-overlay" id="modalConfirm">
+    <div class="modal-box">
+        <button class="modal-close" onclick="cerrarModal('modalConfirm')">&times;</button>
+        <h2><i class="fas fa-paper-plane" style="color:var(--verde)"></i> Confirmar envío a la ATU</h2>
+        <div id="modalConfirmBody"></div>
+        <div class="flex gap-12 mt-16">
+            <button class="btn btn-success" onclick="confirmarEnvioATU()"><i class="fas fa-check"></i> Confirmar envío</button>
+            <button class="btn btn-outline" onclick="cerrarModal('modalConfirm')">Cancelar</button>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script>
+// ============================================================
+// SISTEMA DE AUTENTICACIÓN (simulado con localStorage)
+// ============================================================
+
+function getUsuarios() {
+    const data = localStorage.getItem('usuarios_DU004');
+    return data ? JSON.parse(data) : [];
+}
+
+function guardarUsuarios(usuarios) {
+    localStorage.setItem('usuarios_DU004', JSON.stringify(usuarios));
+}
+
+let usuarioActual = null;
+
+function inicializarUsuarios() {
+    let usuarios = getUsuarios();
+    if (usuarios.length === 0) {
+        usuarios.push({
+            email: 'demo@region.gob.pe',
+            password: 'demo123',
+            nombre: 'Usuario Demo',
+            tipoEntidad: 'regional',
+            entidad: 'Gobierno Regional de Lima'
+        });
+        guardarUsuarios(usuarios);
+    }
+}
+inicializarUsuarios();
+
+// ============================================================
+// FUNCIONES DE AUTENTICACIÓN
+// ============================================================
+function mostrarLogin() {
+    document.getElementById('loginForm').classList.remove('hidden');
+    document.getElementById('registroForm').classList.add('hidden');
+    document.getElementById('recuperacionForm').classList.add('hidden');
+    limpiarAlertas();
+}
+
+function mostrarRegistro() {
+    document.getElementById('loginForm').classList.add('hidden');
+    document.getElementById('registroForm').classList.remove('hidden');
+    document.getElementById('recuperacionForm').classList.add('hidden');
+    limpiarAlertas();
+    actualizarEntidadesRegistro();
+}
+
+function mostrarRecuperacion() {
+    document.getElementById('loginForm').classList.add('hidden');
+    document.getElementById('registroForm').classList.add('hidden');
+    document.getElementById('recuperacionForm').classList.remove('hidden');
+    limpiarAlertas();
+}
+
+function limpiarAlertas() {
+    document.querySelectorAll('.alert').forEach(el => { el.classList.add('hidden'); el.innerHTML = ''; });
+}
+
+function mostrarAlerta(containerId, mensaje, tipo) {
+    const cont = document.getElementById(containerId);
+    cont.classList.remove('hidden', 'alert-error', 'alert-success');
+    cont.classList.add('alert', tipo === 'error' ? 'alert-error' : 'alert-success');
+    cont.innerHTML = `<i class="fas fa-${tipo === 'error' ? 'exclamation-circle' : 'check-circle'}"></i> ${mensaje}`;
+}
+
+function registrarUsuario() {
+    const email = document.getElementById('regEmail').value.trim();
+    const password = document.getElementById('regPassword').value;
+    const password2 = document.getElementById('regPassword2').value;
+    const nombre = document.getElementById('regNombre').value.trim();
+    const tipoEntidad = document.getElementById('regTipoEntidad').value;
+    const entidad = document.getElementById('regEntidad').value;
+
+    if (!email || !password || !nombre || !entidad) {
+        mostrarAlerta('registroAlert', 'Todos los campos son obligatorios.', 'error');
+        return;
+    }
+    if (password.length < 6) {
+        mostrarAlerta('registroAlert', 'La contraseña debe tener al menos 6 caracteres.', 'error');
+        return;
+    }
+    if (password !== password2) {
+        mostrarAlerta('registroAlert', 'Las contraseñas no coinciden.', 'error');
+        return;
+    }
+    const usuarios = getUsuarios();
+    if (usuarios.find(u => u.email === email)) {
+        mostrarAlerta('registroAlert', 'Este correo ya está registrado.', 'error');
+        return;
+    }
+
+    usuarios.push({ email, password, nombre, tipoEntidad, entidad });
+    guardarUsuarios(usuarios);
+    mostrarAlerta('registroAlert', 'Registro exitoso. Ahora puedes iniciar sesión.', 'success');
+    setTimeout(() => mostrarLogin(), 1500);
+}
+
+function iniciarSesion() {
+    const email = document.getElementById('loginEmail').value.trim();
+    const password = document.getElementById('loginPassword').value;
+
+    if (!email || !password) {
+        mostrarAlerta('loginAlert', 'Ingresa correo y contraseña.', 'error');
+        return;
+    }
+
+    const usuarios = getUsuarios();
+    const user = usuarios.find(u => u.email === email && u.password === password);
+    if (!user) {
+        mostrarAlerta('loginAlert', 'Correo o contraseña incorrectos.', 'error');
+        return;
+    }
+
+    usuarioActual = user;
+    localStorage.setItem('sesion_DU004', JSON.stringify(user));
+    mostrarApp();
+}
+
+function enviarRecuperacion() {
+    const email = document.getElementById('recEmail').value.trim();
+    if (!email) {
+        mostrarAlerta('recuperacionAlert', 'Ingresa tu correo electrónico.', 'error');
+        return;
+    }
+    const usuarios = getUsuarios();
+    const user = usuarios.find(u => u.email === email);
+    if (!user) {
+        mostrarAlerta('recuperacionAlert', 'No existe una cuenta con ese correo.', 'error');
+        return;
+    }
+    mostrarAlerta('recuperacionAlert', 
+        `Se ha enviado un enlace de recuperación a ${email} (simulado). Revisa tu bandeja.`, 'success');
+}
+
+function cerrarSesion() {
+    if (confirm('¿Cerrar sesión?')) {
+        localStorage.removeItem('sesion_DU004');
+        usuarioActual = null;
+        document.getElementById('app').classList.add('hidden');
+        document.getElementById('loginContainer').style.display = 'flex';
+        document.getElementById('loginEmail').value = '';
+        document.getElementById('loginPassword').value = '';
+        limpiarAlertas();
+        document.querySelectorAll('.modal-overlay').forEach(m => m.classList.remove('active'));
+    }
+}
+
+function mostrarApp() {
+    document.getElementById('loginContainer').style.display = 'none';
+    document.getElementById('app').classList.remove('hidden');
+    document.getElementById('usuarioNombre').textContent = usuarioActual.nombre;
+    document.getElementById('usuarioEntidad').textContent = usuarioActual.entidad;
+    const tipo = usuarioActual.tipoEntidad;
+    const entidad = usuarioActual.entidad;
+    document.getElementById('tipoEntidad').value = tipo;
+    actualizarEntidades();
+    const lista = document.getElementById('listaEntidades');
+    for (let opt of lista.options) {
+        if (opt.value === entidad) {
+            lista.value = entidad;
+            break;
+        }
+    }
+    updateChipEntidad();
+}
+
+function verificarSesion() {
+    const sesion = localStorage.getItem('sesion_DU004');
+    if (sesion) {
+        try {
+            usuarioActual = JSON.parse(sesion);
+            const usuarios = getUsuarios();
+            const user = usuarios.find(u => u.email === usuarioActual.email && u.password === usuarioActual.password);
+            if (user) {
+                usuarioActual = user;
+                mostrarApp();
+                return;
+            } else {
+                localStorage.removeItem('sesion_DU004');
+            }
+        } catch(e) {
+            localStorage.removeItem('sesion_DU004');
+        }
+    }
+    document.getElementById('loginContainer').style.display = 'flex';
+    document.getElementById('app').classList.add('hidden');
+}
+
+// ============================================================
+// LISTAS DE ENTIDADES
+// ============================================================
+const regionales = ['Gobierno Regional de Amazonas','Gobierno Regional de Áncash','Gobierno Regional de Apurímac','Gobierno Regional de Arequipa','Gobierno Regional de Ayacucho','Gobierno Regional de Cajamarca','Gobierno Regional de Callao','Gobierno Regional de Cusco','Gobierno Regional de Huancavelica','Gobierno Regional de Huánuco','Gobierno Regional de Ica','Gobierno Regional de Junín','Gobierno Regional de La Libertad','Gobierno Regional de Lambayeque','Gobierno Regional de Lima','Gobierno Regional de Loreto','Gobierno Regional de Madre de Dios','Gobierno Regional de Moquegua','Gobierno Regional de Pasco','Gobierno Regional de Piura','Gobierno Regional de Puno','Gobierno Regional de San Martín','Gobierno Regional de Tacna','Gobierno Regional de Tumbes','Gobierno Regional de Ucayali'];
+const municipales = ['Municipalidad Provincial de Abancay','Municipalidad Provincial de Arequipa','Municipalidad Provincial de Ayacucho','Municipalidad Provincial de Cajamarca','Municipalidad Provincial de Callao','Municipalidad Provincial de Cusco','Municipalidad Provincial de Huancayo','Municipalidad Provincial de Ica','Municipalidad Provincial de Lima','Municipalidad Provincial de Loreto','Municipalidad Provincial de Piura','Municipalidad Provincial de Puno','Municipalidad Provincial de Tacna','Municipalidad Provincial de Trujillo','Municipalidad Provincial de Tumbes','Municipalidad Provincial de Huaraz','Municipalidad Provincial de Maynas','Municipalidad Provincial de San Román','Municipalidad Provincial de Chiclayo','Municipalidad Provincial de Sullana'];
+
+function actualizarEntidadesRegistro() {
+    const tipo = document.getElementById('regTipoEntidad').value;
+    const lista = document.getElementById('regEntidad');
+    lista.innerHTML = '';
+    (tipo === 'regional' ? regionales : municipales).forEach(n => {
+        const o = document.createElement('option'); o.value = n; o.textContent = n; lista.appendChild(o);
+    });
+}
+document.getElementById('regTipoEntidad').addEventListener('change', actualizarEntidadesRegistro);
+actualizarEntidadesRegistro();
+
+// ============================================================
+// FUNCIONES DE LA APLICACIÓN (carga, tabla, etc.)
+// ============================================================
+
+let registros = [];
+let idCounter = 0;
+let erroresGlobales = [];
+let historialEnvios = [];
+let envioCounter = 0;
+let archivoSeleccionado = null;
+let documentoAdjunto = null;  // para guardar el archivo del oficio
+const maxGalones = { M2:674.65, M3:1915.41, N1:552.52, N2:888.45, N3:1412.54 };
+
+// Navegación
+function showPage(id) {
+    document.querySelectorAll('.page').forEach(p => { p.classList.add('hidden'); p.classList.remove('active'); });
+    document.getElementById(id).classList.remove('hidden');
+    document.getElementById(id).classList.add('active');
+    document.querySelectorAll('.sidebar nav a').forEach(a => a.classList.remove('active'));
+    if (event && event.currentTarget) event.currentTarget.classList.add('active');
+}
+
+// Actualizar listas de entidades en carga
+function actualizarEntidades() {
+    const tipo = document.getElementById('tipoEntidad').value;
+    const lista = document.getElementById('listaEntidades');
+    lista.innerHTML = '';
+    (tipo === 'regional' ? regionales : municipales).forEach(n => {
+        const o = document.createElement('option'); o.value = n; o.textContent = n; lista.appendChild(o);
+    });
+    updateChipEntidad();
+}
+function updateChipEntidad() {
+    const tipo = document.getElementById('tipoEntidad').value;
+    const nom = document.getElementById('listaEntidades').value;
+    document.getElementById('chipEntidad').textContent = (tipo === 'regional' ? 'GR' : 'MP') + ' · ' + nom.split(' ').slice(-2).join(' ');
+}
+actualizarEntidades();
+
+// Mostrar nombre del documento adjunto
+function mostrarNombreDoc() {
+    const input = document.getElementById('docOficio');
+    const span = document.getElementById('docNombre');
+    if (input.files && input.files.length > 0) {
+        const file = input.files[0];
+        documentoAdjunto = file;
+        span.innerHTML = `<i class="fas fa-paperclip"></i> ${file.name} (${(file.size/1024).toFixed(1)} KB)`;
+    } else {
+        documentoAdjunto = null;
+        span.innerHTML = `<i class="fas fa-paperclip"></i> Ningún archivo seleccionado`;
+    }
+}
+
+// ============================================================
+// MANEJO DE ARCHIVO EXCEL
+// ============================================================
+function handleFile(e) {
+    const f = e.target.files[0];
+    if (!f) return;
+    archivoSeleccionado = f;
+    document.getElementById('fileName').textContent = f.name + ' (' + (f.size/1024).toFixed(1) + ' KB)';
+    document.getElementById('fileInfoBadge').classList.remove('hidden');
+    document.getElementById('btnProcesar').disabled = false;
+    document.getElementById('statusCarga').textContent = 'Archivo listo para procesar.';
+}
+
+const dropArea = document.getElementById('dropArea');
+dropArea.addEventListener('dragover', e => { e.preventDefault(); dropArea.classList.add('dragover'); });
+dropArea.addEventListener('dragleave', () => dropArea.classList.remove('dragover'));
+dropArea.addEventListener('drop', e => {
+    e.preventDefault(); dropArea.classList.remove('dragover');
+    const files = e.dataTransfer.files;
+    if (files.length > 0) {
+        document.getElementById('fileInput').files = files;
+        handleFile({ target: { files: files } });
+    }
+});
+
+function procesarArchivo() {
+    if (!archivoSeleccionado) { alert('No hay archivo seleccionado.'); return; }
+    document.getElementById('btnProcesar').disabled = true;
+    document.getElementById('statusCarga').textContent = 'Leyendo archivo...';
+
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        try {
+            const data = new Uint8Array(e.target.result);
+            const workbook = XLSX.read(data, { type: 'array' });
+            const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+            const jsonData = XLSX.utils.sheet_to_json(firstSheet, { defval: '' });
+
+            if (!jsonData || jsonData.length === 0) {
+                alert('El archivo está vacío o no contiene datos válidos.');
+                document.getElementById('btnProcesar').disabled = false;
+                document.getElementById('statusCarga').textContent = 'Error: archivo vacío.';
+                return;
+            }
+
+            const columnMap = {
+                'PLACA DE VEHÍCULO': 'placa',
+                'CATEGORÍA VEHICULAR': 'categoria',
+                'TARJETA ÚNICA DE CIRCULACIÓN': 'tuc',
+                'FECHA DE INICIO DE VIGENCIA (TUC)': 'fecha_inicio_tuc',
+                'FECHA FIN DE VIGENCIA (TUC)': 'fecha_fin_tuc',
+                'ESTADO DE TUC': 'estado_tuc',
+                'NOMBRE O RAZÓN SOCIAL DEL TRANSPORTISTA': 'transportista',
+                'RUC DEL TRANSPORTISTA': 'ruc',
+                'PARTIDA REGISTRAL O CÓDIGO DE INSCRIPCIÓN': 'partida_registral',
+                'TIPO DE SERVICIO AUTORIZADO': 'tipo_servicio',
+                'ACTO ADMINISTRATIVO DE AUTORIZACIÓN': 'acto_administrativo',
+                'FECHA DE INICIO DE VIGENCIA (AUTORIZACIÓN)': 'fecha_inicio_aut',
+                'FECHA FIN DE VIGENCIA (AUTORIZACIÓN)': 'fecha_fin_aut',
+                'ESTADO (AUTORIZACIÓN)': 'estado_aut'
+            };
+
+            const parsedData = jsonData.map(row => {
+                const obj = {};
+                for (const [excelCol, campo] of Object.entries(columnMap)) {
+                    const key = Object.keys(row).find(k => k.trim().toUpperCase() === excelCol.trim().toUpperCase());
+                    obj[campo] = key ? String(row[key]).trim() : '';
+                }
+                return obj;
+            }).filter(row => row.placa && row.ruc);
+
+            if (parsedData.length === 0) {
+                alert('No se pudieron extraer registros válidos. Verifica que las columnas coincidan con la plantilla.');
+                document.getElementById('btnProcesar').disabled = false;
+                document.getElementById('statusCarga').textContent = 'Error: formato de columnas incorrecto.';
+                return;
+            }
+
+            document.getElementById('statusCarga').textContent = `Procesando ${parsedData.length} registros...`;
+            procesarDatos(parsedData);
+
+        } catch (error) {
+            alert('Error al leer el archivo: ' + error.message);
+            document.getElementById('btnProcesar').disabled = false;
+            document.getElementById('statusCarga').textContent = 'Error al procesar el archivo.';
+            console.error(error);
+        }
+    };
+    reader.readAsArrayBuffer(archivoSeleccionado);
+}
+
+// Procesar datos (sin datos de prueba)
+function procesarDatos(datos) {
+    const res = datos.map((r,i) => validarRegistro(r,i));
+    const validos = res.filter(r=>r.valido);
+    const invalidos = res.filter(r=>!r.valido);
+    validos.forEach(r => r.id = ++idCounter);
+    registros = [...registros, ...validos];
+    erroresGlobales = invalidos.map(r => ({fila:r.fila, msg:r.errores.join('; ')}));
+    renderTabla(); actualizarResumen();
+    document.getElementById('statusCarga').innerHTML = `<i class="fas fa-check-circle" style="color:var(--verde)"></i> ${res.length} registros procesados. Válidos: ${validos.length}, errores: ${invalidos.length}.`;
+    document.getElementById('btnEnviarATU').disabled = validos.length === 0;
+    document.getElementById('btnProcesar').disabled = false;
+}
+
+// Validación
+function validarRegistro(row, idx) {
+    const errores = [];
+    const fechaLimite = new Date('2026-05-29');
+    ['placa','categoria','tuc','fecha_inicio_tuc','estado_tuc','transportista','ruc','tipo_servicio','acto_administrativo','fecha_inicio_aut','estado_aut'].forEach(c => {
+        if (!row[c] || !row[c].toString().trim()) errores.push(`Falta "${c}"`);
+    });
+    if (row.placa && !/^[A-Z0-9]{4,8}$/i.test(row.placa.trim())) errores.push('Placa formato inválido');
+    if (row.categoria && !['M2','M3','N1','N2','N3'].includes(row.categoria.toUpperCase())) errores.push('Categoría debe ser M2, M3, N1, N2 o N3');
+    if (row.ruc && !/^\d{11}$/.test(row.ruc.trim())) errores.push('RUC debe tener 11 dígitos');
+    const validarFecha = (f, campo) => { if (!f) return; const d=new Date(f); if(isNaN(d)) {errores.push(`Fecha ${campo} inválida`);return;} if(d>fechaLimite) errores.push(`${campo} debe ser ≤ 29/05/2026`); };
+    validarFecha(row.fecha_inicio_tuc,'fecha_inicio_tuc');
+    validarFecha(row.fecha_inicio_aut,'fecha_inicio_aut');
+    if (row.estado_tuc && !['VIGENTE','SUSPENDIDO','CANCELADO Y/O INHABILITADO'].includes(row.estado_tuc.toUpperCase())) errores.push('Estado TUC inválido');
+    if (row.estado_aut && !['HABILITADO','SUSPENDIDO','CANCELADO Y/O INHABILITADO'].includes(row.estado_aut.toUpperCase())) errores.push('Estado autorización inválido');
+    if (row.tipo_servicio && !['SERVICIO DE TRANSPORTE NACIONAL REGULAR','SERVICIO DE TRANSPORTE DE MERCANCÍAS'].includes(row.tipo_servicio.toUpperCase())) errores.push('Tipo servicio no permitido');
+    const valido = errores.length === 0;
+    const elegible = valido && row.estado_tuc && row.estado_tuc.toUpperCase()==='VIGENTE' && row.estado_aut && row.estado_aut.toUpperCase()==='HABILITADO';
+    return { ...row, fila:idx+1, valido, errores, elegible,
+        estado_tuc: row.estado_tuc?row.estado_tuc.toUpperCase():'',
+        estado_aut: row.estado_aut?row.estado_aut.toUpperCase():'',
+        categoria: row.categoria?row.categoria.toUpperCase():'' };
+}
+
+// Renderizar tabla
+function renderTabla() {
+    const tbody = document.getElementById('tablaBody');
+    if (!registros.length) { tbody.innerHTML='<tr class="empty-row"><td colspan="11">Sin registros. Cargue un archivo para comenzar.</td></tr>'; return; }
+    const tipos = {'SERVICIO DE TRANSPORTE NACIONAL REGULAR':'Nacional Regular','SERVICIO DE TRANSPORTE DE MERCANCÍAS':'Mercancías'};
+    tbody.innerHTML = registros.map((r,i) => `
+        <tr>
+            <td>${i+1}</td>
+            <td><strong>${r.placa||''}</strong></td>
+            <td><span class="badge badge-blue">${r.categoria||''}</span></td>
+            <td class="text-xs">${r.tuc||''}</td>
+            <td>${badgeEstado(r.estado_tuc)}</td>
+            <td class="text-sm">${r.transportista||''}</td>
+            <td class="text-xs">${r.ruc||''}</td>
+            <td class="text-xs">${tipos[r.tipo_servicio]||r.tipo_servicio||''}</td>
+            <td>${badgeEstado(r.estado_aut)}</td>
+            <td>${r.valido
+                ? (r.elegible ? '<span class="badge badge-green"><i class="fas fa-check-circle"></i> Elegible</span>' : '<span class="badge badge-yellow">No elegible</span>')
+                : '<span class="badge badge-red"><i class="fas fa-times"></i> Error</span>'}</td>
+            <td>
+                <button class="btn btn-xs btn-ghost" onclick="verDetalle(${r.id})"><i class="fas fa-eye"></i></button>
+                <button class="btn btn-xs" style="background:var(--rojo-claro);color:var(--rojo);border:none;" onclick="eliminarReg(${r.id})"><i class="fas fa-trash"></i></button>
+            </td>
+        </tr>`).join('');
+}
+
+function badgeEstado(e) {
+    if (!e) return '<span class="badge badge-gray">—</span>';
+    const u = e.toUpperCase();
+    if (u==='VIGENTE'||u==='HABILITADO') return `<span class="badge badge-green">${e}</span>`;
+    if (u==='SUSPENDIDO') return `<span class="badge badge-yellow">${e}</span>`;
+    if (u.includes('CANCELADO')||u.includes('INHABILITADO')) return `<span class="badge badge-red">${e}</span>`;
+    return `<span class="badge badge-gray">${e}</span>`;
+}
+
+function actualizarResumen() {
+    const t=registros.length, v=registros.filter(r=>r.valido).length, e=registros.filter(r=>r.elegible).length, err=t-v;
+    document.getElementById('sTotal').textContent=t;
+    document.getElementById('sElegibles').textContent=e;
+    document.getElementById('sNoElegibles').textContent=v-e;
+    document.getElementById('sErrores').textContent=err;
+    document.getElementById('totalBadge').textContent=t+' registros';
+    document.getElementById('validosBadge').textContent=v+' válidos';
+    document.getElementById('errorBadge').textContent=err+' errores';
+}
+
+function verDetalle(id) {
+    const r = registros.find(x=>x.id===id); if(!r) return;
+    const sub = maxGalones[r.categoria] ? `S/ ${(maxGalones[r.categoria]*4).toFixed(2)}` : '—';
+    document.getElementById('modalTitulo').innerHTML = `<i class="fas fa-truck"></i> Placa: ${r.placa}`;
+    document.getElementById('modalBody').innerHTML = `
+        <div class="form-row" style="gap:8px;">
+            ${dItem('Placa',r.placa)} ${dItem('Categoría',r.categoria)} ${dItem('TUC',r.tuc)}
+            ${dItem('Estado TUC',badgeEstado(r.estado_tuc))} ${dItem('Transportista',r.transportista)}
+            ${dItem('RUC',r.ruc)} ${dItem('Partida registral',r.partida_registral||'—')}
+            ${dItem('Tipo servicio',r.tipo_servicio)} ${dItem('Acto adm.',r.acto_administrativo)}
+            ${dItem('Fecha inicio aut.',r.fecha_inicio_aut)} ${dItem('Estado autorización',badgeEstado(r.estado_aut))}
+            ${dItem('Elegible subsidio',r.elegible?'<span class="badge badge-green">SÍ</span>':'<span class="badge badge-yellow">NO</span>')}
+            ${dItem('Subsidio máx. est.',sub)}
+        </div>
+        ${r.errores&&r.errores.length?`<div class="notif notif-error mt-16"><i class="fas fa-exclamation-circle"></i><div><strong>Errores:</strong> ${r.errores.join(' | ')}</div></div>`:''}`;
+    document.getElementById('modalDetalle').classList.add('active');
+}
+function dItem(l,v) { return `<div class="form-group"><label style="font-size:.7rem">${l}</label><div style="font-weight:600;font-size:.85rem;padding:4px 0;">${v||'—'}</div></div>`; }
+
+function eliminarReg(id) {
+    if (!confirm('¿Eliminar este registro?')) return;
+    registros = registros.filter(r=>r.id!==id); renderTabla(); actualizarResumen();
+}
+
+function limpiarCarga() {
+    if (!registros.length) return;
+    if (!confirm('¿Eliminar todos los registros?')) return;
+    registros=[]; erroresGlobales=[]; idCounter=0; renderTabla(); actualizarResumen();
+    document.getElementById('btnEnviarATU').disabled=true;
+    document.getElementById('statusCarga').textContent='Datos limpiados.';
+    document.getElementById('fileInfoBadge').classList.add('hidden');
+    document.getElementById('btnProcesar').disabled=true;
+    archivoSeleccionado = null;
+}
+
+function descargarErrores() {
+    if (!erroresGlobales.length) return alert('No hay errores registrados.');
+    let csv='Fila,Mensaje\n'; erroresGlobales.forEach(e=>{ csv+=`${e.fila},"${e.msg}"\n`; });
+    const b=new Blob([csv],{type:'text/csv'}); const l=document.createElement('a');
+    l.href=URL.createObjectURL(b); l.download='errores_validacion_DU004.csv'; l.click();
+}
+
+// Plantilla
+function descargarPlantilla() {
+    const headers = ['PLACA DE VEHÍCULO','CATEGORÍA VEHICULAR','TARJETA ÚNICA DE CIRCULACIÓN','FECHA DE INICIO DE VIGENCIA (TUC)','FECHA FIN DE VIGENCIA (TUC)','ESTADO DE TUC','NOMBRE O RAZÓN SOCIAL DEL TRANSPORTISTA','RUC DEL TRANSPORTISTA','PARTIDA REGISTRAL O CÓDIGO DE INSCRIPCIÓN','TIPO DE SERVICIO AUTORIZADO','ACTO ADMINISTRATIVO DE AUTORIZACIÓN','FECHA DE INICIO DE VIGENCIA (AUTORIZACIÓN)','FECHA FIN DE VIGENCIA (AUTORIZACIÓN)','ESTADO (AUTORIZACIÓN)'];
+    const sample = ['ABC123','M2','TUC-100001','2026-05-15','2027-12-31','VIGENTE','Transportes Andes SAC','20123456789','PR-20001','SERVICIO DE TRANSPORTE NACIONAL REGULAR','RES-3001','2026-05-20','2027-06-30','HABILITADO'];
+    const entidad = document.getElementById('listaEntidades').value || 'ENTIDAD';
+    const ws = XLSX.utils.aoa_to_sheet([headers, sample]);
+    ws['!cols'] = headers.map((_,i) => ({wch:[15,18,22,22,22,22,40,18,28,45,28,28,28,20][i]||20}));
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Plantilla');
+    XLSX.writeFile(wb, `plantilla_DU004-2026_${entidad.replace(/\s/g,'_')}.xlsx`);
+}
+
+// Envío a ATU
+function prepararEnvio() {
+    if (!registros.length) return alert('No hay registros para enviar.');
+    const oficio = document.getElementById('nOficio').value || '—';
+    const doc = documentoAdjunto ? document.getElementById('docNombre').innerHTML : 'No adjunto';
+    document.getElementById('modalConfirmBody').innerHTML = `
+        <div class="notif notif-warning mb-16"><i class="fas fa-exclamation-triangle"></i>
+        <div>Está a punto de enviar información a la ATU. Esta acción quedará registrada. ¿Confirma el envío?</div></div>
+        <div class="form-row">
+            ${dItem('Entidad', document.getElementById('listaEntidades').value)}
+            ${dItem('Oficio', oficio)}
+            ${dItem('Documento adjunto', doc)}
+            ${dItem('Registros totales', registros.length)}
+            ${dItem('Elegibles', registros.filter(r=>r.elegible).length)}
+        </div>`;
+    document.getElementById('modalConfirm').classList.add('active');
+}
+
+function confirmarEnvioATU() {
+    cerrarModal('modalConfirm');
+    const entidad = document.getElementById('listaEntidades').value;
+    const oficio = document.getElementById('nOficio').value;
+    const doc = documentoAdjunto ? documentoAdjunto.name : 'Sin adjunto';
+    const elegibles = registros.filter(r=>r.elegible).length;
+    const envio = { id:++envioCounter, entidad, oficio, documento: doc, fecha:new Date().toLocaleString(), total:registros.length, elegibles, estado:'RECIBIDO POR ATU' };
+    historialEnvios.unshift(envio);
+    updateHistorial();
+    alert(`✅ Información enviada exitosamente a la ATU.\nN° de envío: ENV-DU004-${String(envioCounter).padStart(4,'0')}\nRegistros elegibles: ${elegibles}\nDocumento: ${doc}`);
+}
+
+function updateHistorial() {
+    const tbody = document.getElementById('historialBody2');
+    if (historialEnvios.length) {
+        tbody.innerHTML = historialEnvios.map(h => `
+            <tr>
+                <td><strong>ENV-DU004-${String(h.id).padStart(4,'0')}</strong></td>
+                <td>${h.entidad}</td><td>${h.fecha}</td><td>${h.total}</td><td>${h.elegibles}</td>
+                <td><span class="badge badge-green"><i class="fas fa-check"></i> ${h.estado}</span></td>
+            </tr>`).join('');
+    } else {
+        tbody.innerHTML = '<tr class="empty-row"><td colspan="6">No hay envíos en esta sesión.</td></tr>';
+    }
+}
+
+// Modales
+function cerrarModal(id) { document.getElementById(id).classList.remove('active'); }
+document.querySelectorAll('.modal-overlay').forEach(m => {
+    m.addEventListener('click', e => { if(e.target===m) m.classList.remove('active'); });
+});
+
+// Inicializar
+verificarSesion();
+</script>
+</body>
+</html>

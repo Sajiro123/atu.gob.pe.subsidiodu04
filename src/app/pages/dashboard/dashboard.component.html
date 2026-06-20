@@ -1,0 +1,216 @@
+<div class="min-h-screen bg-background font-body-md text-body-md text-on-surface flex">
+
+  <!-- SideNavBar -->
+  <aside class="fixed left-0 top-0 h-full w-[260px] bg-primary border-r border-outline-variant/20 flex flex-col z-20">
+
+    <!-- Header -->
+    <div class="px-gutter py-stack-lg border-b border-outline-variant/20 flex items-center gap-stack-sm">
+      <div
+        class="bg-[#003366] p-1.5 rounded shadow-sm flex items-center justify-center max-w-[50px] transition-transform hover:scale-105">
+        <img src="/logo.png" alt="ATU Logo" class="h-6 w-auto object-contain" />
+      </div>
+      <div>
+        <p class="font-label-sm text-label-sm text-on-primary/70 mt-1 leading-tight">Plataforma Digital de Subsidios</p>
+      </div>
+    </div>
+
+    <!-- Navigation Header -->
+    <div class="px-gutter pt-stack-md pb-stack-sm">
+      <span class="font-label-sm text-label-sm text-primary-fixed-dim/40 uppercase tracking-wider">MÓDULO GR /
+        MUNICIPALIDADES</span>
+    </div>
+
+    <!-- Navigation Tabs -->
+    <nav class="flex-1 overflow-y-auto">
+      <ul class="flex flex-col">
+        <li>
+          <a routerLink="/dashboard/carga"
+            routerLinkActive="bg-secondary-container text-on-secondary-container border-l-4 border-secondary-fixed font-bold opacity-90"
+            [routerLinkActiveOptions]="{exact: true}"
+            class="text-on-primary/75 hover:bg-primary-container hover:text-on-primary-container border-l-4 border-transparent flex items-center gap-stack-md px-container-padding py-stack-md w-full transition-all duration-200">
+            <span class="material-symbols-outlined" data-weight="fill">upload_file</span>
+            <span class="font-label-md text-label-md">Carga de información</span>
+          </a>
+        </li>
+        <li>
+          <a routerLink="/dashboard/registros"
+            routerLinkActive="bg-secondary-container text-on-secondary-container border-l-4 border-secondary-fixed font-bold opacity-90"
+            class="text-on-primary/75 hover:bg-primary-container hover:text-on-primary-container border-l-4 border-transparent flex items-center justify-between px-container-padding py-stack-md w-full transition-all duration-200">
+            <div class="flex items-center gap-stack-md">
+              <span class="material-symbols-outlined" data-weight="fill">table_chart</span>
+              <span class="font-label-md text-label-md">Registros cargados</span>
+            </div>
+            @if (totalCargados > 0) {
+            <span class="bg-secondary text-white font-bold text-[10px] px-2 py-0.5 rounded-full">
+              {{ totalCargados }}
+            </span>
+            }
+          </a>
+        </li>
+        <li>
+          <a routerLink="/dashboard/historial"
+            routerLinkActive="bg-secondary-container text-on-secondary-container border-l-4 border-secondary-fixed font-bold opacity-90"
+            class="text-on-primary/75 hover:bg-primary-container hover:text-on-primary-container border-l-4 border-transparent flex items-center gap-stack-md px-container-padding py-stack-md w-full transition-all duration-200">
+            <span class="material-symbols-outlined" data-weight="fill">history</span>
+            <span class="font-label-md text-label-md">Historial de envíos</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
+
+    <!-- Footer Profile -->
+    <div class="p-gutter border-t border-outline-variant/20 flex flex-col gap-stack-sm text-secondary-fixed-dim">
+
+      <!-- Date Details -->
+      <div
+        class="mb-2 p-2 rounded bg-primary-container/30 border border-outline-variant/10 text-xs text-primary-fixed-dim flex flex-col gap-1 leading-normal">
+        <div class="flex items-center gap-1.5">
+          <span class="material-symbols-outlined text-xs">calendar_today</span>
+          <span>Vigencia DU: 31/12/2026</span>
+        </div>
+        <div class="flex items-center gap-1.5 text-error-container/80">
+          <span class="material-symbols-outlined text-xs text-error-container">schedule</span>
+          <span>Límite: 29/09/2026</span>
+        </div>
+      </div>
+
+      <!-- User info -->
+      <div class="flex items-center gap-stack-sm">
+        <span class="material-symbols-outlined text-sm">person</span>
+        <span class="font-label-sm text-label-sm truncate font-medium text-white">{{ usuario?.nombre }}</span>
+      </div>
+      <div class="flex items-center gap-stack-sm">
+        <span class="material-symbols-outlined text-sm">account_balance</span>
+        <span class="font-label-sm text-label-sm truncate text-white/70">{{ usuario?.entidad }}</span>
+      </div>
+
+      <!-- Profile settings link -->
+      <div (click)="abrirPerfil()"
+        class="flex items-center gap-stack-sm mt-stack-sm pt-stack-sm border-t border-outline-variant/10 hover:text-white cursor-pointer transition-colors text-white/60">
+        <span class="material-symbols-outlined text-sm">manage_accounts</span>
+        <span class="font-label-sm text-label-sm">Mi Perfil / Contraseña</span>
+      </div>
+
+      <!-- Logout link -->
+      <div (click)="onLogout()"
+        class="flex items-center gap-stack-sm mt-stack-sm pt-stack-sm border-t border-outline-variant/10 hover:text-white cursor-pointer transition-colors text-white/60">
+        <span class="material-symbols-outlined text-sm">logout</span>
+        <span class="font-label-sm text-label-sm">Cerrar sesión</span>
+      </div>
+
+    </div>
+
+  </aside>
+
+  <!-- Main Content Area -->
+  <div class="flex-1 ml-[260px] flex flex-col min-h-screen">
+    <router-outlet></router-outlet>
+  </div>
+
+</div>
+
+<!-- ══ MODAL: EDITAR PERFIL / CAMBIAR CONTRASEÑA ══════════ -->
+@if (modalPerfilOpen && usuario) {
+  <div class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4" (click)="cerrarPerfil()">
+    <div class="bg-surface-container-lowest border border-outline-variant rounded-xl shadow-lg w-full max-w-md overflow-hidden animate-in fade-in zoom-in-95 duration-200"
+         (click)="$event.stopPropagation()">
+      
+      <!-- Header -->
+      <div class="p-gutter bg-primary text-white border-b border-outline-variant/30 flex justify-between items-center">
+        <div class="flex items-center gap-stack-sm">
+          <span class="material-symbols-outlined text-2xl">manage_accounts</span>
+          <div>
+            <h3 class="font-headline-sm text-headline-sm font-bold">Perfil del Usuario</h3>
+            <p class="text-xs text-white/70">Gestionar información y credenciales</p>
+          </div>
+        </div>
+        <button (click)="cerrarPerfil()" class="text-white hover:bg-white/10 p-1 rounded-full flex items-center">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+
+      <!-- Body -->
+      <div class="p-gutter space-y-4 text-on-surface">
+        
+        <!-- Info Cards -->
+        <div class="space-y-2.5 p-3.5 bg-surface-container-low border border-outline-variant/40 rounded-lg text-xs leading-normal">
+          <div>
+            <span class="text-on-surface-variant font-semibold uppercase tracking-wider block text-[10px]">Funcionario</span>
+            <strong class="text-sm text-primary font-bold">{{ usuario.nombre }}</strong>
+          </div>
+          <div>
+            <span class="text-on-surface-variant font-semibold uppercase tracking-wider block text-[10px]">Correo Institucional</span>
+            <span class="text-sm font-semibold">{{ usuario.email }}</span>
+          </div>
+          <div>
+            <span class="text-on-surface-variant font-semibold uppercase tracking-wider block text-[10px]">Entidad Gubernamental</span>
+            <span class="text-sm font-semibold">{{ usuario.entidad }} ({{ usuario.tipoEntidad === 'regional' ? 'Gobierno Regional' : 'Municipalidad' }})</span>
+          </div>
+          @if (usuario.documentoCargo) {
+          <div>
+            <span class="text-on-surface-variant font-semibold uppercase tracking-wider block text-[10px]">Documento de Cargo</span>
+            <span class="text-sm font-semibold text-secondary flex items-center gap-1">
+              <span class="material-symbols-outlined text-xs">attach_file</span>
+              {{ usuario.documentoCargo }}
+            </span>
+          </div>
+          }
+        </div>
+
+        <hr class="border-outline-variant/40" />
+
+        <div class="space-y-3">
+          <h4 class="font-semibold text-sm text-primary flex items-center gap-1.5">
+            <span class="material-symbols-outlined text-base">lock_reset</span>
+            Cambiar Contraseña
+          </h4>
+
+          <!-- Alert message inside modal -->
+          @if (perfilAlert) {
+            <div class="p-3 rounded text-xs leading-tight"
+                 [class.bg-error-container]="perfilAlert.type === 'error'"
+                 [class.text-on-error-container]="perfilAlert.type === 'error'"
+                 [class.bg-success-container]="perfilAlert.type === 'success'"
+                 [class.text-on-secondary-fixed-variant]="perfilAlert.type === 'success'">
+              {{ perfilAlert.message }}
+            </div>
+          }
+
+          <!-- Inputs -->
+          <div class="flex flex-col gap-baseline">
+            <label class="font-label-sm text-label-sm text-on-surface-variant">Contraseña actual</label>
+            <input type="password" [(ngModel)]="passActual" placeholder="••••••••"
+                   class="w-full border border-outline-variant rounded bg-surface-container-lowest px-3 py-2 text-body-md focus:border-secondary focus:ring-1 focus:ring-secondary outline-none" />
+          </div>
+
+          <div class="flex flex-col gap-baseline">
+            <label class="font-label-sm text-label-sm text-on-surface-variant">Nueva contraseña</label>
+            <input type="password" [(ngModel)]="passNueva" placeholder="Mínimo 6 caracteres"
+                   class="w-full border border-outline-variant rounded bg-surface-container-lowest px-3 py-2 text-body-md focus:border-secondary focus:ring-1 focus:ring-secondary outline-none" />
+          </div>
+
+          <div class="flex flex-col gap-baseline">
+            <label class="font-label-sm text-label-sm text-on-surface-variant">Confirmar nueva contraseña</label>
+            <input type="password" [(ngModel)]="passConfirmar" placeholder="Mínimo 6 caracteres"
+                   class="w-full border border-outline-variant rounded bg-surface-container-lowest px-3 py-2 text-body-md focus:border-secondary focus:ring-1 focus:ring-secondary outline-none" />
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Footer -->
+      <div class="p-4 bg-surface-bright border-t border-outline-variant/30 flex justify-end gap-3">
+        <button (click)="cerrarPerfil()"
+                class="px-4 py-2 border border-outline-variant rounded hover:bg-surface-container text-on-surface font-label-md text-label-md transition-colors">
+          Cancelar
+        </button>
+        <button (click)="onSavePassword()"
+                class="px-5 py-2 bg-secondary text-white rounded hover:bg-secondary/90 flex items-center gap-1.5 font-label-md text-label-md shadow-sm transition-colors">
+          <span class="material-symbols-outlined text-sm">save</span>
+          <span>Guardar cambios</span>
+        </button>
+      </div>
+
+    </div>
+  </div>
+}
