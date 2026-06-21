@@ -116,12 +116,12 @@ export class AuthService {
   // ── Register ──────────────────────────────────────────
   register(data: {
     email: string; password: string; password2: string;
-    nombre: string; tipoEntidad: 'regional' | 'municipal'; entidad: string;
+    nombre: string; tipoEntidad: 'regional' | 'municipal' | 'empresa'; entidad: string;
     documentoCargo?: string;
   }): { success: boolean; error?: string } {
     const { email, password, password2, nombre, tipoEntidad, entidad, documentoCargo } = data;
 
-    if (!email || !password || !nombre || !entidad || !documentoCargo) {
+    if (!email || !password || !nombre || !entidad || (tipoEntidad !== 'empresa' && !documentoCargo)) {
       return { success: false, error: 'Todos los campos son obligatorios.' };
     }
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {

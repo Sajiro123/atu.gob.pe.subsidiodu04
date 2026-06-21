@@ -6,7 +6,7 @@ export interface Usuario {
   email: string;
   password: string;
   nombre: string;
-  tipoEntidad: 'regional' | 'municipal';
+  tipoEntidad: 'regional' | 'municipal' | 'empresa';
   entidad: string;
   documentoCargo?: string;
   registradoEn?: string;

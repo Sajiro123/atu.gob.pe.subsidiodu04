@@ -399,7 +399,9 @@
                         <button class="btn btn-primary" id="btnEnviarATU" onclick="prepararEnvio()" disabled>
                             <i class="fas fa-paper-plane"></i> Enviar información a la ATU
                         </button>
-                        <button class="btn btn-outline" onclick="descargarErrores()"><i class="fas fa-file-download"></i> Descargar reporte errores</button>
+                        <button class="btn btn-outline" id="btnDescargarErrores" onclick="descargarErrores()" disabled>
+                            <i class="fas fa-file-download"></i> Descargar reporte errores (<span id="cntErrores">0</span>)
+                        </button>
                         <span class="text-xs text-muted" style="margin-left:auto; align-self:center;">
                             <i class="fas fa-info-circle"></i> Solo registros VIGENTE + HABILITADO son elegibles para subsidio
                         </span>
@@ -889,6 +891,23 @@ function actualizarResumen() {
     document.getElementById('totalBadge').textContent=t+' registros';
     document.getElementById('validosBadge').textContent=v+' válidos';
     document.getElementById('errorBadge').textContent=err+' errores';
+
+    // Actualizar botón de reporte de errores
+    const cnt = erroresGlobales.length;
+    const btn = document.getElementById('btnDescargarErrores');
+    if (btn) {
+        btn.disabled = cnt === 0;
+        document.getElementById('cntErrores').textContent = cnt;
+        if (cnt > 0) {
+            btn.style.backgroundColor = '#ba1a1a';
+            btn.style.color = '#ffffff';
+            btn.style.borderColor = '#ba1a1a';
+        } else {
+            btn.style.backgroundColor = '';
+            btn.style.color = '';
+            btn.style.borderColor = '';
+        }
+    }
 }
 
 function verDetalle(id) {

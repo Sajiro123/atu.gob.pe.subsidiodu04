@@ -196,48 +196,338 @@
         </div>
 
         <div class="space-y-4">
+          <!-- Tipo de Registro -->
           <div class="flex flex-col gap-baseline">
-            <label for="regEmail" class="font-label-sm text-label-sm text-on-surface-variant">Correo institucional <span
+            <label for="regTipoUsuario" class="font-label-sm text-label-sm text-on-surface-variant">Tipo de registro <span
                 class="text-error">*</span></label>
-            <div class="relative">
-              <span
-                class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline-variant">mail</span>
-              <input id="regEmail" type="email" [(ngModel)]="regEmail" placeholder="funcionario@gob.pe"
-                class="w-full border border-outline-variant rounded bg-surface-container-lowest pl-10 pr-4 py-2 text-body-md focus:border-secondary focus:ring-1 focus:ring-secondary outline-none" />
-            </div>
+            <select id="regTipoUsuario" [(ngModel)]="regTipoUsuario"
+              class="w-full border border-outline-variant rounded bg-surface-container-lowest px-3 py-2 text-body-md focus:border-secondary focus:ring-1 focus:ring-secondary outline-none">
+              <option value="municipalidad">Municipalidad / Gobierno Regional</option>
+              <option value="empresa">Empresa de Transporte</option>
+            </select>
           </div>
 
-          <div class="flex flex-col gap-baseline">
-            <label for="regNombre" class="font-label-sm text-label-sm text-on-surface-variant">Nombres y Apellidos <span
-                class="text-error">*</span></label>
-            <div class="relative">
-              <span
-                class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline-variant">badge</span>
-              <input id="regNombre" type="text" [(ngModel)]="regNombre" placeholder="Nombre completo"
-                class="w-full border border-outline-variant rounded bg-surface-container-lowest pl-10 pr-4 py-2 text-body-md focus:border-secondary focus:ring-1 focus:ring-secondary outline-none" />
+          @if (regTipoUsuario === 'municipalidad') {
+            <!-- ── GOB FORM ── -->
+            <div class="flex flex-col gap-baseline">
+              <label for="regEmail" class="font-label-sm text-label-sm text-on-surface-variant">Correo institucional <span
+                  class="text-error">*</span></label>
+              <div class="relative">
+                <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline-variant">mail</span>
+                <input id="regEmail" type="email" [(ngModel)]="regEmail" placeholder="funcionario@gob.pe"
+                  class="w-full border border-outline-variant rounded bg-surface-container-lowest pl-10 pr-4 py-2 text-body-md focus:border-secondary focus:ring-1 focus:ring-secondary outline-none" />
+              </div>
             </div>
-          </div>
 
-          <div class="flex flex-col gap-baseline">
-            <label class="font-label-sm text-label-sm text-on-surface-variant">Documento asignado al cargo <span
-                class="text-error">*</span></label>
-            <div class="flex items-center gap-stack-md flex-wrap mt-1">
-              <button type="button" (click)="fileCargo.click()"
-                class="bg-surface-container-highest border border-outline text-on-surface px-4 py-2 rounded text-body-md hover:bg-surface-variant transition-colors flex items-center gap-2">
-                <span class="material-symbols-outlined text-sm">upload_file</span>
-                Adjuntar PDF / Word
-              </button>
-              <input #fileCargo type="file" accept="application/pdf,.doc,.docx" (change)="onFileCargoChange($event)"
-                hidden />
-              <span class="text-body-md text-on-surface-variant max-w-[200px] truncate"
-                [title]="regDocumentoCargo || 'Sin archivos seleccionados'">
-                {{ regDocumentoCargo || 'Sin archivos seleccionados' }}
-              </span>
+            <div class="flex flex-col gap-baseline">
+              <label for="regNombre" class="font-label-sm text-label-sm text-on-surface-variant">Nombres y Apellidos <span
+                  class="text-error">*</span></label>
+              <div class="relative">
+                <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline-variant">badge</span>
+                <input id="regNombre" type="text" [(ngModel)]="regNombre" placeholder="Nombre completo"
+                  class="w-full border border-outline-variant rounded bg-surface-container-lowest pl-10 pr-4 py-2 text-body-md focus:border-secondary focus:ring-1 focus:ring-secondary outline-none" />
+              </div>
             </div>
-            <span class="font-label-sm text-label-sm text-outline mt-1">Formatos permitidos: PDF, Word (.doc,
-              .docx)</span>
-          </div>
 
+            <div class="flex flex-col gap-baseline">
+              <label class="font-label-sm text-label-sm text-on-surface-variant">Documento asignado al cargo <span
+                  class="text-error">*</span></label>
+              <div class="flex items-center gap-stack-md flex-wrap mt-1">
+                <button type="button" (click)="fileCargo.click()"
+                  class="bg-surface-container-highest border border-outline text-on-surface px-4 py-2 rounded text-body-md hover:bg-surface-variant transition-colors flex items-center gap-2">
+                  <span class="material-symbols-outlined text-sm">upload_file</span>
+                  Adjuntar PDF / Word
+                </button>
+                <input #fileCargo type="file" accept="application/pdf,.doc,.docx" (change)="onFileCargoChange($event)"
+                  hidden />
+                <span class="text-body-md text-on-surface-variant max-w-[200px] truncate"
+                  [title]="regDocumentoCargo || 'Sin archivos seleccionados'">
+                  {{ regDocumentoCargo || 'Sin archivos seleccionados' }}
+                </span>
+              </div>
+              <span class="font-label-sm text-label-sm text-outline mt-1">Formatos permitidos: PDF, Word (.doc, .docx)</span>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4">
+              <div class="flex flex-col gap-baseline">
+                <label for="regTipo" class="font-label-sm text-label-sm text-on-surface-variant">Tipo entidad <span
+                    class="text-error">*</span></label>
+                <select id="regTipo" [(ngModel)]="regTipoEntidad" (ngModelChange)="actualizarEntidades()"
+                  class="w-full border border-outline-variant rounded bg-surface-container-lowest px-3 py-2 text-body-md focus:border-secondary focus:ring-1 focus:ring-secondary outline-none">
+                  <option value="regional">Gobierno Regional</option>
+                  <option value="municipal">Municipalidad</option>
+                </select>
+              </div>
+              <div class="flex flex-col gap-baseline">
+                <label for="regEntidad" class="font-label-sm text-label-sm text-on-surface-variant">Entidad <span
+                    class="text-error">*</span></label>
+                <select id="regEntidad" [(ngModel)]="regEntidad"
+                  class="w-full border border-outline-variant rounded bg-surface-container-lowest px-3 py-2 text-body-md focus:border-secondary focus:ring-1 focus:ring-secondary outline-none max-w-full text-ellipsis">
+                  @for (ent of entidadesFiltradas; track ent) {
+                  <option [value]="ent">{{ ent }}</option>
+                  }
+                </select>
+              </div>
+            </div>
+          } @else {
+            <!-- ── DETAILED TRANSPORTISTA FORM ── -->
+            <div class="flex flex-col gap-3 py-2 border-t border-outline-variant/30 mt-2">
+              
+              <!-- Tipo Persona -->
+              <div class="grid grid-cols-3 gap-2 items-center">
+                <label class="col-span-1 text-xs font-semibold text-on-surface-variant text-right pr-2">Tipo Persona *</label>
+                <div class="col-span-2 relative">
+                  <select [(ngModel)]="tpTipoPersona"
+                    class="w-full border border-outline-variant rounded bg-surface-container-lowest px-3 py-2 text-sm focus:border-secondary focus:ring-1 focus:ring-secondary outline-none">
+                    <option value="">Seleccione</option>
+                    <option value="Natural">Natural</option>
+                    <option value="Jurídica">Jurídica</option>
+                  </select>
+                </div>
+              </div>
+              @if (errTipoPersona && tpTipoPersona !== undefined) {
+                <div class="grid grid-cols-3 gap-2 -mt-2">
+                  <div class="col-span-1"></div>
+                  <span class="col-span-2 text-[10px] text-error leading-none font-semibold">{{ errTipoPersona }}</span>
+                </div>
+              }
+
+              <!-- Tipo Documento -->
+              <div class="grid grid-cols-3 gap-2 items-center">
+                <label class="col-span-1 text-xs font-semibold text-on-surface-variant text-right pr-2">Tipo Doc. *</label>
+                <div class="col-span-2 relative">
+                  <select [(ngModel)]="tpTipoDocumento"
+                    class="w-full border border-outline-variant rounded bg-surface-container-lowest px-3 py-2 text-sm focus:border-secondary focus:ring-1 focus:ring-secondary outline-none">
+                    <option value="">Seleccione</option>
+                    <option value="DNI">DNI - Doc. Nacional de Identidad</option>
+                    <option value="RUC">RUC - Reg. Único de Contribuyentes</option>
+                    <option value="Pasaporte">Pasaporte</option>
+                    <option value="Carnet de Extranjería">Carnet de Extranjería</option>
+                  </select>
+                </div>
+              </div>
+              @if (errTipoDocumento && tpTipoDocumento !== undefined) {
+                <div class="grid grid-cols-3 gap-2 -mt-2">
+                  <div class="col-span-1"></div>
+                  <span class="col-span-2 text-[10px] text-error leading-none font-semibold">{{ errTipoDocumento }}</span>
+                </div>
+              }
+
+              <!-- Número Documento -->
+              <div class="grid grid-cols-3 gap-2 items-center">
+                <label class="col-span-1 text-xs font-semibold text-on-surface-variant text-right pr-2">N° Documento *</label>
+                <div class="col-span-2 relative">
+                  <input type="text" [(ngModel)]="tpNumDocumento" placeholder="Número Documento"
+                    class="w-full border border-outline-variant rounded bg-surface-container-lowest pl-3 pr-8 py-2 text-sm focus:border-secondary focus:ring-1 focus:ring-secondary outline-none" />
+                  <span class="material-symbols-outlined absolute right-2.5 top-1/2 -translate-y-1/2 text-outline-variant text-base">search</span>
+                </div>
+              </div>
+              @if (errNumDocumento && tpNumDocumento !== '') {
+                <div class="grid grid-cols-3 gap-2 -mt-2">
+                  <div class="col-span-1"></div>
+                  <span class="col-span-2 text-[10px] text-error leading-none font-semibold">{{ errNumDocumento }}</span>
+                </div>
+              }
+
+              <!-- Nombres -->
+              <div class="grid grid-cols-3 gap-2 items-center">
+                <label class="col-span-1 text-xs font-semibold text-on-surface-variant text-right pr-2">Nombres *</label>
+                <div class="col-span-2 relative">
+                  <input type="text" [(ngModel)]="tpNombres" placeholder="Nombres"
+                    class="w-full border border-outline-variant rounded bg-surface-container-lowest px-3 py-2 text-sm focus:border-secondary focus:ring-1 focus:ring-secondary outline-none" />
+                </div>
+              </div>
+              @if (errNombres && tpNombres !== '') {
+                <div class="grid grid-cols-3 gap-2 -mt-2">
+                  <div class="col-span-1"></div>
+                  <span class="col-span-2 text-[10px] text-error leading-none font-semibold">{{ errNombres }}</span>
+                </div>
+              }
+
+              <!-- Primer Apellido -->
+              <div class="grid grid-cols-3 gap-2 items-center">
+                <label class="col-span-1 text-xs font-semibold text-on-surface-variant text-right pr-2">1er Apellido *</label>
+                <div class="col-span-2 relative">
+                  <input type="text" [(ngModel)]="tpPrimerApellido" placeholder="Primer Apellido"
+                    class="w-full border border-outline-variant rounded bg-surface-container-lowest px-3 py-2 text-sm focus:border-secondary focus:ring-1 focus:ring-secondary outline-none" />
+                </div>
+              </div>
+              @if (errPrimerApellido && tpPrimerApellido !== '') {
+                <div class="grid grid-cols-3 gap-2 -mt-2">
+                  <div class="col-span-1"></div>
+                  <span class="col-span-2 text-[10px] text-error leading-none font-semibold">{{ errPrimerApellido }}</span>
+                </div>
+              }
+
+              <!-- Segundo Apellido -->
+              <div class="grid grid-cols-3 gap-2 items-center">
+                <label class="col-span-1 text-xs font-semibold text-on-surface-variant text-right pr-2">2do Apellido</label>
+                <div class="col-span-2 relative">
+                  <input type="text" [(ngModel)]="tpSegundoApellido" placeholder="Segundo Apellido"
+                    class="w-full border border-outline-variant rounded bg-surface-container-lowest px-3 py-2 text-sm focus:border-secondary focus:ring-1 focus:ring-secondary outline-none" />
+                </div>
+              </div>
+              @if (errSegundoApellido && tpSegundoApellido !== '') {
+                <div class="grid grid-cols-3 gap-2 -mt-2">
+                  <div class="col-span-1"></div>
+                  <span class="col-span-2 text-[10px] text-error leading-none font-semibold">{{ errSegundoApellido }}</span>
+                </div>
+              }
+
+              <!-- Email -->
+              <div class="grid grid-cols-3 gap-2 items-center">
+                <label class="col-span-1 text-xs font-semibold text-on-surface-variant text-right pr-2">Email *</label>
+                <div class="col-span-2 flex gap-1.5 items-center">
+                  <div class="relative flex-1">
+                    <input type="email" [(ngModel)]="tpEmail" (ngModelChange)="onEmailChange()" placeholder="ejemplo@dominio.com"
+                      class="w-full border border-outline-variant rounded bg-surface-container-lowest pl-3 pr-8 py-2 text-sm focus:border-secondary focus:ring-1 focus:ring-secondary outline-none" />
+                    @if (tpEmailVerificado && !errEmail) {
+                      <span class="material-symbols-outlined absolute right-2 top-1/2 -translate-y-1/2 text-green-600 text-base" data-weight="fill">check_circle</span>
+                    } @else if (tpEmail !== '' && errEmail) {
+                      <span class="material-symbols-outlined absolute right-2 top-1/2 -translate-y-1/2 text-error text-base" data-weight="fill">cancel</span>
+                    }
+                  </div>
+                  <button type="button" (click)="validarEmail()"
+                    class="px-2.5 py-2 rounded bg-secondary text-white hover:bg-secondary/90 transition-colors text-xs font-semibold shadow-sm flex items-center justify-center shrink-0">
+                    validar
+                  </button>
+                </div>
+              </div>
+              @if (errEmail && tpEmail !== '') {
+                <div class="grid grid-cols-3 gap-2 -mt-2">
+                  <div class="col-span-1"></div>
+                  <span class="col-span-2 text-[10px] text-error leading-none font-semibold">{{ errEmail }}</span>
+                </div>
+              }
+
+              <!-- SECCIÓN DIRECCIÓN -->
+              <fieldset class="border border-outline-variant/60 rounded-lg p-3 mt-3 flex flex-col gap-3">
+                <legend class="px-2 text-xs font-bold text-primary tracking-wide">Dirección</legend>
+
+                <!-- Departamento -->
+                <div class="grid grid-cols-3 gap-2 items-center">
+                  <label class="col-span-1 text-[11px] font-semibold text-on-surface-variant text-right pr-1">Dpto. *</label>
+                  <div class="col-span-2">
+                    <select [(ngModel)]="tpDepartamento" (ngModelChange)="onDepartamentoChange()"
+                      class="w-full border border-outline-variant rounded bg-surface-container-lowest px-2.5 py-1.5 text-xs focus:border-secondary focus:ring-1 focus:ring-secondary outline-none">
+                      <option value="">Seleccione</option>
+                      @for (dpt of departamentosList; track dpt) {
+                        <option [value]="dpt">{{ dpt }}</option>
+                      }
+                    </select>
+                  </div>
+                </div>
+                @if (errDepartamento && tpDepartamento !== '') {
+                  <div class="grid grid-cols-3 gap-2 -mt-2.5">
+                    <div class="col-span-1"></div>
+                    <span class="col-span-2 text-[9px] text-error font-semibold">{{ errDepartamento }}</span>
+                  </div>
+                }
+
+                <!-- Provincia -->
+                <div class="grid grid-cols-3 gap-2 items-center">
+                  <label class="col-span-1 text-[11px] font-semibold text-on-surface-variant text-right pr-1">Provincia *</label>
+                  <div class="col-span-2">
+                    <select [(ngModel)]="tpProvincia" (ngModelChange)="onProvinciaChange()" [disabled]="!tpDepartamento"
+                      class="w-full border border-outline-variant rounded bg-surface-container-lowest px-2.5 py-1.5 text-xs focus:border-secondary focus:ring-1 focus:ring-secondary outline-none disabled:opacity-50">
+                      <option value="">Seleccione</option>
+                      @for (prov of provinciasList; track prov) {
+                        <option [value]="prov">{{ prov }}</option>
+                      }
+                    </select>
+                  </div>
+                </div>
+                @if (errProvincia && tpProvincia !== '') {
+                  <div class="grid grid-cols-3 gap-2 -mt-2.5">
+                    <div class="col-span-1"></div>
+                    <span class="col-span-2 text-[9px] text-error font-semibold">{{ errProvincia }}</span>
+                  </div>
+                }
+
+                <!-- Distrito -->
+                <div class="grid grid-cols-3 gap-2 items-center">
+                  <label class="col-span-1 text-[11px] font-semibold text-on-surface-variant text-right pr-1">Distrito *</label>
+                  <div class="col-span-2">
+                    <select [(ngModel)]="tpDistrito" [disabled]="!tpProvincia"
+                      class="w-full border border-outline-variant rounded bg-surface-container-lowest px-2.5 py-1.5 text-xs focus:border-secondary focus:ring-1 focus:ring-secondary outline-none disabled:opacity-50">
+                      <option value="">Seleccione</option>
+                      @for (dist of distritosList; track dist) {
+                        <option [value]="dist">{{ dist }}</option>
+                      }
+                    </select>
+                  </div>
+                </div>
+                @if (errDistrito && tpDistrito !== '') {
+                  <div class="grid grid-cols-3 gap-2 -mt-2.5">
+                    <div class="col-span-1"></div>
+                    <span class="col-span-2 text-[9px] text-error font-semibold">{{ errDistrito }}</span>
+                  </div>
+                }
+
+                <!-- Vía -->
+                <div class="grid grid-cols-3 gap-2 items-center">
+                  <label class="col-span-1 text-[11px] font-semibold text-on-surface-variant text-right pr-1">Vía *</label>
+                  <div class="col-span-2">
+                    <input type="text" [(ngModel)]="tpVia" placeholder="Avenida, Jirón, Calle, ..."
+                      class="w-full border border-outline-variant rounded bg-surface-container-lowest px-2.5 py-1.5 text-xs focus:border-secondary focus:ring-1 focus:ring-secondary outline-none" />
+                  </div>
+                </div>
+                @if (errVia && tpVia !== '') {
+                  <div class="grid grid-cols-3 gap-2 -mt-2.5">
+                    <div class="col-span-1"></div>
+                    <span class="col-span-2 text-[9px] text-error font-semibold">{{ errVia }}</span>
+                  </div>
+                }
+
+                <!-- Dirección -->
+                <div class="grid grid-cols-3 gap-2 items-center">
+                  <label class="col-span-1 text-[11px] font-semibold text-on-surface-variant text-right pr-1">Dirección *</label>
+                  <div class="col-span-2">
+                    <input type="text" [(ngModel)]="tpDireccion" placeholder="Nombre de la calle/vía"
+                      class="w-full border border-outline-variant rounded bg-surface-container-lowest px-2.5 py-1.5 text-xs focus:border-secondary focus:ring-1 focus:ring-secondary outline-none" />
+                  </div>
+                </div>
+                @if (errDireccion && tpDireccion !== '') {
+                  <div class="grid grid-cols-3 gap-2 -mt-2.5">
+                    <div class="col-span-1"></div>
+                    <span class="col-span-2 text-[9px] text-error font-semibold">{{ errDireccion }}</span>
+                  </div>
+                }
+
+                <!-- Número/Mz/Lote -->
+                <div class="grid grid-cols-3 gap-2 items-center">
+                  <label class="col-span-1 text-[11px] font-semibold text-on-surface-variant text-right pr-1">N°/Mz/Lt *</label>
+                  <div class="col-span-2">
+                    <input type="text" [(ngModel)]="tpNumeroMzLt" placeholder="123 o Mz A Lt 5"
+                      class="w-full border border-outline-variant rounded bg-surface-container-lowest px-2.5 py-1.5 text-xs focus:border-secondary focus:ring-1 focus:ring-secondary outline-none" />
+                  </div>
+                </div>
+                @if (errNumeroMzLt && tpNumeroMzLt !== '') {
+                  <div class="grid grid-cols-3 gap-2 -mt-2.5">
+                    <div class="col-span-1"></div>
+                    <span class="col-span-2 text-[9px] text-error font-semibold">{{ errNumeroMzLt }}</span>
+                  </div>
+                }
+
+                <!-- Referencia -->
+                <div class="grid grid-cols-3 gap-2 items-center">
+                  <label class="col-span-1 text-[11px] font-semibold text-on-surface-variant text-right pr-1">Referencia *</label>
+                  <div class="col-span-2">
+                    <input type="text" [(ngModel)]="tpReferencia" placeholder="Referencia"
+                      class="w-full border border-outline-variant rounded bg-surface-container-lowest px-2.5 py-1.5 text-xs focus:border-secondary focus:ring-1 focus:ring-secondary outline-none" />
+                  </div>
+                </div>
+                @if (errReferencia && tpReferencia !== '') {
+                  <div class="grid grid-cols-3 gap-2 -mt-2.5">
+                    <div class="col-span-1"></div>
+                    <span class="col-span-2 text-[9px] text-error font-semibold">{{ errReferencia }}</span>
+                  </div>
+                }
+              </fieldset>
+            </div>
+          }
+
+          <!-- Compartido: Contraseñas -->
           <div class="grid grid-cols-2 gap-4">
             <div class="flex flex-col gap-baseline">
               <label for="regPassword" class="font-label-sm text-label-sm text-on-surface-variant">Contraseña <span
@@ -270,36 +560,24 @@
               </div>
             </div>
           </div>
-
-          <div class="grid grid-cols-2 gap-4">
-            <div class="flex flex-col gap-baseline">
-              <label for="regTipo" class="font-label-sm text-label-sm text-on-surface-variant">Tipo entidad <span
-                  class="text-error">*</span></label>
-              <select id="regTipo" [(ngModel)]="regTipoEntidad" (ngModelChange)="actualizarEntidades()"
-                class="w-full border border-outline-variant rounded bg-surface-container-lowest px-3 py-2 text-body-md focus:border-secondary focus:ring-1 focus:ring-secondary outline-none">
-                <option value="regional">Gobierno Regional</option>
-                <option value="municipal">Municipalidad</option>
-              </select>
-            </div>
-            <div class="flex flex-col gap-baseline">
-              <label for="regEntidad" class="font-label-sm text-label-sm text-on-surface-variant">Entidad <span
-                  class="text-error">*</span></label>
-              <select id="regEntidad" [(ngModel)]="regEntidad"
-                class="w-full border border-outline-variant rounded bg-surface-container-lowest px-3 py-2 text-body-md focus:border-secondary focus:ring-1 focus:ring-secondary outline-none max-w-full text-ellipsis">
-                @for (ent of entidadesFiltradas; track ent) {
-                <option [value]="ent">{{ ent }}</option>
-                }
-              </select>
-            </div>
-          </div>
         </div>
 
-        <button
-          class="w-full mt-6 bg-secondary text-white py-3 rounded flex items-center justify-center gap-2 hover:bg-secondary/90 transition-all font-label-md text-label-md shadow-sm"
-          (click)="onRegister()">
-          <span class="material-symbols-outlined text-sm">person_add</span>
-          <span>Crear cuenta</span>
-        </button>
+        @if (regTipoUsuario === 'municipalidad') {
+          <button
+            class="w-full mt-6 bg-secondary text-white py-3 rounded flex items-center justify-center gap-2 hover:bg-secondary/90 transition-all font-label-md text-label-md shadow-sm"
+            (click)="onRegister()">
+            <span class="material-symbols-outlined text-sm">person_add</span>
+            <span>Crear cuenta</span>
+          </button>
+        } @else {
+          <button
+            class="w-full mt-6 bg-[#0070ea] text-white py-3 rounded flex items-center justify-center gap-2 hover:bg-[#0059bb] transition-all font-label-md text-label-md shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
+            [disabled]="!isFormTransportistaValido"
+            (click)="onRegister()">
+            <span class="material-symbols-outlined text-sm">person_add</span>
+            <span>Registrar Transportista</span>
+          </button>
+        }
 
         <div class="text-center mt-6 text-sm">
           ¿Ya tiene una cuenta? <a (click)="showForm('login')"

@@ -59,7 +59,7 @@ export class CargaService {
   }
 
   // ── Validate a single record ──────────────────────────
-  validarRegistro(row: RegistroRaw, fila: number): RegistroVehicular {
+  validarRegistro(row: RegistroRaw, fila: number, seenPlates?: Set<string>): RegistroVehicular {
     const errores: string[] = [];
 
     const campos: (keyof RegistroRaw)[] = [
@@ -71,8 +71,18 @@ export class CargaService {
       if (!row[c]?.toString().trim()) errores.push(`Falta "${c}"`);
     });
 
-    if (row.placa && !/^[A-Z0-9]{4,8}$/i.test(row.placa.trim())) {
-      errores.push('Placa formato inválido');
+    if (row.placa) {
+      const placaClean = row.placa.toString().trim().toUpperCase();
+      if (!/^[A-Z0-9]{6}$/.test(placaClean)) {
+        errores.push('Placa debe tener 6 caracteres alfanuméricos sin espacios ni guiones');
+      }
+      if (seenPlates) {
+        if (seenPlates.has(placaClean)) {
+          errores.push('Placa duplicada');
+        } else {
+          seenPlates.add(placaClean);
+        }
+      }
     }
     if (row.categoria && !CATEGORIAS_VALIDAS.includes(row.categoria.toUpperCase())) {
       errores.push('Categoría debe ser M2, M3, N1, N2 o N3');
@@ -119,7 +129,10 @@ export class CargaService {
   procesarDatos(datos: RegistroRaw[]): {
     total: number; validos: number; invalidos: number;
   } {
-    const resultados = datos.map((r, i) => this.validarRegistro(r, i + 1));
+    const seenPlates = new Set<string>(
+      this.registros.map(r => r.placa.trim().toUpperCase())
+    );
+    const resultados = datos.map((r, i) => this.validarRegistro(r, i + 1, seenPlates));
     const validos   = resultados.filter(r => r.valido);
     const invalidos = resultados.filter(r => !r.valido);
 

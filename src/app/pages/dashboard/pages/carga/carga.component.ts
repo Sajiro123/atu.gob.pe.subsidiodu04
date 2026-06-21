@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { AuthService } from '../../../../core/services/auth.service';
 import { CargaService } from '../../../../core/services/carga.service';
 import { RegistroVehicular } from '../../../../core/models/models';
+import Swal from 'sweetalert2';
 
 declare const XLSX: any;  // loaded via CDN in index.html
 
@@ -20,7 +21,7 @@ export class CargaComponent implements OnInit {
   @ViewChild('dropArea') dropAreaRef!: ElementRef<HTMLDivElement>;
 
   // ── Entity selector ───────────────────────────────────
-  tipoEntidad: 'regional' | 'municipal' = 'regional';
+  tipoEntidad: 'regional' | 'municipal' | 'empresa' = 'regional';
   entidad = '';
   entidades: string[] = [];
   responsable = '';
@@ -63,6 +64,10 @@ export class CargaComponent implements OnInit {
 
   // ── Entity ────────────────────────────────────────────
   actualizarEntidades(): void {
+    if (this.tipoEntidad === 'empresa') {
+      this.entidades = [this.entidad];
+      return;
+    }
     this.entidades = this.authService.getEntidades(this.tipoEntidad);
     if (!this.entidades.includes(this.entidad)) {
       this.entidad = this.entidades[0] ?? '';
@@ -70,6 +75,7 @@ export class CargaComponent implements OnInit {
   }
 
   get chipLabel(): string {
+    if (this.tipoEntidad === 'empresa') return 'Empresa';
     const tipo = this.tipoEntidad === 'regional' ? 'GR' : 'MP';
     const parts = this.entidad.split(' ');
     return `${tipo} · ${parts.slice(-2).join(' ')}`;
@@ -152,12 +158,12 @@ export class CargaComponent implements OnInit {
         localStorage.setItem('sigt_doc_oficio', this.docNombre);
 
         setTimeout(() => {
+          this.procesando = false;
           this.router.navigate(['/dashboard/registros']);
-        }, 1200);
+        }, 1500);
       } catch (err: any) {
         this.statusCarga = 'Error al leer el archivo: ' + err.message;
         console.error(err);
-      } finally {
         this.procesando = false;
       }
     };
@@ -202,12 +208,22 @@ export class CargaComponent implements OnInit {
     const docNom = this.documentoAdjunto?.name ?? 'Sin adjunto';
     const envio  = this.cargaService.confirmarEnvio(this.entidad, this.nOficio, docNom);
     this.modalConfirmOpen = false;
-    alert(
-      `✅ Información enviada exitosamente a la ATU.\n` +
-      `N° de envío: ENV-DU004-${String(envio.id).padStart(4,'0')}\n` +
-      `Registros elegibles: ${envio.elegibles}\n` +
-      `Documento: ${docNom}`
-    );
+    Swal.fire({
+      title: '¡Envío Exitoso!',
+      html: `
+        <div class="text-left space-y-2 text-sm text-on-surface">
+          <p class="font-semibold text-green-700">La información fue enviada exitosamente a la ATU.</p>
+          <div class="mt-3 p-3 bg-surface-container-low rounded border border-outline-variant/60 font-mono text-xs">
+            <div><strong>N° de envío:</strong> ENV-DU004-${String(envio.id).padStart(4,'0')}</div>
+            <div><strong>Registros elegibles:</strong> ${envio.elegibles}</div>
+            <div><strong>Documento adjunto:</strong> ${docNom}</div>
+          </div>
+        </div>
+      `,
+      icon: 'success',
+      confirmButtonText: 'Entendido',
+      confirmButtonColor: '#0059bb'
+    });
   }
 
   // ── Download ──────────────────────────────────────────

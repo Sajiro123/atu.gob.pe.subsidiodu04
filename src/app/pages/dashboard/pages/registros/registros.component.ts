@@ -5,6 +5,7 @@ import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../../../core/services/auth.service';
 import { CargaService } from '../../../../core/services/carga.service';
 import { RegistroVehicular } from '../../../../core/models/models';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-registros',
@@ -84,19 +85,34 @@ export class RegistrosComponent implements OnInit {
     const envio = this.cargaService.confirmarEnvio(this.entidad, nOficio, sessionDoc);
     
     this.modalConfirmOpen = false;
-    alert(
-      `✅ Información enviada exitosamente a la ATU.\n` +
-      `N° de envío: ENV-DU004-${String(envio.id).padStart(4,'0')}\n` +
-      `Registros elegibles: ${envio.elegibles}\n` +
-      `Documento: ${sessionDoc}`
-    );
-    this.registros = [];
-    this.router.navigate(['/dashboard/historial']);
+    Swal.fire({
+      title: '¡Envío Exitoso!',
+      html: `
+        <div class="text-left space-y-2 text-sm text-on-surface">
+          <p class="font-semibold text-green-700">La información fue enviada exitosamente a la ATU.</p>
+          <div class="mt-3 p-3 bg-surface-container-low rounded border border-outline-variant/60 font-mono text-xs">
+            <div><strong>N° de envío:</strong> ENV-DU004-${String(envio.id).padStart(4,'0')}</div>
+            <div><strong>Registros elegibles:</strong> ${envio.elegibles}</div>
+            <div><strong>Documento adjunto:</strong> ${sessionDoc}</div>
+          </div>
+        </div>
+      `,
+      icon: 'success',
+      confirmButtonText: 'Entendido',
+      confirmButtonColor: '#0059bb'
+    }).then(() => {
+      this.registros = [];
+      this.router.navigate(['/dashboard/historial']);
+    });
   }
 
   // ── Download ──────────────────────────────────────────
   descargarErrores(): void {
     this.cargaService.descargarErroresCSV();
+  }
+
+  get totalErrores(): number {
+    return this.cargaService.getErrores().length;
   }
 
   // ── Helpers & Getters ─────────────────────────────────
