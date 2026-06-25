@@ -1,0 +1,532 @@
+<!-- ══════════════════════════════════════════════════════════ -->
+<!--  SECCIÓN: Vehículos por Empresa                            -->
+<!-- ══════════════════════════════════════════════════════════ -->
+<section data-screen-label="Vehículos por empresa" style="max-width:1400px;margin:0 auto;">
+  <a routerLink="/empresas"
+    style="display:inline-flex;align-items:center;gap:7px;background:transparent;border:none;color:var(--primary);font-size:13px;font-weight:700;cursor:pointer;padding:4px 0;margin-bottom:12px;text-decoration:none;">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"
+      stroke-linecap="round" stroke-linejoin="round">
+      <path d="M15 18l-6-6 6-6" />
+    </svg> Empresas de transporte
+  </a>
+
+  <div
+    class="bg-[var(--surface)] border border-[var(--border)] rounded-[14px] p-[14px] sm:p-[18px] mb-[18px] flex flex-col sm:flex-row flex-wrap gap-[14px] sm:gap-[18px] items-start sm:items-center justify-between shadow-[var(--shadow)]">
+    <div class="min-w-0 w-full sm:w-auto">
+      <div class="flex items-center gap-[10px] flex-wrap">
+        <h1 class="text-[16px] sm:text-[21px] font-[800] m-0 text-[var(--text)]">{{ selEmp.razon }}</h1>
+        <span class="text-[11.5px] font-[700] py-[3px] px-[10px] rounded-full" [style.background]="selEmp.badgeBg"
+          [style.color]="selEmp.badgeFg">{{ selEmp.estadoText }}</span>
+      </div>
+      <div class="flex gap-[14px] flex-wrap mt-[8px] text-[12.5px] text-[var(--text-3)]">
+        <span>RUC <b class="font-mono text-[var(--text-2)] text-[13px] font-bold">{{ selEmp.ruc }}</b></span>
+        <span>{{ selEmp.tipoLabel }}</span>
+        <span class="whitespace-nowrap overflow-hidden text-ellipsis">{{ selEmp.acto }}</span>
+      </div>
+    </div>
+    <div class="grid grid-cols-3 gap-[8px] sm:flex sm:gap-[10px] w-full sm:w-auto">
+      <div class="text-center py-[8px] px-[16px] rounded-[11px] bg-[var(--surface-2)] border border-[var(--border)]">
+        <div class="text-[22px] font-[800] leading-none">{{ selEmp.vTotal }}</div>
+        <div class="text-[11px] mt-[2px] text-[var(--text-3)]">Total</div>
+      </div>
+      <div class="text-center py-[8px] px-[16px] rounded-[11px] bg-[var(--ok-bg)]">
+        <div class="text-[22px] font-[800] leading-none text-[var(--ok)]">{{ selEmp.vVig }}</div>
+        <div class="text-[11px] mt-[2px] text-[var(--ok)]">Vigentes</div>
+      </div>
+      <div class="text-center py-[8px] px-[16px] rounded-[11px] bg-[var(--bad-bg)]">
+        <div class="text-[22px] font-[800] leading-none text-[var(--bad)]">{{ selEmp.vVenc }}</div>
+        <div class="text-[11px] mt-[2px] text-[var(--bad)]">Vencidas</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="flex flex-wrap items-center justify-between gap-[12px] mb-[16px]">
+    <h2 class="text-[16px] font-[800] m-0 text-[var(--text)]">Flota Vehicular</h2>
+    <div class="flex gap-[10px] flex-wrap w-full sm:w-auto">
+      <button (click)="openUploadVeh()"
+        class="inline-flex items-center justify-center gap-[8px] rounded-[10px] py-[9px] px-[13px] text-[13px] font-[600] cursor-pointer bg-[var(--surface)] text-[var(--text-2)] border border-[var(--border)] flex-1 sm:flex-none">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12" />
+        </svg> Carga masiva
+      </button>
+      <button (click)="exportAction()"
+        class="inline-flex items-center justify-center gap-[8px] rounded-[10px] py-[9px] px-[13px] text-[13px] font-[600] cursor-pointer bg-[var(--surface)] text-[var(--text-2)] border border-[var(--border)] flex-1 sm:flex-none">Exportar</button>
+      <button (click)="addAction()"
+        class="inline-flex items-center justify-center gap-[8px] rounded-[10px] py-[9px] px-[15px] text-[13px] font-[700] cursor-pointer bg-[var(--surface)] text-[var(--text-2)] border border-[var(--border)] w-full sm:w-auto">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"
+          stroke-linecap="round">
+          <path d="M12 5v14M5 12h14" />
+        </svg> Agregar vehículo
+      </button>
+    </div>
+  </div>
+
+  <!-- toolbar -->
+  <div class="flex flex-col gap-[12px] mb-[16px]">
+    <!-- Autocomplete para buscar empresas (ocupa toda la fila) -->
+    <div class="w-full">
+      <p-autocomplete [(ngModel)]="selectedItem" [virtualScroll]="true" [suggestions]="filteredItems"
+        [virtualScrollItemSize]="34" (completeMethod)="filterItems($event)" optionLabel="label" [dropdown]="true"
+        (onSelect)="onEmpresaSelect($event)" placeholder="Buscar Empresa..." styleClass="w-full"
+        inputStyleClass="w-full !bg-white !text-black !border-[var(--border-strong)] rounded-[10px] py-[11px] px-[12px] text-[14px]"
+        panelStyleClass="!bg-white !text-black" />
+    </div>
+
+    <!-- Resto de filtros en la siguiente fila -->
+    <div class="flex flex-wrap gap-[10px] items-center">
+      <div class="relative flex-1 min-w-0 w-full sm:max-w-[400px]">
+        <span class="absolute left-[12px] top-1/2 -translate-y-1/2 text-[var(--text-3)] flex">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="11" cy="11" r="7" />
+            <path d="M21 21l-4.3-4.3" />
+          </svg>
+        </span>
+        <input type="text" [(ngModel)]="vehFilters.q" placeholder="Buscar por placa o TUC…"
+          class="w-full bg-[var(--surface)] border border-[var(--border)] rounded-[10px] py-[11px] pr-[12px] pl-[38px] text-[14px] text-[var(--text)] outline-none">
+      </div>
+      <select [(ngModel)]="vehFilters.cat"
+        class="bg-[var(--surface)] border border-[var(--border)] rounded-[10px] py-[11px] px-[12px] text-[13.5px] text-[var(--text)] cursor-pointer font-[600] outline-none">
+        @for (o of catOpts; track o.value) {<option [value]="o.value">{{ o.label }}</option>}
+      </select>
+      <select [(ngModel)]="vehFilters.estado"
+        class="bg-[var(--surface)] border border-[var(--border)] rounded-[10px] py-[11px] px-[12px] text-[13.5px] text-[var(--text)] cursor-pointer font-[600] outline-none">
+        @for (o of estadoVehOpts; track o.value) {<option [value]="o.value">{{ o.label }}</option>}
+      </select>
+      <div class="flex bg-[var(--surface-2)] rounded-[10px] p-[4px] border border-[var(--border)]">
+        <button (click)="setVehGrid()" title="Grilla"
+          class="border-none rounded-[8px] p-[6px] cursor-pointer text-[var(--text-2)] transition-all duration-200"
+          [class.bg-[var(--surface)]]="vehShowTable" [class.shadow-[0_2px_4px_rgba(0,0,0,0.1)]]="vehShowTable"
+          [class.bg-transparent]="!vehShowTable" [class.shadow-none]="!vehShowTable">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="3" width="7" height="7" rx="1" />
+            <rect x="14" y="3" width="7" height="7" rx="1" />
+            <rect x="3" y="14" width="7" height="7" rx="1" />
+            <rect x="14" y="14" width="7" height="7" rx="1" />
+          </svg>
+        </button>
+        <button (click)="setVehList()" title="Listado"
+          class="border-none rounded-[8px] p-[6px] cursor-pointer text-[var(--text-2)] transition-all duration-200"
+          [class.bg-[var(--surface)]]="!vehShowTable" [class.shadow-[0_2px_4px_rgba(0,0,0,0.1)]]="!vehShowTable"
+          [class.bg-transparent]="vehShowTable" [class.shadow-none]="vehShowTable">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round">
+            <path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01" />
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  @if (vehShowTable) {
+  <div class="atu-card">
+    <div class="atu-table-scroll">
+      <p-table #dt [value]="vehiculos" [paginator]="true" [rows]="10" [rowsPerPageOptions]="[5, 10, 20]"
+        styleClass="p-datatable-sm" [tableStyle]="{ 'min-width': '900px' }" [scrollable]="true"
+        currentPageReportTemplate="Mostrando {first}–{last} de {totalRecords} registros" [showCurrentPageReport]="true"
+        paginatorDropdownAppendTo="body">
+        <ng-template pTemplate="header">
+          <tr>
+            <th pSortableColumn="placa" class="th-col" style="min-width:130px">
+              Placa <p-sortIcon field="placa"></p-sortIcon>
+            </th>
+            <th pSortableColumn="cat" class="th-col" style="min-width:180px">
+              Categoría <p-sortIcon field="cat"></p-sortIcon>
+            </th>
+            <th pSortableColumn="tuc" class="th-col" style="min-width:160px">
+              N° TUC <p-sortIcon field="tuc"></p-sortIcon>
+            </th>
+            <th class="th-col" style="min-width:140px">
+              Vigencia TUC
+            </th>
+            <th pSortableColumn="estadoText" class="th-col" style="min-width:140px">
+              Estado <p-sortIcon field="estadoText"></p-sortIcon>
+            </th>
+            <th class="th-col" style="width:50px; text-align:center"></th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-v>
+          <tr>
+            <td>
+              <div class="placa-code"><svg style="vertical-align:middle;margin-right:4px;opacity:0.5" width="16"
+                  height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round">
+                  <path
+                    d="M14 16H9m10 0h3v-3.15a1 1 0 0 0-.84-.99L16 11l-2.7-3.6a2 2 0 0 0-1.6-.8H9a2 2 0 0 0-2 2v2L3 13.4V16h3m10 0a2 2 0 1 1-4 0m4 0a2 2 0 1 0-4 0m-6 0a2 2 0 1 1-4 0m4 0a2 2 0 1 0-4 0" />
+                </svg>{{ v.placa }}</div>
+            </td>
+            <td>
+              <div style="display:flex;align-items:center;gap:6px">
+                <span class="cat-badge">{{ v.cat }}</span>
+                <span style="font-weight:600;color:var(--text-2)">{{ v.catLabel }}</span>
+              </div>
+            </td>
+            <td>
+              <div class="tuc-code">{{ v.tuc }}</div>
+            </td>
+            <td>
+              <div class="date-chip">{{ v.iniF }} – {{ v.finF }}</div>
+              @if(v.porVencer){<div style="font-size:10px;font-weight:700;color:var(--warn);margin-top:4px">⚠️ {{
+                v.venceTxt }}</div>}
+            </td>
+            <td><span class="estado-badge" [style.background]="v.badgeBg" [style.color]="v.badgeFg">{{ v.estadoText
+                }}</span>
+            </td>
+            <td style="text-align:center;">
+              <div class="flex items-center justify-center">
+                <button (click)="op.toggle($event)" title="Opciones"
+                  class="bg-transparent border-none cursor-pointer text-gray-500 dark:text-gray-400 p-[6px] rounded-[8px] hover:bg-gray-100 dark:hover:bg-[#30363D] transition-colors">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="1.5" />
+                    <circle cx="12" cy="5" r="1.5" />
+                    <circle cx="12" cy="19" r="1.5" />
+                  </svg>
+                </button>
+
+                <p-overlayPanel #op [showCloseIcon]="false" appendTo="body" styleClass="actions-overlay-panel">
+                  <div class="w-36 flex flex-col py-1" (click)="op.hide()">
+                    <button (click)="editAction(v)"
+                      class="w-full text-left px-4 py-2.5 text-[13px] font-[600] text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-[#2D333B] transition-colors flex items-center gap-2.5 border-none bg-transparent cursor-pointer">
+                      <i class="fa-solid fa-pen text-[#0059B3] dark:text-[#00A3E0] w-[14px] text-center"></i> Editar
+                    </button>
+                    <button (click)="deleteAction(v)"
+                      class="w-full text-left px-4 py-2.5 text-[13px] font-[600] text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-[rgba(239,68,68,0.1)] transition-colors flex items-center gap-2.5 border-none bg-transparent cursor-pointer">
+                      <i class="fa-solid fa-trash text-red-600 dark:text-red-400 w-[14px] text-center"></i> Eliminar
+                    </button>
+                  </div>
+                </p-overlayPanel>
+              </div>
+            </td>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+          <tr>
+            <td colspan="7">
+              <div class="empty-state">
+                <div class="empty-state__icon-wrap">
+                  <span style="font-size:24px; opacity:0.6">🚍</span>
+                </div>
+                <p class="empty-state__title">Sin resultados</p>
+                <p class="empty-state__desc">No hay vehículos registrados para los filtros aplicados.</p>
+              </div>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+  </div>
+  }
+
+  @if (!vehShowTable) {
+  <div class="grid grid-cols-[repeat(auto-fill,minmax(280px,1fr))] gap-[14px]">
+    @for (v of vehiculos; track v.placa) {
+    <div class="bg-[var(--surface)] border border-[var(--border)] rounded-[14px] shadow-[var(--shadow)] p-[18px]">
+      <div class="flex items-center justify-between gap-[10px] mb-[14px]">
+        <div class="placa-code text-[18px]">
+          <svg class="inline-block align-middle mr-[6px] opacity-50" width="20" height="20" viewBox="0 0 24 24"
+            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path
+              d="M14 16H9m10 0h3v-3.15a1 1 0 0 0-.84-.99L16 11l-2.7-3.6a2 2 0 0 0-1.6-.8H9a2 2 0 0 0-2 2v2L3 13.4V16h3m10 0a2 2 0 1 1-4 0m4 0a2 2 0 1 0-4 0m-6 0a2 2 0 1 1-4 0m4 0a2 2 0 1 0-4 0" />
+          </svg>{{ v.placa }}
+        </div>
+        <div class="flex items-center gap-[6px]">
+          <span [style.background]="v.badgeBg" [style.color]="v.badgeFg"
+            class="text-[11.5px] font-[700] py-[3px] px-[10px] rounded-full">{{ v.estadoText }}</span>
+
+          <div class="relative inline-block text-left">
+            <button (click)="opMobile.toggle($event)" title="Opciones"
+              class="bg-transparent border-none cursor-pointer text-gray-500 dark:text-gray-400 p-[4px] rounded-[8px] hover:bg-gray-100 dark:hover:bg-[#30363D] transition-colors">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="1.5" />
+                <circle cx="12" cy="5" r="1.5" />
+                <circle cx="12" cy="19" r="1.5" />
+              </svg>
+            </button>
+
+            <p-overlayPanel #opMobile [showCloseIcon]="false" appendTo="body" styleClass="actions-overlay-panel">
+              <div class="w-36 flex flex-col py-1" (click)="opMobile.hide()">
+                <button (click)="editAction(v)"
+                  class="w-full text-left px-4 py-2.5 text-[13px] font-[600] text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-[#2D333B] transition-colors flex items-center gap-2.5 border-none bg-transparent cursor-pointer">
+                  <i class="fa-solid fa-pen text-[#0059B3] dark:text-[#00A3E0] w-[14px] text-center"></i> Editar
+                </button>
+                <button (click)="deleteAction(v)"
+                  class="w-full text-left px-4 py-2.5 text-[13px] font-[600] text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-[rgba(239,68,68,0.1)] transition-colors flex items-center gap-2.5 border-none bg-transparent cursor-pointer">
+                  <i class="fa-solid fa-trash text-red-600 dark:text-red-400 w-[14px] text-center"></i> Eliminar
+                </button>
+              </div>
+            </p-overlayPanel>
+          </div>
+        </div>
+      </div>
+      <div class="grid grid-cols-2 gap-[12px] text-[12.5px]">
+        <div>
+          <div class="text-[var(--text-3)] text-[11px] mb-[2px]">Categoría</div>
+          <div class="flex items-center gap-[4px]">
+            <span class="cat-badge">{{ v.cat }}</span>
+            <span class="text-[11px] text-[var(--text-3)] font-[600]">{{ v.catLabel }}</span>
+          </div>
+        </div>
+        <div>
+          <div class="text-[var(--text-3)] text-[11px] mb-[2px]">N° TUC</div>
+          <div class="tuc-code">{{ v.tuc }}</div>
+        </div>
+        <div class="col-span-full">
+          <div class="text-[var(--text-3)] text-[11px] mb-[2px]">Vigencia</div>
+          <div class="date-chip">{{ v.iniF }} – {{ v.finF }}</div>
+        </div>
+      </div>
+      @if(v.porVencer){
+      <div
+        class="text-[11.5px] font-[700] text-[var(--warn)] bg-[var(--warn-bg)] py-[6px] px-[12px] rounded-[8px] mt-[14px] border border-[rgba(180,83,9,0.2)]">
+        ⚠️ {{ v.venceTxt }}</div>
+      }
+    </div>
+    }
+  </div>
+  }
+
+  @if (vehiculos.length === 0) {
+  <div
+    class="text-center py-[80px] px-[20px] text-[var(--text-3)] bg-[var(--surface)] border border-dashed border-[var(--border)] rounded-[14px] mt-[20px]">
+    <div class="text-[38px] mb-[12px] opacity-50">🚍</div>
+    <div class="font-[700] text-[var(--text-2)] text-[15px]">Sin vehículos registrados</div>
+    <div class="text-[13px] mt-[4px]">No hay registros para los filtros aplicados</div>
+  </div>
+  }
+</section>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!--  MODAL: Agregar vehículo                               -->
+<!-- ═══════════════════════════════════════════════════════ -->
+@if (showAddModal) {
+<div
+  style="position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;padding:16px;background:rgba(8,16,24,0.55);backdrop-filter:blur(4px)"
+  (click)="closeAddModal()">
+
+  <div class="atu-modal" style="max-width:480px;animation:atu-modal-in 0.22s cubic-bezier(0.34,1.56,0.64,1)"
+    (click)="$event.stopPropagation()">
+
+    <!-- Header -->
+    <div class="atu-modal__header">
+      <div style="flex:1;min-width:0">
+        <h3 class="atu-modal__title">Agregar vehículo</h3>
+        <p class="atu-modal__subtitle" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ selEmp.razon
+          }}</p>
+      </div>
+      <button class="atu-modal__close" (click)="closeAddModal()" title="Cerrar">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"
+          stroke-linecap="round">
+          <path d="M18 6 6 18M6 6l12 12" />
+        </svg>
+      </button>
+    </div>
+
+    <!-- Body -->
+    <div class="atu-modal__body" style="gap:18px">
+
+      <!-- Placa -->
+      <div class="atu-field">
+        <label class="atu-field__label" for="add-placa">Placa <span style="color:#EF4444">*</span></label>
+        <input id="add-placa" type="text" [(ngModel)]="addForm.placa" placeholder="Ej. F1B-123" class="atu-field__input"
+          maxlength="10" [style.border-color]="addErrors['placa'] ? '#EF4444' : ''"
+          (input)="addForm.placa = addForm.placa.toUpperCase()" />
+        @if (addErrors['placa']) {
+        <span style="font-size:11.5px;color:#EF4444;font-weight:600">{{ addErrors['placa'] }}</span>
+        }
+      </div>
+
+      <!-- Categoría -->
+      <div class="atu-field">
+        <label class="atu-field__label" for="add-cat">Categoría <span style="color:#EF4444">*</span></label>
+        <select id="add-cat" [(ngModel)]="addForm.cat" class="atu-field__select"
+          [style.border-color]="addErrors['cat'] ? '#EF4444' : ''" (change)="onCatChange()">
+          <option value="">Seleccione una categoría</option>
+          <option value="M2">M2 – Microbús</option>
+          <option value="M3">M3 – Ómnibus</option>
+          <option value="N1">N1 – Carga</option>
+        </select>
+        @if (addErrors['cat']) {
+        <span style="font-size:11.5px;color:#EF4444;font-weight:600">{{ addErrors['cat'] }}</span>
+        }
+      </div>
+
+      <!-- N° TUC -->
+      <div class="atu-field">
+        <label class="atu-field__label" for="add-tuc">N° TUC <span style="color:#EF4444">*</span></label>
+        <input id="add-tuc" type="text" [(ngModel)]="addForm.tuc" placeholder="Ej. TUC-20261234"
+          class="atu-field__input" [style.border-color]="addErrors['tuc'] ? '#EF4444' : ''" />
+        @if (addErrors['tuc']) {
+        <span style="font-size:11.5px;color:#EF4444;font-weight:600">{{ addErrors['tuc'] }}</span>
+        }
+      </div>
+
+      <!-- Vigencia TUC -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+        <div class="atu-field">
+          <label class="atu-field__label" for="add-ini">Inicio vigencia <span style="color:#EF4444">*</span></label>
+          <input id="add-ini" type="date" [(ngModel)]="addForm.iniF" class="atu-field__input"
+            [style.border-color]="addErrors['iniF'] ? '#EF4444' : ''" />
+          @if (addErrors['iniF']) {
+          <span style="font-size:11.5px;color:#EF4444;font-weight:600">{{ addErrors['iniF'] }}</span>
+          }
+        </div>
+        <div class="atu-field">
+          <label class="atu-field__label" for="add-fin">Fin vigencia <span style="color:#EF4444">*</span></label>
+          <input id="add-fin" type="date" [(ngModel)]="addForm.finF" class="atu-field__input"
+            [style.border-color]="addErrors['finF'] ? '#EF4444' : ''" />
+          @if (addErrors['finF']) {
+          <span style="font-size:11.5px;color:#EF4444;font-weight:600">{{ addErrors['finF'] }}</span>
+          }
+        </div>
+      </div>
+
+      <!-- Estado -->
+      <div class="atu-field">
+        <label class="atu-field__label" for="add-estado">Estado <span style="color:#EF4444">*</span></label>
+        <select id="add-estado" [(ngModel)]="addForm.estado" class="atu-field__select"
+          [style.border-color]="addErrors['estado'] ? '#EF4444' : ''">
+          <option value="">Seleccione un estado</option>
+          <option value="VIGENTE">Vigente</option>
+          <option value="SUSPENDIDO">Suspendido</option>
+          <option value="VENCIDO">Vencido</option>
+        </select>
+        @if (addErrors['estado']) {
+        <span style="font-size:11.5px;color:#EF4444;font-weight:600">{{ addErrors['estado'] }}</span>
+        }
+      </div>
+
+    </div>
+
+    <!-- Footer -->
+    <div class="atu-modal__footer" style="padding:16px 24px 20px">
+      <button class="atu-btn-secondary" (click)="closeAddModal()">Cancelar</button>
+      <button class="atu-btn-primary" (click)="saveVehiculo()">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+          stroke-linecap="round">
+          <path d="M12 5v14M5 12h14" />
+        </svg>
+        Agregar vehículo
+      </button>
+    </div>
+
+  </div>
+</div>
+}
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!--  MODAL: Editar vehículo                                -->
+<!-- ═══════════════════════════════════════════════════════ -->
+@if (showEditModal) {
+<div
+  style="position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;padding:16px;background:rgba(8,16,24,0.55);backdrop-filter:blur(4px)"
+  (click)="closeEditModal()">
+
+  <div class="atu-modal" style="max-width:480px;animation:atu-modal-in 0.22s cubic-bezier(0.34,1.56,0.64,1)"
+    (click)="$event.stopPropagation()">
+
+    <!-- Header -->
+    <div class="atu-modal__header">
+      <div class="atu-modal__header-icon" style="color: var(--primary); background: var(--primary-subtle)">
+        <i class="fa-solid fa-pen-to-square text-[18px]"></i>
+      </div>
+      <div style="flex:1;min-width:0">
+        <h3 class="atu-modal__title">Editar vehículo</h3>
+        <p class="atu-modal__subtitle" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ selEmp.razon
+          }}</p>
+      </div>
+      <button class="atu-modal__close" (click)="closeEditModal()" title="Cerrar">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"
+          stroke-linecap="round">
+          <path d="M18 6 6 18M6 6l12 12" />
+        </svg>
+      </button>
+    </div>
+
+    <!-- Body -->
+    <div class="atu-modal__body" style="gap:18px">
+
+      <!-- Placa -->
+      <div class="atu-field">
+        <label class="atu-field__label" for="edit-placa">Placa <span style="color:#EF4444">*</span></label>
+        <input id="edit-placa" type="text" [(ngModel)]="editForm.placa" placeholder="Ej. F1B-123"
+          class="atu-field__input" maxlength="10" [style.border-color]="editErrors['placa'] ? '#EF4444' : ''"
+          (input)="editForm.placa = editForm.placa.toUpperCase()" />
+        @if (editErrors['placa']) {
+        <span style="font-size:11.5px;color:#EF4444;font-weight:600">{{ editErrors['placa'] }}</span>
+        }
+      </div>
+
+      <!-- Categoría -->
+      <div class="atu-field">
+        <label class="atu-field__label" for="edit-cat">Categoría <span style="color:#EF4444">*</span></label>
+        <select id="edit-cat" [(ngModel)]="editForm.cat" class="atu-field__select"
+          [style.border-color]="editErrors['cat'] ? '#EF4444' : ''">
+          <option value="">Seleccione una categoría</option>
+          <option value="M2">M2 – Microbús</option>
+          <option value="M3">M3 – Ómnibus</option>
+          <option value="N1">N1 – Carga</option>
+        </select>
+        @if (editErrors['cat']) {
+        <span style="font-size:11.5px;color:#EF4444;font-weight:600">{{ editErrors['cat'] }}</span>
+        }
+      </div>
+
+      <!-- N° TUC -->
+      <div class="atu-field">
+        <label class="atu-field__label" for="edit-tuc">N° TUC <span style="color:#EF4444">*</span></label>
+        <input id="edit-tuc" type="text" [(ngModel)]="editForm.tuc" placeholder="Ej. TUC-20261234"
+          class="atu-field__input" [style.border-color]="editErrors['tuc'] ? '#EF4444' : ''" />
+        @if (editErrors['tuc']) {
+        <span style="font-size:11.5px;color:#EF4444;font-weight:600">{{ editErrors['tuc'] }}</span>
+        }
+      </div>
+
+      <!-- Vigencia TUC -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+        <div class="atu-field">
+          <label class="atu-field__label" for="edit-ini">Inicio vigencia <span style="color:#EF4444">*</span></label>
+          <input id="edit-ini" type="date" [(ngModel)]="editForm.iniF" class="atu-field__input"
+            [style.border-color]="editErrors['iniF'] ? '#EF4444' : ''" />
+          @if (editErrors['iniF']) {
+          <span style="font-size:11.5px;color:#EF4444;font-weight:600">{{ editErrors['iniF'] }}</span>
+          }
+        </div>
+        <div class="atu-field">
+          <label class="atu-field__label" for="edit-fin">Fin vigencia <span style="color:#EF4444">*</span></label>
+          <input id="edit-fin" type="date" [(ngModel)]="editForm.finF" class="atu-field__input"
+            [style.border-color]="editErrors['finF'] ? '#EF4444' : ''" />
+          @if (editErrors['finF']) {
+          <span style="font-size:11.5px;color:#EF4444;font-weight:600">{{ editErrors['finF'] }}</span>
+          }
+        </div>
+      </div>
+
+      <!-- Estado -->
+      <div class="atu-field">
+        <label class="atu-field__label" for="edit-estado">Estado <span style="color:#EF4444">*</span></label>
+        <select id="edit-estado" [(ngModel)]="editForm.estado" class="atu-field__select"
+          [style.border-color]="editErrors['estado'] ? '#EF4444' : ''">
+          <option value="">Seleccione un estado</option>
+          <option value="VIGENTE">Vigente</option>
+          <option value="SUSPENDIDO">Suspendido</option>
+          <option value="VENCIDO">Vencido</option>
+        </select>
+        @if (editErrors['estado']) {
+        <span style="font-size:11.5px;color:#EF4444;font-weight:600">{{ editErrors['estado'] }}</span>
+        }
+      </div>
+
+    </div>
+
+    <!-- Footer -->
+    <div class="atu-modal__footer" style="padding:16px 24px 20px">
+      <button class="atu-btn-secondary" (click)="closeEditModal()">Cancelar</button>
+      <button class="atu-btn-primary" (click)="updateVehiculo()">
+        <i class="fa-solid fa-check mr-1"></i>
+        Guardar cambios
+      </button>
+    </div>
+
+  </div>
+</div>
+}

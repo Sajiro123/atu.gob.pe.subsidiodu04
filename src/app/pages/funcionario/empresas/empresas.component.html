@@ -1,0 +1,643 @@
+<div class="flex flex-wrap items-end justify-between gap-[16px] mb-[20px]">
+    <div
+        class="bg-[var(--surface)] border border-[var(--border)] rounded-[14px] p-[14px] sm:p-[18px] mb-[18px] flex flex-wrap gap-[12px] sm:gap-[18px] items-center justify-between shadow-[var(--shadow)]">
+        <h1 class="text-[18px] sm:text-[24px] font-[800] text-[var(--text)] m-0 leading-[1.2]">Empresas de transporte
+        </h1>
+        <br />
+        <div class="w-full">
+            <div class="text-[11.5px] font-[700] tracking-[1px] text-[var(--primary)] uppercase mb-[4px]">Padrón</div>
+            <p class="text-[13px] text-[var(--text-3)] mt-[5px] mb-0">{{ empresas.length }} registros · {{
+                usuario?.entidad
+                ?? '—' }}</p>
+        </div>
+    </div>
+    <div class="flex gap-[10px] flex-wrap items-center w-full sm:w-auto">
+        <button
+            class="inline-flex items-center justify-center gap-[8px] rounded-[10px] py-[9px] px-[13px] text-[13px] font-[600] cursor-pointer bg-[var(--ok)] text-white border-none hover:opacity-95 transition-opacity w-full sm:w-auto"
+            (click)="openBulk()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12" />
+            </svg>
+            Carga masiva
+        </button>
+        <button
+            class="inline-flex items-center justify-center gap-[8px] rounded-[10px] py-[9px] px-[15px] text-[13px] font-[700] cursor-pointer bg-[var(--primary)] text-white border-none hover:opacity-95 transition-opacity w-full sm:w-auto"
+            (click)="abrirModal()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"
+                stroke-linecap="round">
+                <path d="M12 5v14M5 12h14" />
+            </svg>
+            Agregar empresa
+        </button>
+    </div>
+</div>
+
+<!-- ─ Buscador ───────────────────────────────────────────────── -->
+<div class="flex flex-wrap gap-[10px] items-center mb-[16px]">
+    <div class="relative flex-1 min-w-0 max-w-[520px]">
+        <span class="absolute left-[12px] top-1/2 -translate-y-1/2 text-[var(--text-3)] flex">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="11" cy="11" r="7" />
+                <path d="M21 21l-4.3-4.3" />
+            </svg>
+        </span>
+        <input type="text" [(ngModel)]="filtroGlobal" (input)="dt.filterGlobal(filtroGlobal, 'contains')"
+            placeholder="Buscar por razón social, placa o RUC…"
+            class="w-full bg-[var(--surface)] border border-[var(--border)] rounded-[10px] py-[11px] pr-[12px] pl-[38px] text-[14px] text-[var(--text)] outline-none focus:border-[var(--primary)] transition-all">
+    </div>
+</div>
+
+<!-- ─ Panel de tabla ─────────────────────────────────────────── -->
+<div class="atu-card">
+    <div class="atu-table-scroll">
+        <p-table #dt [value]="empresas" [paginator]="true" [rows]="5" [rowsPerPageOptions]="[5, 10, 20]"
+            [loading]="loading" [globalFilterFields]="['placa', 'ruc', 'razonSocial', 'tuc', 'categoria']"
+            styleClass="p-datatable-sm" [tableStyle]="{ 'min-width': '1600px' }" [scrollable]="true"
+            currentPageReportTemplate="Mostrando {first}–{last} de {totalRecords} registros"
+            [showCurrentPageReport]="true" paginatorDropdownAppendTo="body">
+
+            <!-- ═ CABECERAS ════════════════════════════════════ -->
+            <ng-template pTemplate="header">
+                <!-- Fila 1: grupos -->
+                <tr>
+                    <th colspan="2" class="th-col">Datos del Vehículo</th>
+                    <th colspan="4" class="th-col th-col--tuc">TUC – Tarjeta Única de Circulación</th>
+                    <th colspan="4" class="th-col th-col--transport">Datos del Transportista</th>
+                    <th colspan="5" class="th-col th-col--aut">Autorización</th>
+                    <th colspan="1" class="th-col th-col" style="text-align:center;">Acciones</th>
+                </tr>
+                <!-- Fila 2: columnas -->
+                <tr>
+                    <th pSortableColumn="placa" class="th-col th-col--vehiculo" style="min-width:110px">
+                        Placa <p-sortIcon field="placa"></p-sortIcon>
+                    </th>
+                    <th pSortableColumn="categoria" class="th-col th-col--vehiculo-last" style="min-width:90px">
+                        Categoría <p-sortIcon field="categoria"></p-sortIcon>
+                    </th>
+                    <th class="th-col th-col--tuc" style="min-width:140px">N° TUC</th>
+                    <th class="th-col th-col--tuc" style="min-width:110px">F. Inicio Vig.</th>
+                    <th class="th-col th-col--tuc" style="min-width:110px">F. Fin Vig.</th>
+                    <th class="th-col th-col--tuc-last" style="min-width:100px">Estado TUC</th>
+                    <th pSortableColumn="razonSocial" class="th-col th-col--transport" style="min-width:300px">
+                        Razón Social <p-sortIcon field="razonSocial"></p-sortIcon>
+                    </th>
+                    <th pSortableColumn="ruc" class="th-col th-col--transport" style="min-width:110px">
+                        RUC <p-sortIcon field="ruc"></p-sortIcon>
+                    </th>
+                    <th class="th-col th-col--transport" style="min-width:130px">Partida Registral</th>
+                    <th class="th-col th-col--transport-last" style="min-width:90px">Vehículos</th>
+                    <th class="th-col th-col--aut" style="min-width:250px">Tipo de Servicio</th>
+                    <th class="th-col th-col--aut" style="min-width:130px">Acto Administrativo</th>
+                    <th class="th-col th-col--aut" style="min-width:110px">F. Inicio Aut.</th>
+                    <th class="th-col th-col--aut" style="min-width:110px">F. Fin Aut.</th>
+                    <th class="th-col th-col--aut" style="min-width:100px">Estado</th>
+                    <th class="th-col" style="width:60px; text-align:center;" alignFrozen="right" pFrozenColumn></th>
+                </tr>
+            </ng-template>
+
+            <!-- ═ CUERPO ═══════════════════════════════════════ -->
+            <ng-template pTemplate="body" let-emp>
+                <tr style="cursor: pointer;" title="Doble clic para ver flota vehicular">
+                    <td>
+                        <span class="placa-code">
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="1" y="3" width="15" height="13" rx="2" />
+                                <path d="M16 8h4l3 5v4h-7V8z" />
+                                <circle cx="5.5" cy="18.5" r="2.5" />
+                                <circle cx="18.5" cy="18.5" r="2.5" />
+                            </svg>
+                            {{ emp.placa }}
+                        </span>
+                    </td>
+                    <td><span class="cat-badge">{{ emp.categoria }}</span></td>
+                    <td><span class="tuc-code">{{ emp.tuc }}</span></td>
+                    <td><span class="date-chip">{{ emp.fechaInicioTuc }}</span></td>
+                    <td><span class="date-chip">{{ emp.fechaFinTuc }}</span></td>
+                    <td>
+                        <span [class]="emp.estadoTuc === 'VIGENTE'    ? 'status-active'    :
+                                       emp.estadoTuc === 'SUSPENDIDO' ? 'status-suspended' :
+                                       'status-inactive'">
+                            {{ emp.estadoTuc }}
+                        </span>
+                    </td>
+                    <td><span class="razon-social">{{ emp.razonSocial }}</span></td>
+                    <td><span class="ruc-code">{{ emp.ruc }}</span></td>
+                    <td><span class="partida-code">{{ emp.partidaRegistral }}</span></td>
+                    <td>
+                        <button class="atu-btn-secondary" style="padding:4px 8px; font-size:12.5px"
+                            routerLink="/vehiculo-empresa" (click)="$event.stopPropagation()">
+                            12 Veh.
+                        </button>
+                    </td>
+                    <td><span class="servicio-text">{{ emp.tipoServicio }}</span></td>
+                    <td><span class="acto-code">{{ emp.actoAdministrativo }}</span></td>
+                    <td><span class="date-chip">{{ emp.fechaInicioAut }}</span></td>
+                    <td><span class="date-chip">{{ emp.fechaFinAut }}</span></td>
+                    <td>
+                        <span [class]="emp.estadoAut === 'HABILITADO'  ? 'status-active'    :
+                                       emp.estadoAut === 'SUSPENDIDO'  ? 'status-suspended' :
+                                       'status-inactive'">
+                            {{ emp.estadoAut }}
+                        </span>
+                    </td>
+                    <td alignFrozen="right" pFrozenColumn style="background-color: #004387;">
+                        <div class="flex items-center justify-center">
+                            <button (click)="op.toggle($event)" title="Opciones"
+                                class="bg-transparent border-none cursor-pointer text-white p-[6px] rounded-[8px] hover:bg-white/10 transition-colors">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    style="color: white" stroke-width="2">
+                                    <circle cx="12" cy="12" r="1.5" />
+                                    <circle cx="12" cy="5" r="1.5" />
+                                    <circle cx="12" cy="19" r="1.5" />
+                                </svg>
+                            </button>
+
+                            <p-overlayPanel #op [showCloseIcon]="false" appendTo="body"
+                                styleClass="actions-overlay-panel">
+                                <div class="w-36 flex flex-col py-1" (click)="op.hide()">
+                                    <button (click)="autosAction(emp)"
+                                        class="w-full text-left px-4 py-2.5 text-[13px] font-[600] text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-[#2D333B] transition-colors flex items-center gap-2.5 border-none bg-transparent cursor-pointer">
+                                        <i class="fa-solid fa-car text-[#0E5A8A] w-[14px] text-center"></i> Autos
+                                    </button>
+                                    <button (click)="editAction(emp)"
+                                        class="w-full text-left px-4 py-2.5 text-[13px] font-[600] text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-[#2D333B] transition-colors flex items-center gap-2.5 border-none bg-transparent cursor-pointer">
+                                        <i
+                                            class="fa-solid fa-pen text-[#0059B3] dark:text-[#00A3E0] w-[14px] text-center"></i>
+                                        Editar
+                                    </button>
+                                    <button (click)="deleteAction(emp)"
+                                        class="w-full text-left px-4 py-2.5 text-[13px] font-[600] text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-[rgba(239,68,68,0.1)] transition-colors flex items-center gap-2.5 border-none bg-transparent cursor-pointer">
+                                        <i
+                                            class="fa-solid fa-trash text-red-600 dark:text-red-400 w-[14px] text-center"></i>
+                                        Eliminar
+                                    </button>
+                                </div>
+                            </p-overlayPanel>
+                        </div>
+                    </td>
+                </tr>
+            </ng-template>
+
+            <!-- ═ SKELETON ════════════════════════════════════ -->
+            <ng-template pTemplate="loadingbody">
+                <tr *ngFor="let i of [1,2,3,4,5]">
+                    <td><p-skeleton width="110px" height="20px" borderRadius="4px"></p-skeleton></td>
+                    <td><p-skeleton width="90px" height="18px" borderRadius="4px"></p-skeleton></td>
+                    <td><p-skeleton width="90px" height="18px" borderRadius="4px"></p-skeleton></td>
+                    <td><p-skeleton width="75px" height="22px" borderRadius="20px"></p-skeleton></td>
+                    <td><p-skeleton width="200px" height="18px" borderRadius="4px"></p-skeleton></td>
+                    <td><p-skeleton width="100px" height="18px" borderRadius="4px"></p-skeleton></td>
+                    <td><p-skeleton width="90px" height="18px" borderRadius="4px"></p-skeleton></td>
+                    <td><p-skeleton width="70px" height="26px" borderRadius="8px"></p-skeleton></td>
+                    <td><p-skeleton width="160px" height="18px" borderRadius="4px"></p-skeleton></td>
+                    <td><p-skeleton width="100px" height="18px" borderRadius="4px"></p-skeleton></td>
+                    <td><p-skeleton width="90px" height="18px" borderRadius="4px"></p-skeleton></td>
+                    <td><p-skeleton width="90px" height="18px" borderRadius="4px"></p-skeleton></td>
+                    <td><p-skeleton width="75px" height="22px" borderRadius="20px"></p-skeleton></td>
+                    <td alignFrozen="right" pFrozenColumn>
+                        <div class="flex justify-center">
+                            <p-skeleton width="28px" height="28px" borderRadius="8px"></p-skeleton>
+                        </div>
+                    </td>
+                </tr>
+            </ng-template>
+
+            <!-- ═ EMPTY STATE ════════════════════════════════ -->
+            <ng-template pTemplate="emptymessage">
+                <tr>
+                    <td colspan="16">
+                        <div class="empty-state">
+                            <div class="empty-state__icon-wrap">
+                                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                    <circle cx="11" cy="11" r="7" />
+                                    <path d="M21 21l-4.3-4.3" />
+                                    <path d="M8 11h6" />
+                                </svg>
+                            </div>
+                            <p class="empty-state__title">Sin resultados</p>
+                            <p class="empty-state__desc">Ajuste la búsqueda o agregue una nueva empresa.</p>
+                            <button class="btn btn-primary" (click)="abrirModal()">
+                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2.4" stroke-linecap="round">
+                                    <path d="M12 5v14M5 12h14" />
+                                </svg>
+                                Agregar empresa
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            </ng-template>
+
+        </p-table>
+    </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════ -->
+<!--  MODAL: Agregar Empresa                                    -->
+<!-- ══════════════════════════════════════════════════════════ -->
+@if (modalAgregarOpen) {
+<div class="atu-modal-overlay">
+    <div class="atu-modal">
+
+        <!-- Modal Header -->
+        <div class="atu-modal__header">
+            <div>
+                <h3 class="atu-modal__title">{{ modoEdicion ? 'Editar Empresa / Vehículo' : 'Agregar Empresa / Vehículo'
+                    }}</h3>
+                <p class="atu-modal__subtitle">Complete los datos del transportista y vehículo</p>
+            </div>
+            <button class="atu-modal__close" (click)="cerrarModal()">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+                    stroke-linecap="round">
+                    <path d="M18 6 6 18M6 6l12 12" />
+                </svg>
+            </button>
+        </div>
+
+        <!-- Modal Body: Form -->
+        <form (ngSubmit)="guardarEmpresa()" class="atu-modal__body">
+            <div class="atu-form-grid">
+
+                <!-- Placa -->
+                <div class="atu-field">
+                    <label class="atu-field__label">Placa de Vehículo *</label>
+                    <input type="text" [(ngModel)]="nuevaEmpresa.placa" name="placa" required placeholder="Ej. A1B-234"
+                        class="w-full px-4 py-2.5 bg-surface-container-lowest border border-outline-variant text-on-surface text-sm rounded-lg focus:ring-2 focus:ring-primary focus:border-primary block transition-colors">
+                </div>
+
+                <!-- Categoría -->
+                <div class="atu-field">
+                    <label class="atu-field__label">Categoría Vehicular *</label>
+                    <select [(ngModel)]="nuevaEmpresa.categoria" name="categoria" required
+                        class="w-full px-4 py-2.5 bg-surface-container-lowest border border-outline-variant text-on-surface text-sm rounded-lg focus:ring-2 focus:ring-primary focus:border-primary block transition-colors cursor-pointer">
+                        <option value="M2">M2</option>
+                        <option value="M3">M3</option>
+                        <option value="N1">N1</option>
+                        <option value="N2">N2</option>
+                        <option value="N3">N3</option>
+                    </select>
+                </div>
+
+                <!-- TUC -->
+                <div class="atu-field">
+                    <label class="atu-field__label">Tarjeta Única de Circulación *</label>
+                    <input type="text" [(ngModel)]="nuevaEmpresa.tuc" name="tuc" required placeholder="Ej. TUC-20269999"
+                        class="w-full px-4 py-2.5 bg-surface-container-lowest border border-outline-variant text-on-surface text-sm rounded-lg focus:ring-2 focus:ring-primary focus:border-primary block transition-colors">
+                </div>
+
+                <!-- Razón Social -->
+                <div class="atu-field">
+                    <label class="atu-field__label">Nombre o Razón Social *</label>
+                    <input type="text" [(ngModel)]="nuevaEmpresa.razonSocial" name="razonSocial" required
+                        placeholder="Ej. Transportes Andes S.A.C."
+                        class="w-full px-4 py-2.5 bg-surface-container-lowest border border-outline-variant text-on-surface text-sm rounded-lg focus:ring-2 focus:ring-primary focus:border-primary block transition-colors">
+                </div>
+
+                <!-- RUC -->
+                <div class="atu-field">
+                    <label class="atu-field__label">RUC del Transportista *</label>
+                    <input type="text" [(ngModel)]="nuevaEmpresa.ruc" name="ruc" required placeholder="Ej. 20123456789"
+                        class="w-full px-4 py-2.5 bg-surface-container-lowest border border-outline-variant text-on-surface text-sm rounded-lg focus:ring-2 focus:ring-primary focus:border-primary block transition-colors">
+                </div>
+
+                <!-- Partida Registral -->
+                <div class="atu-field">
+                    <label class="atu-field__label">Partida Registral</label>
+                    <input type="text" [(ngModel)]="nuevaEmpresa.partidaRegistral" name="partidaRegistral"
+                        placeholder="Ej. PART-11223"
+                        class="w-full px-4 py-2.5 bg-surface-container-lowest border border-outline-variant text-on-surface text-sm rounded-lg focus:ring-2 focus:ring-primary focus:border-primary block transition-colors">
+                </div>
+
+                <!-- Tipo de Servicio -->
+                <div class="atu-field">
+                    <label class="atu-field__label">Tipo de Servicio</label>
+                    <select [(ngModel)]="nuevaEmpresa.tipoServicio" name="tipoServicio"
+                        class="w-full px-4 py-2.5 bg-surface-container-lowest border border-outline-variant text-on-surface text-sm rounded-lg focus:ring-2 focus:ring-primary focus:border-primary block transition-colors cursor-pointer">
+                        <option value="SERVICIO DE TRANSPORTE NACIONAL REGULAR">Regular</option>
+                        <option value="SERVICIO DE TRANSPORTE DE MERCANCÍAS">Mercancías</option>
+                    </select>
+                </div>
+
+                <!-- Acto Administrativo -->
+                <div class="atu-field">
+                    <label class="atu-field__label">Acto Administrativo</label>
+                    <input type="text" [(ngModel)]="nuevaEmpresa.actoAdministrativo" name="actoAdministrativo"
+                        placeholder="Ej. RES-3001"
+                        class="w-full px-4 py-2.5 bg-surface-container-lowest border border-outline-variant text-on-surface text-sm rounded-lg focus:ring-2 focus:ring-primary focus:border-primary block transition-colors">
+                </div>
+
+                <!-- F. Inicio TUC -->
+                <div class="atu-field">
+                    <label class="atu-field__label">F. Inicio Vigencia TUC</label>
+                    <p-datepicker [(ngModel)]="nuevaEmpresa.fechaInicioTuc" name="fechaInicioTuc" 
+                        dataType="string" dateFormat="yy-mm-dd" appendTo="body" styleClass="w-full" 
+                        inputStyleClass="w-full px-4 py-2.5 !bg-white !text-black !border-[var(--border-strong)] text-sm rounded-lg focus:ring-2 focus:ring-primary focus:border-primary block transition-colors" />
+                </div>
+
+                <!-- F. Fin TUC -->
+                <div class="atu-field">
+                    <label class="atu-field__label">F. Fin Vigencia TUC</label>
+                    <p-datepicker [(ngModel)]="nuevaEmpresa.fechaFinTuc" name="fechaFinTuc" 
+                        dataType="string" dateFormat="yy-mm-dd" appendTo="body" styleClass="w-full" 
+                        inputStyleClass="w-full px-4 py-2.5 !bg-white !text-black !border-[var(--border-strong)] text-sm rounded-lg focus:ring-2 focus:ring-primary focus:border-primary block transition-colors" />
+                </div>
+
+                <!-- Estado TUC -->
+                <div class="atu-field">
+                    <label class="atu-field__label">Estado TUC</label>
+                    <select [(ngModel)]="nuevaEmpresa.estadoTuc" name="estadoTuc"
+                        class="w-full px-4 py-2.5 bg-surface-container-lowest border border-outline-variant text-on-surface text-sm rounded-lg focus:ring-2 focus:ring-primary focus:border-primary block transition-colors cursor-pointer">
+                        <option value="VIGENTE">VIGENTE</option>
+                        <option value="SUSPENDIDO">SUSPENDIDO</option>
+                        <option value="CANCELADO Y/O INHABILITADO">CANCELADO Y/O INHABILITADO</option>
+                    </select>
+                </div>
+
+                <!-- F. Inicio Aut -->
+                <div class="atu-field">
+                    <label class="atu-field__label">F. Inicio Vigencia (Autorización)</label>
+                    <p-datepicker [(ngModel)]="nuevaEmpresa.fechaInicioAut" name="fechaInicioAut" 
+                        dataType="string" dateFormat="yy-mm-dd" appendTo="body" styleClass="w-full" 
+                        inputStyleClass="w-full px-4 py-2.5 !bg-white !text-black !border-[var(--border-strong)] text-sm rounded-lg focus:ring-2 focus:ring-primary focus:border-primary block transition-colors" />
+                </div>
+
+                <!-- F. Fin Aut -->
+                <div class="atu-field">
+                    <label class="atu-field__label">F. Fin Vigencia (Autorización)</label>
+                    <p-datepicker [(ngModel)]="nuevaEmpresa.fechaFinAut" name="fechaFinAut" 
+                        dataType="string" dateFormat="yy-mm-dd" appendTo="body" styleClass="w-full" 
+                        inputStyleClass="w-full px-4 py-2.5 !bg-white !text-black !border-[var(--border-strong)] text-sm rounded-lg focus:ring-2 focus:ring-primary focus:border-primary block transition-colors" />
+                </div>
+
+                <!-- Estado Aut -->
+                <div class="atu-field">
+                    <label class="atu-field__label">Estado Autorización</label>
+                    <select [(ngModel)]="nuevaEmpresa.estadoAut" name="estadoAut"
+                        class="w-full px-4 py-2.5 bg-surface-container-lowest border border-outline-variant text-on-surface text-sm rounded-lg focus:ring-2 focus:ring-primary focus:border-primary block transition-colors cursor-pointer">
+                        <option value="HABILITADO">HABILITADO</option>
+                        <option value="SUSPENDIDO">SUSPENDIDO</option>
+                        <option value="CANCELADO Y/O INHABILITADO">CANCELADO Y/O INHABILITADO</option>
+                    </select>
+                </div>
+
+            </div>
+
+            <!-- Footer -->
+            <div class="atu-modal__footer">
+                <button type="button" (click)="cerrarModal()" class="atu-btn-secondary">Cancelar</button>
+                <button type="submit" class="atu-btn-primary">{{ modoEdicion ? 'Actualizar empresa' : 'Registrar
+                    empresa' }}</button>
+            </div>
+        </form>
+
+    </div>
+</div>
+}
+
+<!-- ══════════════════════════════════════════════════════════ -->
+<!--  MODAL: Carga Masiva (Bulk Upload)                         -->
+<!-- ══════════════════════════════════════════════════════════ -->
+@if (bulkOpen) {
+<div class="atu-modal-overlay" (click)="closeBulk()">
+    <div class="atu-modal" style="max-width: 1000px; max-height: 92vh; display: flex; flex-direction: column;" (click)="$event.stopPropagation()">
+
+        <!-- Header -->
+        <div class="atu-modal__header">
+            <div class="flex items-center gap-3">
+                <span class="w-[34px] h-[34px] rounded-[9px] bg-[var(--primary-soft)] text-[var(--primary)] flex items-center justify-center text-[18px]">📄</span>
+                <div>
+                    <h3 class="atu-modal__title">{{ bulkFile ? 'Revisar datos del padrón' : 'Carga masiva de empresas' }}</h3>
+                    <p class="atu-modal__subtitle">Importe múltiples registros desde un archivo Excel (.xlsx)</p>
+                </div>
+            </div>
+            <button class="atu-modal__close" (click)="closeBulk()">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+                    stroke-linecap="round">
+                    <path d="M18 6 6 18M6 6l12 12" />
+                </svg>
+            </button>
+        </div>
+
+        <!-- Body -->
+        <div class="atu-modal__body" style="flex: 1; overflow-y: auto; padding: 0; min-height: 0; display: flex; flex-direction: column;">
+            
+            <!-- STEP 1: DROP FILE -->
+            @if (bulkStep === 'drop') {
+            <div class="p-6">
+                <!-- Drop Area Clickable -->
+                <div (click)="simulateBulk()"
+                    class="border-2 border-dashed border-[var(--border-strong)] rounded-[14px] p-12 text-center cursor-pointer bg-[var(--surface-2)] hover:bg-[var(--surface-3)] transition-all">
+                    <div class="w-[58px] h-[58px] rounded-[14px] bg-[var(--primary-soft)] text-[var(--primary)] flex items-center justify-center mx-auto mb-4">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12" />
+                        </svg>
+                    </div>
+                    <div class="text-[15px] font-[700] text-[var(--text)] mb-1">Arrastre el archivo Excel o haga clic para seleccionar</div>
+                    <div class="text-[12.5px] text-[var(--text-3)]">Formatos admitidos: .xlsx, .xls — máximo 5 MB</div>
+                </div>
+
+                <!-- Template Download Card -->
+                <div class="flex flex-wrap items-center justify-between gap-3 mt-4 p-3.5 rounded-[12px] bg-[var(--surface-2)] border border-[var(--border)]">
+                    <div class="flex items-center gap-2.5">
+                        <span class="text-[18px]">⬇️</span>
+                        <div>
+                            <div class="text-[13px] font-[700] text-[var(--text)]">Plantilla oficial</div>
+                            <div class="text-[12px] text-[var(--text-3)]">Descargue el formato con las columnas requeridas</div>
+                        </div>
+                    </div>
+                    <button type="button" (click)="downloadTemplate()"
+                        class="bg-[var(--surface)] text-[var(--text)] border border-[var(--border-strong)] rounded-[9px] py-2 px-3.5 text-[13px] font-[700] cursor-pointer hover:bg-[var(--surface-2)] transition-colors">
+                        Descargar plantilla
+                    </button>
+                </div>
+            </div>
+            }
+
+            <!-- STEP 2: GRID EDITING & VALIDATION -->
+            @if (bulkStep === 'grid') {
+            <div class="flex-1 flex flex-col min-height-0">
+                <!-- Info & Filter Chips -->
+                <div class="px-5 pt-4 flex flex-wrap gap-2.5 items-center justify-between border-bottom border-[var(--border)] pb-2">
+                    <div class="flex gap-2 flex-wrap items-center">
+                        <span class="text-[13px] font-[700] text-[var(--text)]">{{ bulkFile }}</span>
+                        
+                        <!-- Filter Chips -->
+                        <button type="button" (click)="bulkFilter = 'all'"
+                            [class]="'text-[11.5px] font-[700] px-2.5 py-1 rounded-full border-none cursor-pointer transition-colors ' + 
+                                     (bulkFilter === 'all' ? 'bg-[var(--primary)] text-white' : 'bg-[var(--surface-3)] text-[var(--text-2)] hover:bg-[var(--surface-3)]')">
+                            Todos ({{ bulkData.length }})
+                        </button>
+                        <button type="button" (click)="bulkFilter = 'new'"
+                            [class]="'text-[11.5px] font-[700] px-2.5 py-1 rounded-full border-none cursor-pointer transition-colors ' + 
+                                     (bulkFilter === 'new' ? 'bg-[var(--ok)] text-white' : 'bg-[var(--ok-bg)] text-[var(--ok)] hover:opacity-90')">
+                            {{ newCount }} nuevos
+                        </button>
+                        <button type="button" (click)="bulkFilter = 'upd'"
+                            [class]="'text-[11.5px] font-[700] px-2.5 py-1 rounded-full border-none cursor-pointer transition-colors ' + 
+                                     (bulkFilter === 'upd' ? 'bg-[var(--warn)] text-white' : 'bg-[var(--warn-bg)] text-[var(--warn)] hover:opacity-90')">
+                            {{ updCount }} actualizarán
+                        </button>
+                        <button type="button" (click)="bulkFilter = 'err'"
+                            [class]="'text-[11.5px] font-[700] px-2.5 py-1 rounded-full border-none cursor-pointer transition-colors ' + 
+                                     (bulkFilter === 'err' ? 'bg-[var(--bad)] text-white' : 'bg-[var(--bad-bg)] text-[var(--bad)] hover:opacity-90')">
+                            {{ errCount }} con error
+                        </button>
+                    </div>
+                    <button type="button" (click)="resetBulk()"
+                        class="bg-transparent border-none text-[var(--primary)] text-[12.5px] font-[700] cursor-pointer hover:underline">
+                        Cambiar archivo
+                    </button>
+                </div>
+
+                <div class="px-5 py-2.5 text-[12px] text-[var(--text-3)] border-bottom border-[var(--border)]">
+                    Puede corregir o eliminar filas directamente en las celdas. Haga clic en el botón de estado de cada fila para ver el detalle de validación de negocio.
+                </div>
+
+                <!-- Scrollable Excel Grid -->
+                <div class="flex-1 overflow-auto px-5 py-4 min-height-0">
+                    <div style="min-width: 1000px; border: 1px solid var(--border); border-radius: 12px; overflow: hidden;">
+                        
+                        <!-- Table Header Row -->
+                        <div class="flex" style="background: var(--surface-2); border-bottom: 1px solid var(--border);">
+                            <div class="w-[50px] shrink-0 p-3 text-[10px] font-[700] text-[var(--text-3)] text-center uppercase">Quitar</div>
+                            @for (col of bulkCols; track col.key) {
+                            <div [style.width]="col.w" class="shrink-0 p-3 text-[11px] font-[700] text-[var(--text-3)] uppercase tracking-[0.4px]">
+                                {{ col.label }}
+                            </div>
+                            }
+                            <div class="flex-1 p-3 text-[11px] font-[700] text-[var(--text-3)] uppercase tracking-[0.4px] text-right">Validación</div>
+                        </div>
+
+                        <!-- Table Rows -->
+                        @for (r of filteredBulkData; track $index; let idx = $index) {
+                        <div class="border-bottom border-[var(--border)]">
+                            <div class="flex items-stretch" [style.background]="r.err && r.err.ruc ? 'rgba(239, 68, 68, 0.04)' : 'transparent'">
+                                
+                                <!-- Delete Action Cell -->
+                                <div class="w-[50px] shrink-0 flex items-center justify-center p-1.5">
+                                    <button type="button" (click)="deleteBulkRow(idx)" title="Retirar fila"
+                                        class="w-[28px] h-[28px] rounded-[7px] border border-[var(--border)] bg-[var(--surface)] text-[var(--bad)] hover:bg-[var(--surface-2)] cursor-pointer font-[700] text-[13px] flex items-center justify-center transition-colors">
+                                        ✕
+                                    </button>
+                                </div>
+
+                                <!-- Editable Input Cells -->
+                                <div class="shrink-0 w-[120px] p-1.5">
+                                    <input type="text" [(ngModel)]="r.ruc" (ngModelChange)="onBulkCellInput(r, 'ruc')"
+                                        [style.borderColor]="r.err && r.err.ruc ? 'var(--bad)' : 'var(--border)'"
+                                        [style.color]="r.err && r.err.ruc ? 'var(--bad)' : 'var(--text)'"
+                                        class="w-full bg-[var(--surface)] border rounded-[7px] py-2 px-2.5 text-[12.5px] outline-none font-mono">
+                                </div>
+                                <div class="shrink-0 w-[260px] p-1.5">
+                                    <input type="text" [(ngModel)]="r.razon"
+                                        class="w-full bg-[var(--surface)] border border-[var(--border)] rounded-[7px] py-2 px-2.5 text-[12.5px] outline-none text-[var(--text)]">
+                                </div>
+                                <div class="shrink-0 w-[180px] p-1.5">
+                                    <input type="text" [(ngModel)]="r.rep"
+                                        class="w-full bg-[var(--surface)] border border-[var(--border)] rounded-[7px] py-2 px-2.5 text-[12.5px] outline-none text-[var(--text)]">
+                                </div>
+                                <div class="shrink-0 w-[110px] p-1.5">
+                                    <select [(ngModel)]="r.tipo"
+                                        class="w-full bg-[var(--surface)] border border-[var(--border)] rounded-[7px] py-2 px-1.5 text-[12.5px] outline-none cursor-pointer text-[var(--text)]">
+                                        <option value="Pasajeros">Pasajeros</option>
+                                        <option value="Carga/Comercio">Carga/Comercio</option>
+                                        <option value="Turístico">Turístico</option>
+                                    </select>
+                                </div>
+                                <div class="shrink-0 w-[110px] p-1.5">
+                                    <input type="text" [(ngModel)]="r.tel"
+                                        class="w-full bg-[var(--surface)] border border-[var(--border)] rounded-[7px] py-2 px-2.5 text-[12.5px] outline-none font-mono text-[var(--text)]">
+                                </div>
+                                <div class="shrink-0 w-[160px] p-1.5">
+                                    <input type="text" [(ngModel)]="r.correo"
+                                        class="w-full bg-[var(--surface)] border border-[var(--border)] rounded-[7px] py-2 px-2.5 text-[12.5px] outline-none text-[var(--text)]">
+                                </div>
+                                <div class="shrink-0 w-[110px] p-1.5">
+                                    <input type="text" [(ngModel)]="r.ini"
+                                        class="w-full bg-[var(--surface)] border border-[var(--border)] rounded-[7px] py-2 px-2.5 text-[12.5px] outline-none font-mono text-[var(--text)]">
+                                </div>
+                                <div class="shrink-0 w-[110px] p-1.5">
+                                    <input type="text" [(ngModel)]="r.fin"
+                                        class="w-full bg-[var(--surface)] border border-[var(--border)] rounded-[7px] py-2 px-2.5 text-[12.5px] outline-none font-mono text-[var(--text)]">
+                                </div>
+
+                                <!-- Validation Status Tag (Toggle expandable details) -->
+                                <div class="flex-1 p-1.5 flex items-center justify-end">
+                                    @if (r.err && r.err.ruc) {
+                                    <button type="button" (click)="toggleBulkExpand(idx)"
+                                        class="inline-flex items-center gap-1.5 bg-[var(--bad-bg)] text-[var(--bad)] border-none rounded-full py-1 px-3 text-[11.5px] font-[700] cursor-pointer hover:brightness-95">
+                                        Con error ▾
+                                    </button>
+                                    } @else if (checkRucExists(r.ruc)) {
+                                    <button type="button" (click)="toggleBulkExpand(idx)"
+                                        class="inline-flex items-center gap-1.5 bg-[var(--warn-bg)] text-[var(--warn)] border-none rounded-full py-1 px-3 text-[11.5px] font-[700] cursor-pointer hover:brightness-95">
+                                        Actualizará ▾
+                                    </button>
+                                    } @else {
+                                    <button type="button" (click)="toggleBulkExpand(idx)"
+                                        class="inline-flex items-center gap-1.5 bg-[var(--ok-bg)] text-[var(--ok)] border-none rounded-full py-1 px-3 text-[11.5px] font-[700] cursor-pointer hover:brightness-95">
+                                        Válido ▾
+                                    </button>
+                                    }
+                                </div>
+                            </div>
+
+                            <!-- Expandable details container -->
+                            @if (expandedRowIndex === idx) {
+                            <div class="py-2.5 pr-4 pl-11 bg-[var(--surface-2)] border-top border-[var(--border)] flex flex-col gap-1.5">
+                                @for (d of getBulkRowDetail(r); track d.label) {
+                                <div class="flex gap-2.5 py-0.5 text-[12.5px]">
+                                    <span [style.color]="d.labelColor" class="font-[700] min-w-[130px]">{{ d.label }}</span>
+                                    <span [style.color]="d.color" class="font-mono">{{ d.text }}</span>
+                                </div>
+                                }
+                            </div>
+                            }
+                        </div>
+                        }
+
+                        <!-- Empty state within filtered bulk list -->
+                        @if (filteredBulkData.length === 0) {
+                        <div class="text-center py-6 text-[var(--text-3)] font-[600] text-[13px]">
+                            No hay filas con ese estado. <span (click)="bulkFilter = 'all'" class="text-[var(--primary)] cursor-pointer underline">Ver todos</span>
+                        </div>
+                        }
+
+                    </div>
+                </div>
+
+                <!-- Warnings & Confirm Button Footer -->
+                <div class="border-top border-[var(--border)] p-5 bg-[var(--surface)]">
+                    @if (hasUpdates && bulkFilter !== 'err') {
+                    <div class="text-[12.5px] text-[var(--warn)] bg-[var(--warn-bg)] p-2.5 rounded-[9px] mb-2.5 font-[600]">
+                        ↻ {{ updCount }} registro(s) ya existen y se actualizarán con los datos cargados. Haga clic en "Actualizarán" para ver qué cambia.
+                    </div>
+                    }
+                    @if (hasErrors) {
+                    <div class="text-[12.5px] text-[var(--bad)] bg-[var(--bad-bg)] p-2.5 rounded-[9px] mb-3 font-[600]">
+                        ⚠️ {{ errCount }} fila(s) con errores serán omitidas. Corrija o elimínelas; se cargarán los {{ okCount }} registros válidos.
+                    </div>
+                    }
+                    <div class="flex justify-end gap-2.5">
+                        <button type="button" (click)="closeBulk()"
+                            class="bg-[var(--surface)] text-[var(--text-2)] border border-[var(--border)] rounded-[9px] py-2.5 px-4 text-[13.5px] font-[600] cursor-pointer hover:bg-[var(--surface-2)] transition-colors">
+                            Cancelar
+                        </button>
+                        <button type="button" (click)="confirmBulk()" [disabled]="okCount === 0"
+                            class="bg-[var(--primary)] text-white border-none rounded-[9px] py-2.5 px-5 text-[13.5px] font-[700] cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed hover:opacity-95 transition-opacity">
+                            Cargar {{ okCount }} a la base de datos
+                        </button>
+                    </div>
+                </div>
+            </div>
+            }
+
+        </div>
+
+    </div>
+</div>
+}

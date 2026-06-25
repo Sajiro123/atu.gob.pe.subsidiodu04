@@ -1,11 +1,23 @@
 /* =========================================================
    SIGT – ATU | Global Styles
-   Angular 18 + Public Sans + Tailwind CSS
+   Angular 18 + Arial + Tailwind CSS + PrimeNG
    ========================================================= */
+
+// ── Tailwind CSS Directives ───────────────────────────────
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import "primeicons/primeicons.css";
+@import "@fortawesome/fontawesome-free/css/all.min.css";
+@import "./styles/variables";
+@import './styles/layout-tables/p-table';
+@import "./styles/layout";
+@import "./styles/layout-sidebar";
 
 // ── Google Font & Reset Override ─────────────────────────
 body {
-  font-family: 'Public Sans', 'Segoe UI', system-ui, sans-serif !important;
+  font-family: 'Plus Jakarta Sans', system-ui, sans-serif !important;
 }
 
 // ── Material Symbols Outlined Custom Styling ──────────────
@@ -58,7 +70,215 @@ body {
   color: #001e40;
 }
 
+// ── CSS Custom Properties (Design Tokens) ─────────────────
+:root {
+  --bg: #EEF2F6;
+  --surface: #FFFFFF;
+  --surface-2: #F5F8FB;
+  --surface-3: #EAF0F5;
+  --border: #DCE4EC;
+  --border-strong: #C6D2DD;
+  --text: #15242F;
+  --text-2: #46586A;
+  --text-3: #6E8090;
+  --primary: #004C97;
+  --primary-strong: #003A75;
+  --primary-soft: #E3EEF6;
+  --primary-contrast: #FFFFFF;
+  --ok: #15803D;
+  --ok-bg: #E4F4EA;
+  --warn: #B45309;
+  --warn-bg: #FBEFDD;
+  --bad: #C0392B;
+  --bad-bg: #FAE6E3;
+  --neutral: #5E6E7E;
+  --neutral-bg: #EBEFF3;
+  --shadow: 0 1px 2px rgba(16, 36, 52, .05), 0 6px 18px rgba(16, 36, 52, .06);
+  --shadow-lg: 0 22px 60px rgba(16, 36, 52, .22);
+}
+
 // ── Helper classes for form styling in Angular ────────────
 select, input {
   font-family: inherit;
+}
+
+// ── DARK MODE — raíz global ───────────────────────────────
+html.dark {
+  color-scheme: dark;
+
+  --bg: #0A131B;
+  --surface: #121E29;
+  --surface-2: #16242F;
+  --surface-3: #1C2D3A;
+  --border: #243646;
+  --border-strong: #2F4659;
+  --text: #E8EFF4;
+  --text-2: #AFC1CF;
+  --text-3: #7E92A2;
+  --primary: #0059B3;
+  --primary-strong: #004C97;
+  --primary-soft: #14303F;
+  --primary-contrast: #FFFFFF;
+  --ok: #3FC078;
+  --ok-bg: #102A1C;
+  --warn: #E0A042;
+  --warn-bg: #2B2112;
+  --bad: #E27062;
+  --bad-bg: #2C1816;
+  --neutral: #9BADBB;
+  --neutral-bg: #1B2935;
+  --shadow: 0 1px 2px rgba(0, 0, 0, .4), 0 8px 22px rgba(0, 0, 0, .4);
+  --shadow-lg: 0 22px 60px rgba(0, 0, 0, .6);
+
+  body {
+    background: #0D1117;
+    color: #E6EDF3;
+  }
+
+  // Scrollbar oscura
+  ::-webkit-scrollbar-thumb {
+    background: #30363D;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: #484F58;
+  }
+
+  // Selección de texto en modo oscuro
+  ::selection {
+    background: rgba(0, 163, 224, 0.25);
+    color: #E6EDF3;
+  }
+
+  // Inputs y selects globales
+  select, input, textarea {
+    background: #0D1117;
+    color: #E6EDF3;
+    border-color: #30363D;
+
+    &::placeholder { color: #6E7681; }
+  }
+}
+
+/* ── PrimeNG DatePicker Override for White Background ── */
+.p-datepicker,
+.p-datepicker-panel,
+div[role="dialog"].p-datepicker,
+.p-datepicker-calendar-container,
+.p-datepicker-header,
+.p-datepicker-title,
+.p-datepicker-calendar {
+  background: #ffffff !important;
+  background-color: #ffffff !important;
+  color: #1f2937 !important;
+  
+  /* PrimeNG 18 theme tokens override */
+  --p-datepicker-background: #ffffff !important;
+  --p-datepicker-color: #1f2937 !important;
+  --p-datepicker-weekheader-color: #4b5563 !important;
+  --p-datepicker-header-color: #1f2937 !important;
+  --p-datepicker-header-background: #ffffff !important;
+  --p-datepicker-day-color: #1f2937 !important;
+  --p-datepicker-day-hover-background: #f3f4f6 !important;
+  --p-datepicker-day-hover-color: #111827 !important;
+  --p-datepicker-day-selected-background: #004c97 !important;
+  --p-datepicker-day-selected-color: #ffffff !important;
+}
+
+.p-datepicker-panel,
+.p-datepicker {
+  border: 1px solid #e5e7eb !important;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05) !important;
+}
+
+.p-datepicker button,
+.p-datepicker-header button,
+.p-datepicker-prev,
+.p-datepicker-next {
+  color: #4b5563 !important;
+}
+
+.p-datepicker button:hover,
+.p-datepicker-header button:hover,
+.p-datepicker-prev:hover,
+.p-datepicker-next:hover {
+  background: #f3f4f6 !important;
+  color: #111827 !important;
+}
+
+.p-datepicker th,
+.p-datepicker td,
+.p-datepicker span,
+.p-datepicker-calendar th,
+.p-datepicker-calendar td,
+.p-datepicker-day,
+.p-datepicker-weekheader,
+.p-datepicker-weekheaders span,
+.p-datepicker-calendar-header th,
+.p-datepicker-calendar-header th span {
+  color: #1f2937 !important;
+}
+
+/* Explicitly style the week day titles (Do, Lu, Ma, etc.) */
+.p-datepicker th,
+.p-datepicker-weekheader,
+.p-datepicker-weekheaders span,
+th[class*="weekheader"],
+.p-datepicker th span {
+  color: #4b5563 !important;
+  font-weight: 600 !important;
+}
+
+.p-datepicker-day:not(.p-datepicker-day-selected):not(.p-datepicker-day-disabled):hover,
+.p-datepicker td span:not(.p-highlight):not(.p-disabled):hover {
+  background: #f3f4f6 !important;
+  color: #111827 !important;
+}
+
+.p-datepicker-day-selected,
+.p-datepicker td span.p-highlight,
+.p-datepicker td span.p-datepicker-active {
+  background: #004C97 !important;
+  background-color: #004C97 !important;
+  color: #ffffff !important;
+}
+
+.p-datepicker-weekday {
+    font-weight: var(--p-datepicker-week-day-font-weight);
+    color: #000000 !important;
+}
+
+/* ── PrimeNG AutoComplete Override for White Background ── */
+.p-autocomplete-panel,
+.p-autocomplete-items,
+.p-autocomplete-item,
+.p-autocomplete-option,
+.p-autocomplete-option-group {
+  background: #ffffff !important;
+  background-color: #ffffff !important;
+  color: #1f2937 !important;
+}
+
+.p-autocomplete-panel {
+  border: 1px solid #e5e7eb !important;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05) !important;
+}
+
+.p-autocomplete-item:hover,
+.p-autocomplete-option:hover,
+.p-autocomplete-item-active,
+.p-highlight {
+  background: #f3f4f6 !important;
+  color: #111827 !important;
+}
+
+/* Also style the dropdown arrow button */
+.p-autocomplete-dropdown {
+  background: #f3f4f6 !important;
+  border-color: var(--border-strong) !important;
+  color: #4b5563 !important;
+}
+.p-autocomplete-dropdown:hover {
+  background: #e5e7eb !important;
+  color: #1f2937 !important;
 }

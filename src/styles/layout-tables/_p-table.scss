@@ -1,0 +1,618 @@
+@import "../variables";
+$texto_table_td: 'Plus Jakarta Sans', system-ui, sans-serif;
+
+// ──────────────────────────────────────────────────────────────
+//  CABECERAS DE TABLA (doble fila)
+// ──────────────────────────────────────────────────────────────
+
+.th-group {
+  text-align: center !important;
+  font-size: 11px !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.05em !important;
+  text-transform: uppercase !important;
+  padding: 10px 12px !important;
+  /* Padding reducido */
+  color: #ffffff !important;
+  border-bottom: none !important;
+
+  &:last-child {
+    border-right: none !important;
+  }
+
+  &--vehiculo {
+    background: #1565A0 !important;
+  }
+
+  &--tuc {
+    background: #0E5A8A !important;
+  }
+
+  &--transport {
+    background: #0A4870 !important;
+  }
+
+  &--aut {
+    background: #073858 !important;
+  }
+}
+
+.th-col {
+  @apply text-[11.5px] font-[700] uppercase tracking-[0.03em] px-[12px] py-[10px] whitespace-nowrap;
+
+  // Mantenemos !important para sobreescribir estilos nativos de PrimeNG
+  background: #f8fafc !important;
+  color: $text-2 !important;
+  border-bottom: 3px solid $border-strong !important;
+  border-right: 1px solid $border !important;
+  border-top: 1px solid $border !important;
+
+  &:last-child {
+    border-right: none !important;
+  }
+
+  &--vehiculo-last,
+  &--tuc-last,
+  &--transport-last {
+    border-right: 3px solid $border-strong !important;
+  }
+}
+
+// ──────────────────────────────────────────────────────────────
+//  PRIMENG TABLE — overrides
+// ──────────────────────────────────────────────────────────────
+
+.p-datatable {
+  font-size: 13px;
+  /* Fuente general de tabla reducida */
+  font-family: 'Inter', Arial, Helvetica, sans-serif;
+  color: $text;
+
+  .p-datatable-thead>tr>th {
+    white-space: nowrap;
+
+    .p-sortable-column-icon {
+      font-size: 11px;
+      margin-left: 6px;
+      opacity: 0.5;
+      transition: opacity 0.15s;
+    }
+
+    &:hover .p-sortable-column-icon {
+      opacity: 1;
+    }
+
+    &.p-highlight {
+      filter: brightness(1.1);
+      color: $primary !important;
+      background: $primary-soft !important;
+
+      .p-sortable-column-icon {
+        opacity: 1;
+        color: $primary;
+      }
+    }
+  }
+
+  .p-datatable-tbody>tr {
+    background: $surface;
+    transition: all 0.2s ease;
+    color: black;
+
+    &.p-datatable-row-odd {
+      background: #FAFCFD;
+    }
+
+    &:hover {
+      background: $surface-2 !important;
+      box-shadow: inset 4px 0 0 $primary;
+    }
+
+    >td {
+      padding: 5px 14px;
+      /* Padding reducido para filas más estrechas */
+      border: none;
+      border-right: 1px solid $surface-3;
+      border-bottom: 1px solid $border;
+      vertical-align: middle;
+
+      &:last-child {
+        border-right: none;
+      }
+    }
+  }
+
+  .p-paginator {
+    background: $surface-2;
+    border-top: 1px solid $border;
+    padding: 8px 14px;
+    justify-content: flex-end;
+    gap: 4px;
+
+    .p-paginator-current {
+      color: $text-3;
+      font-size: 12px;
+      margin-right: auto;
+    }
+
+    .p-paginator-page,
+    .p-paginator-next,
+    .p-paginator-prev,
+    .p-paginator-first,
+    .p-paginator-last {
+      min-width: 28px;
+      height: 28px;
+      border-radius: 6px;
+      font-size: 12px;
+      border: 1px solid $border;
+      background: $surface;
+      color: $text-2;
+      transition: filter 0.15s;
+
+      &:hover {
+        filter: brightness(0.96);
+      }
+
+      &.p-highlight {
+        background: $primary;
+        border-color: $primary;
+        color: #ffffff;
+        font-weight: 700;
+      }
+    }
+
+    .p-paginator-rpp-dropdown {
+      height: 28px;
+      font-size: 12px;
+      border-radius: 6px;
+      border: 1px solid $border;
+      background: #f8fafc;
+      color: rgb(255, 255, 255) !important;
+      text-align: center !important;
+
+      span {
+        color: black !important;
+        text-align: center !important;
+      }
+
+      li {
+        background-color: white !important;
+      }
+
+      .p-dropdown-label {
+        padding: 4px 6px;
+        background-color: wheat;
+      }
+    }
+  }
+
+  .p-datatable-loading-overlay {
+    background: rgba(245, 248, 251, 0.8);
+    backdrop-filter: blur(3px);
+  }
+
+  .p-datatable-emptymessage td {
+    border: none !important;
+  }
+
+  td.p-frozen-column {
+    background: inherit !important;
+  }
+
+  th.p-frozen-column {
+    background: #004C97 !important;
+    color: #ffffff !important;
+  }
+
+  // Evitar corte del menú de opciones en las últimas filas al abrir hacia arriba
+  .p-datatable-tbody > tr:nth-last-child(-n+2) {
+    .absolute.right-0 {
+      top: auto !important;
+      bottom: calc(100% + 4px) !important;
+    }
+  }
+}
+
+// ──────────────────────────────────────────────────────────────
+//  ESTILOS COMPARTIDOS DE CELDAS (TIPOGRAFÍA, BADGES, ETC.)
+// ──────────────────────────────────────────────────────────────
+
+.placa-code {
+  @apply inline-flex items-center gap-[5px] text-[13px] font-[700] text-[var(--text)] tracking-[0.05em];
+  font-family: $texto_table_td;
+
+  svg {
+    @apply opacity-55 shrink-0;
+  }
+}
+
+.cat-badge {
+  @apply inline-flex items-center justify-center min-w-[36px] h-[24px] rounded-[7px] text-[11.5px] font-[700] bg-[var(--surface-3)] text-[var(--text-2)] border border-[var(--border)] px-[7px];
+}
+
+.tuc-code {
+  @apply text-[12px] font-[600] text-[var(--text-2)];
+  font-family: $texto_table_td;
+}
+
+.date-chip {
+  @apply text-[12px] text-[var(--text-2)];
+  font-family: $texto_table_td;
+}
+
+.razon-social {
+  font-weight: 700;
+  font-size: 13px;
+  color: $text;
+  line-height: 1.35;
+  display: block;
+  max-width: 260px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ruc-code {
+  font-family: $texto_table_td;
+  font-size: 12.5px;
+  color: $text-2;
+  font-weight: 600;
+}
+
+.partida-code {
+  font-family: $texto_table_td;
+  font-size: 11.5px;
+  color: $text-3;
+}
+
+.servicio-text {
+  font-size: 12.5px;
+  color: $text-2;
+  font-weight: 600;
+  display: inline-block;
+  max-width: 180px;
+  line-height: 1.35;
+}
+
+.acto-code {
+  font-family: $texto_table_td;
+  font-size: 11.5px;
+  color: $text-3;
+  font-weight: 600;
+}
+
+// ──────────────────────────────────────────────────────────────
+//  BADGES DE ESTADO (COMPARTIDOS)
+// ──────────────────────────────────────────────────────────────
+
+%status-base {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 8px;
+  /* Padding reducido */
+  border-radius: 999px;
+  font-size: 11px;
+  /* Fuente reducida */
+  font-weight: 700;
+  white-space: nowrap;
+
+  &::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+}
+
+.status-active {
+  @extend %status-base;
+  background: $ok-bg;
+  color: $ok;
+
+  &::before {
+    background: $ok;
+  }
+}
+
+.status-inactive {
+  @extend %status-base;
+  background: $bad-bg;
+  color: $bad;
+
+  &::before {
+    background: $bad;
+  }
+}
+
+.status-suspended {
+  @extend %status-base;
+  background: $warn-bg;
+  color: $warn;
+
+  &::before {
+    background: $warn;
+  }
+}
+
+.estado-badge {
+  @apply text-[11px] font-[700] px-[8px] py-[3px] rounded-full;
+}
+
+
+// ──────────────────────────────────────────────────────────────
+//  CONTENEDOR GLOBAL DE TABLAS Y EMPTY STATE
+// ──────────────────────────────────────────────────────────────
+
+.atu-card {
+  @apply bg-[var(--surface)] border border-[var(--border)] rounded-[14px] overflow-hidden shadow-[var(--shadow)];
+}
+
+.atu-table-scroll {
+  @apply overflow-x-auto;
+}
+
+.empty-state {
+  @apply flex flex-col items-center justify-center py-[56px] px-[20px] text-center gap-[12px];
+
+  &__icon-wrap {
+    @apply w-[60px] h-[60px] rounded-full bg-[var(--surface-2)] border border-[var(--border)] flex items-center justify-center text-[var(--text-3)];
+  }
+
+  &__title {
+    @apply text-[15px] font-[700] text-[var(--text-2)] m-0;
+  }
+
+  &__desc {
+    @apply text-[13px] text-[var(--text-3)] m-0 max-w-[280px] leading-[1.55];
+  }
+}
+
+// ──────────────────────────────────────────────────────────────
+//  ESTILOS DE OVERLAY PANEL PARA MENÚS DE ACCIÓN (p-overlayPanel)
+// ──────────────────────────────────────────────────────────────
+.p-overlaypanel.actions-overlay-panel,
+.p-popover.actions-overlay-panel {
+  background: #ffffff !important;
+  border: 1px solid #DCE4EC !important;
+  border-radius: 12px !important;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1) !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+
+  .p-overlaypanel-content,
+  .p-popover-content {
+    background: #ffffff !important;
+    padding: 0 !important;
+  }
+
+  &::before, &::after {
+    display: none !important;
+  }
+}
+
+// ──────────────────────────────────────────────────────────────
+//  DARK MODE — p-table y celdas
+// ──────────────────────────────────────────────────────────────
+
+html.dark {
+
+  // ── Cabeceras de grupo (th-group) ───────────────────────
+  .th-group {
+    &--vehiculo {
+      background: #0E2A4A !important;
+    }
+
+    &--tuc {
+      background: #0A2038 !important;
+    }
+
+    &--transport {
+      background: #071830 !important;
+    }
+
+    &--aut {
+      background: #041226 !important;
+    }
+  }
+
+  // ── Cabeceras de columna (th-col) ───────────────────────
+  .th-col {
+    background: #161B22 !important;
+    color: #8B949E !important;
+    border-bottom-color: #30363D !important;
+    border-right-color: #21262D !important;
+    border-top-color: #21262D !important;
+  }
+
+  th.p-frozen-column {
+    background: #00265a !important;
+  }
+
+  // ── Tabla principal ──────────────────────────────────────
+  .p-datatable {
+    color: #C9D1D9;
+
+    // Highlight columna sort
+    .p-datatable-thead>tr>th {
+      &.p-highlight {
+        background: #001b40 !important;
+        color: #00A3E0 !important;
+
+        .p-sortable-column-icon {
+          color: #00A3E0;
+        }
+      }
+    }
+
+    // Filas del cuerpo
+    .p-datatable-tbody>tr {
+      background: #161B22;
+      color: #C9D1D9;
+
+      &.p-datatable-row-odd {
+        background: #1C2128;
+      }
+
+      &:hover {
+        background: #21262D !important;
+        box-shadow: inset 4px 0 0 #00A3E0;
+      }
+
+      >td {
+        border-right-color: #21262D;
+        border-bottom-color: #30363D;
+      }
+    }
+
+    // Paginador
+    .p-paginator {
+      background: #161B22;
+      border-top-color: #30363D;
+
+      .p-paginator-current {
+        color: #6E7681;
+      }
+
+      .p-paginator-page,
+      .p-paginator-next,
+      .p-paginator-prev,
+      .p-paginator-first,
+      .p-paginator-last {
+        background: #21262D;
+        border-color: #30363D;
+        color: #C9D1D9;
+
+        &:hover {
+          filter: brightness(1.2);
+        }
+
+        &.p-highlight {
+          background: #0059B3;
+          border-color: #0059B3;
+          color: #fff;
+        }
+      }
+
+      .p-paginator-rpp-dropdown {
+        background: #21262D;
+        border-color: #30363D;
+        color: #C9D1D9 !important;
+
+        span {
+          color: #C9D1D9 !important;
+        }
+
+        li {
+          background-color: #161B22 !important;
+        }
+
+        .p-dropdown-label {
+          background-color: #21262D;
+        }
+      }
+    }
+
+    // Overlay de carga
+    .p-datatable-loading-overlay {
+      background: rgba(13, 17, 23, 0.85);
+    }
+  }
+
+  // ── Tarjeta contenedora ──────────────────────────────────
+  .atu-card {
+    background: #161B22;
+    border-color: #30363D;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2), 0 6px 18px rgba(0, 0, 0, 0.25);
+  }
+
+  // ── Tipografía de celdas ─────────────────────────────────
+  .razon-social {
+    color: #E6EDF3;
+  }
+
+  .ruc-code {
+    color: #8B949E;
+  }
+
+  .partida-code {
+    color: #6E7681;
+  }
+
+  .tuc-code {
+    color: #8B949E;
+  }
+
+  .acto-code {
+    color: #6E7681;
+  }
+
+  .servicio-text {
+    color: #8B949E;
+  }
+
+  // ── Badges de estado ─────────────────────────────────────
+  .status-active {
+    background: rgba(21, 128, 61, 0.15);
+    color: #3FB950;
+
+    &::before {
+      background: #3FB950;
+    }
+  }
+
+  .status-inactive {
+    background: rgba(192, 57, 43, 0.15);
+    color: #F85149;
+
+    &::before {
+      background: #F85149;
+    }
+  }
+
+  .status-suspended {
+    background: rgba(180, 83, 9, 0.15);
+    color: #D29922;
+
+    &::before {
+      background: #D29922;
+    }
+  }
+
+  // ── Cat badge ────────────────────────────────────────────
+  .cat-badge {
+    background: #21262D;
+    color: #8B949E;
+    border-color: #30363D;
+  }
+
+  // ── Empty state ──────────────────────────────────────────
+  .empty-state {
+    &__icon-wrap {
+      background: #161B22;
+      border-color: #30363D;
+      color: #6E7681;
+    }
+
+    &__title {
+      color: #8B949E;
+    }
+
+    &__desc {
+      color: #6E7681;
+    }
+  }
+
+  .p-overlaypanel.actions-overlay-panel,
+  .p-popover.actions-overlay-panel {
+    background: #1C2128 !important;
+    border-color: #30363D !important;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5) !important;
+
+    .p-overlaypanel-content,
+    .p-popover-content {
+      background: #1C2128 !important;
+    }
+  }
+}

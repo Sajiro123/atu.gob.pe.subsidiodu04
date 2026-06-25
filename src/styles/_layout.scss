@@ -1,0 +1,421 @@
+@import "variables";
+
+// ──────────────────────────────────────────────────────────────
+//  1. ENCABEZADO DE PÁGINA
+// ──────────────────────────────────────────────────────────────
+
+.atu-page-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 20px;
+
+  &__eyebrow {
+    font-size: 11.5px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    color: $primary;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+
+  &__title {
+    font-size: 24px;
+    font-weight: 800;
+    color: $text;
+    margin: 0;
+    line-height: 1.2;
+  }
+
+  &__sub {
+    font-size: 13px;
+    color: $text-3;
+    margin: 5px 0 0;
+  }
+
+  &__actions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+}
+
+// ──────────────────────────────────────────────────────────────
+//  2. BUSCADOR
+// ──────────────────────────────────────────────────────────────
+
+.atu-search-bar {
+  margin-bottom: 20px;
+
+  &__field {
+    position: relative;
+    max-width: 520px;
+    display: flex;
+    align-items: center;
+  }
+
+  &__icon {
+    position: absolute;
+    left: 16px;
+    color: $text-3;
+    pointer-events: none;
+    transition: color 0.2s ease;
+  }
+
+  &__input {
+    width: 100%;
+    font-size: 14.5px;
+    font-family: 'Inter', Arial, Helvetica, sans-serif;
+    padding: 12px 16px 12px 46px;
+    /* Más espaciado a la izquierda por el icono */
+    border: 1px solid transparent;
+    border-radius: 999px;
+    /* Diseño completamente redondeado (píldora) */
+    background: $surface-2;
+    /* Fondo sutil grisáceo */
+    color: $text;
+    outline: none;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.04);
+
+    &:hover {
+      background: $surface-3;
+    }
+
+    &:focus {
+      background: $surface;
+      border-color: $border;
+      box-shadow: 0 4px 12px rgba(16, 36, 52, 0.08), 0 0 0 3px rgba(14, 90, 138, 0.15);
+
+      +.atu-search-bar__icon {
+        color: $primary;
+        /* El icono cambia al color primario en focus */
+      }
+    }
+
+    &::placeholder {
+      color: $text-3;
+      font-weight: 500;
+    }
+  }
+}
+
+// ──────────────────────────────────────────────────────────────
+//  3. BOTONES
+// ──────────────────────────────────────────────────────────────
+
+.atu-btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 9px 14px;
+  background: $surface;
+  border: 1px solid $border;
+  color: $text-2;
+  font-size: 13.5px;
+  font-weight: 600;
+  font-family: Arial, Helvetica, sans-serif;
+  border-radius: 10px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: filter 0.15s;
+
+  &:hover {
+    filter: brightness(0.97);
+  }
+}
+
+.atu-btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 9px 16px;
+  background: $primary;
+  border: none;
+  color: #ffffff;
+  font-size: 13.5px;
+  font-weight: 700;
+  font-family: Arial, Helvetica, sans-serif;
+  border-radius: 10px;
+  cursor: pointer;
+  white-space: nowrap;
+  box-shadow: 0 6px 16px rgba(14, 90, 138, 0.22);
+  transition: filter 0.15s;
+
+  &:hover {
+    filter: brightness(0.95);
+  }
+}
+
+
+
+// ──────────────────────────────────────────────────────────────
+//  9. MODALES Y FORMULARIOS
+// ──────────────────────────────────────────────────────────────
+
+.atu-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  background: rgba(14, 90, 138, 0.35);
+  backdrop-filter: blur(4px);
+
+  @media (max-width: 480px) {
+    padding: 8px;
+    align-items: flex-end;
+  }
+}
+
+.atu-modal {
+  background: $surface;
+  border: 1px solid $border;
+  border-radius: 16px;
+  box-shadow: 0 18px 50px rgba(16, 36, 52, 0.22);
+  width: 100%;
+  max-width: 760px;
+  max-height: 90vh;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+
+  &__header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 18px 24px;
+    border-bottom: 1px solid $border;
+    background: $surface-2;
+  }
+
+  &__header-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 9px;
+    background: $primary-soft;
+    color: $primary;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  &__title {
+    font-size: 15px;
+    font-weight: 800;
+    color: $text;
+    margin: 0;
+    line-height: 1.2;
+  }
+
+  &__subtitle {
+    font-size: 12px;
+    color: $text-3;
+    margin: 2px 0 0;
+  }
+
+  &__close {
+    margin-left: auto;
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    border: 1px solid $border;
+    background: $surface;
+    color: $text-3;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: filter 0.15s;
+
+    &:hover {
+      filter: brightness(0.95);
+    }
+  }
+
+  &__body {
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  &__footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    padding-top: 16px;
+    border-top: 1px solid $border;
+
+    @media (max-width: 480px) {
+      flex-direction: column;
+
+      button {
+        width: 100%;
+        justify-content: center;
+      }
+    }
+  }
+}
+
+.atu-form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+
+  @media (max-width: 640px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.atu-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+
+  &__label {
+    font-size: 11.5px;
+    font-weight: 700;
+    color: $text-3;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  &__input,
+  &__select {
+    background: $surface;
+    border: 1px solid $border;
+    border-radius: 10px;
+    padding: 11px 12px;
+    font-size: 14px;
+    font-family: Arial, Helvetica, sans-serif;
+    color: $text;
+    outline: none;
+    transition: border-color 0.15s, box-shadow 0.15s;
+
+    &:focus {
+      border-color: $primary;
+      box-shadow: 0 0 0 3px rgba(14, 90, 138, 0.12);
+    }
+
+    &::placeholder {
+      color: $text-3;
+    }
+  }
+
+  &__select {
+    cursor: pointer;
+  }
+}
+
+@keyframes atu-modal-in {
+  from { opacity: 0; transform: translateY(20px) scale(0.97); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+// ──────────────────────────────────────────────────────────────
+//  DARK MODE — variantes para layout, modales, botones, campos
+// ──────────────────────────────────────────────────────────────
+
+html.dark {
+
+  // ── Encabezado de página ─────────────────────────────────
+  .atu-page-header {
+    &__eyebrow { color: #00A3E0; }
+    &__title   { color: #E6EDF3; }
+    &__sub     { color: #8B949E; }
+  }
+
+  // ── Buscador ─────────────────────────────────────────────
+  .atu-search-bar__input {
+    background: #161B22;
+    color: #E6EDF3;
+    border-color: transparent;
+
+    &:hover  { background: #1C2128; }
+
+    &:focus {
+      background: #0D1117;
+      border-color: #30363D;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3), 0 0 0 3px rgba(0,163,224,0.15);
+    }
+
+    &::placeholder { color: #6E7681; }
+  }
+
+  .atu-search-bar__icon { color: #6E7681; }
+
+  // ── Botones ───────────────────────────────────────────────
+  .atu-btn-secondary {
+    background: #21262D;
+    border-color: #30363D;
+    color: #C9D1D9;
+
+    &:hover { filter: brightness(1.15); }
+  }
+
+  .atu-btn-primary {
+    background: #0059B3;
+    box-shadow: 0 6px 16px rgba(0, 89, 179, 0.3);
+    &:hover { filter: brightness(1.1); }
+  }
+
+  // ── Modales ───────────────────────────────────────────────
+  .atu-modal-overlay {
+    background: rgba(0, 0, 0, 0.65);
+  }
+
+  .atu-modal {
+    background: #161B22;
+    border-color: #30363D;
+    box-shadow: 0 18px 50px rgba(0, 0, 0, 0.5);
+
+    &__header {
+      background: #1C2128;
+      border-bottom-color: #30363D;
+    }
+
+    &__header-icon {
+      background: rgba(0, 163, 224, 0.12);
+      color: #00A3E0;
+    }
+
+    &__title   { color: #E6EDF3; }
+    &__subtitle { color: #8B949E; }
+
+    &__close {
+      background: #21262D;
+      border-color: #30363D;
+      color: #8B949E;
+      &:hover { filter: brightness(1.2); }
+    }
+
+    &__footer { border-top-color: #30363D; }
+  }
+
+  // ── Campos de formulario ──────────────────────────────────
+  .atu-field {
+    &__label { color: #8B949E; }
+
+    &__input,
+    &__select {
+      background: #0D1117;
+      border-color: #30363D;
+      color: #E6EDF3;
+
+      &:focus {
+        border-color: #00A3E0;
+        box-shadow: 0 0 0 3px rgba(0, 163, 224, 0.15);
+      }
+
+      &::placeholder { color: #6E7681; }
+    }
+  }
+}

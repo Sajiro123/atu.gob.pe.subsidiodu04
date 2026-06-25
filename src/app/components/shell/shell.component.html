@@ -1,0 +1,234 @@
+<!-- Backdrop (cierra sidebar al hacer clic fuera) -->
+@if (sidebarOpen) {
+<div class="atu-backdrop" (click)="closeSidebar()"></div>
+}
+
+<!-- ══ ROOT SHELL ══════════════════════════════════════════════ -->
+<div class="flex min-h-screen bg-[#EEF2F6] dark:bg-[#0D1117]">
+
+  <!-- ══ SIDEBAR ══════════════════════════════════════════════ -->
+  <aside class="atu-sidebar" [class.atu-sidebar--open]="sidebarOpen">
+
+    <!-- ── Cabecera del sidebar ─────────────────────────────── -->
+    <div class="border-b border-white/10 bg-black/[.10]">
+
+      <!-- Fila 1: Logo + botones de acción -->
+      <div class="flex items-center gap-2 px-4 pt-4 pb-2">
+
+        <!-- Logo ATU — horizontal, ocupa todo el espacio disponible -->
+        <div class="flex-1 min-w-0 flex items-center">
+          <img src="/logo-atu-blanco.png" alt="ATU — Autoridad de Transporte Urbano" class="h-8 w-auto object-contain object-left select-none
+                   drop-shadow-[0_1px_4px_rgba(0,163,224,0.3)]" draggable="false" />
+        </div>
+
+        <!-- Botón Toggle Tema (sol / luna) -->
+        <button id="sidebar-theme-toggle" class="flex-none w-7 h-7 rounded-lg border border-white/15
+                 bg-transparent text-white/60 cursor-pointer
+                 flex items-center justify-center relative overflow-hidden
+                 hover:bg-white/10 hover:text-white hover:border-white/30
+                 transition-all duration-200" (click)="toggleTheme()" [title]="isDark ? 'Modo claro' : 'Modo oscuro'"
+          aria-label="Cambiar tema">
+          <!-- Sol -->
+          <svg class="absolute transition-all duration-300" [class.opacity-0]="isDark" [class.rotate-90]="isDark"
+            [class.scale-50]="isDark" [class.opacity-100]="!isDark" [class.rotate-0]="!isDark"
+            [class.scale-100]="!isDark" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2" stroke-linecap="round">
+            <circle cx="12" cy="12" r="5" />
+            <path
+              d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" />
+          </svg>
+          <!-- Luna -->
+          <svg class="absolute transition-all duration-300" [class.opacity-0]="!isDark" [class.-rotate-90]="!isDark"
+            [class.scale-50]="!isDark" [class.opacity-100]="isDark" [class.rotate-0]="isDark" [class.scale-100]="isDark"
+            width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+          </svg>
+        </button>
+
+        <!-- Botón cerrar (solo móvil) -->
+        <button class="atu-sidebar__close-btn flex-none w-7 h-7 rounded-lg border border-white/15
+                 bg-transparent text-white/60 cursor-pointer
+                 flex items-center justify-center
+                 hover:bg-white/10 hover:text-white hover:border-white/30
+                 transition-all duration-200" (click)="closeSidebar()" aria-label="Cerrar menú">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+            stroke-linecap="round">
+            <path d="M18 6 6 18M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+
+      <!-- Fila 2: Nombre del sistema -->
+      <div class="px-4 pb-3 pt-0.5">
+        <!-- Separador sutil -->
+        <div class="h-px bg-white/[.07] mb-2.5"></div>
+        <div class="text-[12px] font-bold text-white/90 tracking-[0.3px] leading-tight">
+          Padrón de Transporte
+        </div>
+        <div class="text-[10px] font-medium mt-0.5 tracking-[0.4px]
+                    text-[#00A3E0]/65">
+          Plataforma Digital de Subsidios
+        </div>
+      </div>
+
+    </div>
+
+
+    <!-- ── Navegación principal ─────────────────────────────── -->
+    <app-sidebar-nav [totalCargados]="totalCargados"></app-sidebar-nav>
+
+    <!-- ── Footer del sidebar ───────────────────────────────── -->
+    <app-sidebar-footer (abrirPerfil)="abrirPerfil()" (logout)="onLogout()">
+    </app-sidebar-footer>
+  </aside>
+
+  <!-- ══ ÁREA PRINCIPAL ════════════════════════════════════════ -->
+  <div class="atu-main flex-1 min-w-0 flex flex-col min-h-screen" [class.atu-main--collapsed]="!sidebarOpen">
+
+    <!-- ── TOPBAR ────────────────────────────────────────────── -->
+    <header class="flex-none flex items-center gap-3.5 px-[18px] h-[62px]
+                   bg-white dark:bg-[#161B22]
+                   border-b border-[#DCE4EC] dark:border-[#30363D]
+                   sticky top-0 z-20 shadow-[0_1px_4px_rgba(16,36,52,0.07)]
+                   dark:shadow-[0_1px_4px_rgba(0,0,0,0.3)]
+                   transition-colors duration-300">
+
+      <!-- Hamburger -->
+      <button class="flex-none w-10 h-10 rounded-[10px]
+               border border-[#DCE4EC] dark:border-[#30363D]
+               bg-[#F5F8FB] dark:bg-[#21262D]
+               text-[#46586A] dark:text-[#8B949E]
+               cursor-pointer flex items-center justify-center
+               hover:brightness-95 dark:hover:brightness-125
+               transition-all duration-150" (click)="toggleSidebar()" aria-label="Menú">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+          stroke-linecap="round">
+          <path d="M3 6h18M3 12h18M3 18h18" />
+        </svg>
+      </button>
+
+
+      <!-- Spacer -->
+      <div class="flex-1"></div>
+
+      <!-- ── Toggle tema en topbar ────────────────────────────── -->
+      <button id="topbar-theme-toggle" class="flex-none w-9 h-9 rounded-[10px]
+                     border border-[#DCE4EC] dark:border-[#30363D]
+                     bg-[#F5F8FB] dark:bg-[#21262D]
+                     text-[#46586A] dark:text-[#8B949E]
+                     cursor-pointer flex items-center justify-center relative overflow-hidden
+                     hover:border-[#004C97] dark:hover:border-[#00A3E0]
+                     hover:text-[#004C97] dark:hover:text-[#00A3E0]
+                     hover:bg-[#E3EEF6] dark:hover:bg-[#002D5C]
+                     transition-all duration-200" (click)="toggleTheme()"
+        [title]="isDark ? 'Modo claro' : 'Modo oscuro'" aria-label="Cambiar tema">
+        <!-- Sol -->
+        <svg class="absolute transition-all duration-300" [class.opacity-0]="isDark" [class.rotate-90]="isDark"
+          [class.scale-50]="isDark" [class.opacity-100]="!isDark" [class.rotate-0]="!isDark" [class.scale-100]="!isDark"
+          width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+          stroke-linecap="round">
+          <circle cx="12" cy="12" r="5" />
+          <path
+            d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" />
+        </svg>
+        <!-- Luna -->
+        <svg class="absolute transition-all duration-300" [class.opacity-0]="!isDark" [class.-rotate-90]="!isDark"
+          [class.scale-50]="!isDark" [class.opacity-100]="isDark" [class.rotate-0]="isDark" [class.scale-100]="isDark"
+          width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+          stroke-linecap="round">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+        </svg>
+      </button>
+
+      <!-- ── Usuario ───────────────────────────────────────────── -->
+      <div class="relative flex items-center">
+        <div class="flex items-center gap-2.5 group cursor-pointer
+                    pl-3 pr-2 py-1.5 rounded-xl ml-1
+                    border border-transparent
+                    hover:border-[#DCE4EC] dark:hover:border-[#30363D]
+                    hover:bg-[#F5F8FB] dark:hover:bg-[#1C2128]
+                    hover:shadow-[0_2px_8px_rgba(16,36,52,0.07)]
+                    dark:hover:shadow-[0_2px_8px_rgba(0,0,0,0.3)]
+                    transition-all duration-200" (click)="toggleUserMenu($event)" title="Opciones de perfil">
+
+          <!-- Meta del usuario -->
+          <div class="text-right min-w-0 hidden sm:block">
+            <div class="text-[12.5px] font-bold leading-tight tracking-[0.1px]
+                        text-[#15242F] dark:text-[#E6EDF3]
+                        whitespace-nowrap
+                        group-hover:text-[#004C97] dark:group-hover:text-[#00A3E0]
+                        transition-colors duration-200">
+              {{ usuario?.nombre }}
+            </div>
+            <div class="text-[10.5px] font-medium tracking-[0.15px]
+                        text-[#6E8090] dark:text-[#6E7681]
+                        max-w-[180px] overflow-hidden text-ellipsis whitespace-nowrap
+                        transition-colors duration-200">
+              {{ usuario?.entidad }}
+            </div>
+          </div>
+
+          <!-- Avatar con gradiente + anillo de acento -->
+          <div class="relative flex-none">
+            <!-- Anillo exterior (aparece en hover) -->
+            <div class="absolute -inset-0.5 rounded-full
+                        bg-gradient-to-br from-[#004C97] to-[#00A3E0]
+                        dark:from-[#003A75] dark:to-[#00C4FF]
+                        opacity-0 group-hover:opacity-100
+                        transition-opacity duration-200 -z-10"></div>
+            <!-- Avatar -->
+            <div class="relative w-9 h-9 rounded-full
+                        bg-gradient-to-br from-[#E3EEF6] to-[#D0E4F0]
+                        dark:from-[#002D5C] dark:to-[#003A75]
+                        border-2 border-[#DCE4EC] dark:border-[#1C4E80]
+                        group-hover:border-[#004C97] dark:group-hover:border-[#00A3E0]
+                        text-[#004C97] dark:text-[#00C4FF]
+                        flex items-center justify-center
+                        font-extrabold text-[14px] tracking-[0.5px]
+                        shadow-[0_2px_6px_rgba(0,76,151,0.15)]
+                        dark:shadow-[0_2px_6px_rgba(0,163,224,0.2)]
+                        transition-all duration-200">
+              {{ avatarLetter }}
+            </div>
+          </div>
+        </div>
+
+        <!-- Menú desplegable -->
+        @if (showUserMenu) {
+        <div
+          class="absolute right-0 top-full mt-2 w-48 rounded-[12px] bg-white dark:bg-[#1C2128] border border-gray-200 dark:border-[#30363D] shadow-[0_10px_40px_rgba(0,0,0,0.1)] dark:shadow-[0_10px_40px_rgba(0,0,0,0.5)] z-[100] py-1.5 overflow-hidden"
+          (click)="$event.stopPropagation()">
+          <div class="px-4 py-2 mb-1 border-b border-gray-100 dark:border-[#30363D] block sm:hidden">
+            <div class="font-bold text-[13px] text-[#15242F] dark:text-[#E6EDF3]">{{ usuario?.nombre }}</div>
+            <div class="text-[11px] text-[#6E8090] dark:text-[#6E7681] truncate">{{ usuario?.entidad }}</div>
+          </div>
+
+          <button (click)="abrirPerfil(); showUserMenu = false;"
+            class="w-full text-left px-4 py-2.5 text-[13px] font-[600] text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-[#2D333B] transition-colors flex items-center gap-2.5 border-none bg-transparent cursor-pointer">
+            <i class="fa-solid fa-user-pen text-[#0059B3] dark:text-[#00A3E0] w-[14px] text-center"></i> Editar Perfil
+          </button>
+          <button (click)="onLogout(); showUserMenu = false;"
+            class="w-full text-left px-4 py-2.5 text-[13px] font-[600] text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-[rgba(239,68,68,0.1)] transition-colors flex items-center gap-2.5 border-none bg-transparent cursor-pointer">
+            <i class="fa-solid fa-right-from-bracket text-red-600 dark:text-red-400 w-[14px] text-center"></i> Cerrar
+            Sesión
+          </button>
+        </div>
+        }
+      </div>
+    </header>
+
+
+    <!-- ── CONTENIDO ─────────────────────────────────────────── -->
+    <div class="flex-1 min-w-0 w-full max-w-[1440px] mx-auto overflow-x-hidden
+                px-[clamp(20px,4vw,40px)] py-8 pb-[60px]
+                bg-white dark:bg-[#0D1117]
+                shadow-[0_4px_30px_rgba(16,36,52,0.03)]
+                dark:shadow-none
+                transition-colors duration-300">
+      <router-outlet></router-outlet>
+    </div>
+
+  </div>
+
+</div>

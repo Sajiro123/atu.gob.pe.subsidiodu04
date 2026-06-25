@@ -5,43 +5,61 @@ export const routes: Routes = [
   {
     path: '',
     redirectTo: 'login',
-    pathMatch: 'full'
+    pathMatch: 'full',
   },
   {
     path: 'login',
     loadComponent: () =>
-      import('./pages/login/login.component').then(m => m.LoginComponent)
+      import('./pages/login/login.component').then((m) => m.LoginComponent),
   },
   {
-    path: 'dashboard',
+    path: '',
     loadComponent: () =>
-      import('./pages/dashboard/dashboard.component').then(m => m.DashboardComponent),
+      import('./components/shell/shell.component').then(
+        (m) => m.ShellComponent,
+      ),
     canActivate: [authGuard],
     children: [
       {
-        path: '',
-        redirectTo: 'carga',
-        pathMatch: 'full'
+        path: 'dashboard',
+        loadComponent: () =>
+          import('./pages/dashboard/dashboard.component').then(
+            (m) => m.DashboardComponent,
+          ),
+      },
+
+      {
+        path: 'vehiculo-empresa',
+        loadComponent: () =>
+          import('./pages/funcionario/vehiculo-empresa/vehiculo-empresa.component').then(
+            (m) => m.VehiculoEmpresaComponent,
+          ),
       },
       {
-        path: 'carga',
+        path: 'perfil',
         loadComponent: () =>
-          import('./pages/dashboard/pages/carga/carga.component').then(m => m.CargaComponent)
+          import('./pages/perfil/perfil-info.component').then(
+            (m) => m.PerfilInfoComponent,
+          ),
+      },
+      {
+        path: 'empresas',
+        loadComponent: () =>
+          import('./pages/funcionario/empresas/empresas.component').then(
+            (m) => m.EmpresasComponent,
+          ),
       },
       {
         path: 'registros',
         loadComponent: () =>
-          import('./pages/dashboard/pages/registros/registros.component').then(m => m.RegistrosComponent)
+          import('./pages/pages/registros/registros.component').then(
+            (m) => m.RegistrosComponent,
+          ),
       },
-      {
-        path: 'historial',
-        loadComponent: () =>
-          import('./pages/dashboard/pages/historial/historial.component').then(m => m.HistorialComponent)
-      }
-    ]
+    ],
   },
   {
     path: '**',
-    redirectTo: 'login'
-  }
+    redirectTo: 'login',
+  },
 ];

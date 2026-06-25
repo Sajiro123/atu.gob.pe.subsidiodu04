@@ -1,216 +1,241 @@
-<div class="min-h-screen bg-background font-body-md text-body-md text-on-surface flex">
+<div class="flex flex-col gap-4">
 
-  <!-- SideNavBar -->
-  <aside class="fixed left-0 top-0 h-full w-[260px] bg-primary border-r border-outline-variant/20 flex flex-col z-20">
+  <!-- ══════════ WELCOME HEADER ══════════ -->
+  <div
+    class="flex flex-col md:flex-row items-start md:items-center gap-4 bg-[var(--surface-2)] border border-[var(--border)] rounded-2xl py-4 px-5 shadow-[var(--shadow)] transition-all duration-300 hover:shadow-md">
+    <div
+      class="w-12 h-12 rounded-full bg-[var(--primary)] text-white flex items-center justify-center font-extrabold text-xl shadow-[0_4px_10px_rgba(14,90,138,0.15)] shrink-0 select-none">
+      <i class="fa-solid fa-circle-user"></i>
+    </div>
+    <div class="flex-1 min-w-0">
+      <h1 class="text-xl md:text-2xl font-extrabold text-[var(--text)] tracking-tight">Bienvenido, {{ primerNombre }}
+      </h1>
+      <p class="text-xs text-[var(--text-3)] mt-0.5 flex items-center gap-1.5 flex-wrap">
+        <span>Panel general del padrón de subsidio</span>
+        <span class="text-[var(--border-strong)] hidden md:inline">·</span>
+        <span class="font-semibold text-[var(--text-2)]">{{ usuario?.entidad ?? '—' }}</span>
+      </p>
+    </div>
+  </div>
 
-    <!-- Header -->
-    <div class="px-gutter py-stack-lg border-b border-outline-variant/20 flex items-center gap-stack-sm">
+  <!-- ══════════ KPI: EMPRESAS ══════════ -->
+  <div>
+    <div class="flex items-center gap-2 mb-2.5">
+      <span class="w-1.5 h-3 bg-[var(--primary)] rounded-full"></span>
+      <h2 class="text-xs font-extrabold tracking-wider text-[var(--text-3)] uppercase">Empresas por tipo de servicio
+      </h2>
+    </div>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+      @for (k of kpisEmp; track k.label) {
       <div
-        class="bg-[#003366] p-1.5 rounded shadow-sm flex items-center justify-center max-w-[50px] transition-transform hover:scale-105">
-        <img src="/logo.png" alt="ATU Logo" class="h-6 w-auto object-contain" />
-      </div>
-      <div>
-        <p class="font-label-sm text-label-sm text-on-primary/70 mt-1 leading-tight">Plataforma Digital de Subsidios</p>
-      </div>
-    </div>
+        class="group relative overflow-hidden bg-[var(--surface)] border border-[var(--border)] rounded-3xl p-5 shadow-sm hover:shadow-xl transition-all duration-500 hover:-translate-y-2 flex flex-col justify-between min-h-[140px] cursor-default">
+        <!-- Background Glow sutil en hover -->
+        <div class="absolute inset-0 opacity-0 group-hover:opacity-10 transition-opacity duration-700 pointer-events-none"
+             [style.background]="'radial-gradient(circle at top right, ' + k.accent + ', transparent 70%)'"></div>
+             
+        <!-- Decoración lateral izquierda -->
+        <div class="absolute top-0 bottom-0 left-0 w-1.5 opacity-80" [style.background]="k.accent"></div>
 
-    <!-- Navigation Header -->
-    <div class="px-gutter pt-stack-md pb-stack-sm">
-      <span class="font-label-sm text-label-sm text-primary-fixed-dim/40 uppercase tracking-wider">MÓDULO GR /
-        MUNICIPALIDADES</span>
-    </div>
+        <!-- Marca de agua icono animado -->
+        <div class="absolute -bottom-6 -right-4 text-[90px] opacity-[0.03] group-hover:opacity-[0.08] transition-all duration-700 group-hover:scale-110 group-hover:-rotate-12 pointer-events-none select-none">
+          {{ k.icon }}
+        </div>
 
-    <!-- Navigation Tabs -->
-    <nav class="flex-1 overflow-y-auto">
-      <ul class="flex flex-col">
-        <li>
-          <a routerLink="/dashboard/carga"
-            routerLinkActive="bg-secondary-container text-on-secondary-container border-l-4 border-secondary-fixed font-bold opacity-90"
-            [routerLinkActiveOptions]="{exact: true}"
-            class="text-on-primary/75 hover:bg-primary-container hover:text-on-primary-container border-l-4 border-transparent flex items-center gap-stack-md px-container-padding py-stack-md w-full transition-all duration-200">
-            <span class="material-symbols-outlined" data-weight="fill">upload_file</span>
-            <span class="font-label-md text-label-md">Carga de información</span>
-          </a>
-        </li>
-        <li>
-          <a routerLink="/dashboard/registros"
-            routerLinkActive="bg-secondary-container text-on-secondary-container border-l-4 border-secondary-fixed font-bold opacity-90"
-            class="text-on-primary/75 hover:bg-primary-container hover:text-on-primary-container border-l-4 border-transparent flex items-center justify-between px-container-padding py-stack-md w-full transition-all duration-200">
-            <div class="flex items-center gap-stack-md">
-              <span class="material-symbols-outlined" data-weight="fill">table_chart</span>
-              <span class="font-label-md text-label-md">Registros cargados</span>
+        <!-- Header: Label + Icon -->
+        <div class="relative z-10 flex justify-between items-start gap-3 mb-3">
+          <span class="text-[11px] font-extrabold text-[var(--text-3)] uppercase tracking-widest leading-snug mt-1">{{ k.label }}</span>
+          <div class="flex items-center justify-center w-11 h-11 rounded-[14px] shadow-inner border border-white/10 shrink-0 transition-transform duration-500 group-hover:scale-110"
+               [style.background]="k.accent + '15'" [style.color]="k.accent">
+            <span class="text-xl filter drop-shadow-sm">{{ k.icon }}</span>
+          </div>
+        </div>
+
+        <!-- Content: Value + Sub -->
+        <div class="relative z-10 mt-auto flex items-end justify-between">
+          <div class="text-[32px] font-black text-[var(--text)] tracking-tighter leading-none">{{ k.value }}</div>
+          <div class="text-[10px] font-extrabold px-2.5 py-1 rounded-full bg-[var(--surface-2)] border border-[var(--border)] uppercase tracking-wider shadow-sm" [style.color]="k.subColor">
+            {{ k.sub }}
+          </div>
+        </div>
+      </div>
+      }
+    </div>
+  </div>
+
+  <!-- ══════════ KPI: VEHÍCULOS ══════════ -->
+  <div>
+    <div class="flex items-center gap-2 mb-2.5">
+      <span class="w-1.5 h-3 bg-[var(--primary)] rounded-full"></span>
+      <h2 class="text-xs font-extrabold tracking-wider text-[var(--text-3)] uppercase">Vehículos cargados</h2>
+    </div>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+      @for (k of kpisVeh; track k.label) {
+      <div
+        class="group relative overflow-hidden bg-[var(--surface)] border border-[var(--border)] rounded-3xl p-5 shadow-sm hover:shadow-xl transition-all duration-500 hover:-translate-y-2 flex flex-col justify-between min-h-[140px] cursor-default">
+        <!-- Background Glow sutil en hover -->
+        <div class="absolute inset-0 opacity-0 group-hover:opacity-10 transition-opacity duration-700 pointer-events-none"
+             [style.background]="'radial-gradient(circle at top right, ' + k.accent + ', transparent 70%)'"></div>
+             
+        <!-- Decoración lateral izquierda -->
+        <div class="absolute top-0 bottom-0 left-0 w-1.5 opacity-80" [style.background]="k.accent"></div>
+
+        <!-- Marca de agua icono animado -->
+        <div class="absolute -bottom-6 -right-4 text-[90px] opacity-[0.03] group-hover:opacity-[0.08] transition-all duration-700 group-hover:scale-110 group-hover:-rotate-12 pointer-events-none select-none">
+          {{ k.icon }}
+        </div>
+
+        <!-- Header: Label + Icon -->
+        <div class="relative z-10 flex justify-between items-start gap-3 mb-3">
+          <span class="text-[11px] font-extrabold text-[var(--text-3)] uppercase tracking-widest leading-snug mt-1">{{ k.label }}</span>
+          <div class="flex items-center justify-center w-11 h-11 rounded-[14px] shadow-inner border border-white/10 shrink-0 transition-transform duration-500 group-hover:scale-110"
+               [style.background]="k.accent + '15'" [style.color]="k.accent">
+            <span class="text-xl filter drop-shadow-sm">{{ k.icon }}</span>
+          </div>
+        </div>
+
+        <!-- Content: Value + Sub -->
+        <div class="relative z-10 mt-auto flex items-end justify-between">
+          <div class="text-[32px] font-black text-[var(--text)] tracking-tighter leading-none">{{ k.value }}</div>
+          <div class="text-[10px] font-extrabold px-2.5 py-1 rounded-full bg-[var(--surface-2)] border border-[var(--border)] uppercase tracking-wider shadow-sm" [style.color]="k.subColor">
+            {{ k.sub }}
+          </div>
+        </div>
+      </div>
+      }
+    </div>
+  </div>
+
+  <!-- ══════════ QUICK ACTIONS / MENÚ DE NAVEGACIÓN ══════════ -->
+  <div>
+    <div class="flex items-center gap-2 mb-2.5 mt-2">
+      <span class="w-1.5 h-3 bg-[var(--primary)] rounded-full"></span>
+      <h2 class="text-xs font-extrabold tracking-wider text-[var(--text-3)] uppercase">Menú de Navegación</h2>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+
+      <!-- Item: Empresas -->
+      <button
+        class="group w-full text-left bg-[var(--surface)] border border-[var(--border)] rounded-2xl p-4 shadow-[var(--shadow)] flex items-center justify-between gap-4 transition-all duration-300 hover:border-[var(--primary)] hover:shadow-lg hover:-translate-y-1 focus:outline-none focus:ring-2 focus:ring-[var(--primary)]/20 cursor-pointer"
+        (click)="goEmpresas()">
+        <div class="flex items-center gap-3.5 min-w-0">
+          <div
+            class="w-10 h-10 rounded-xl bg-[var(--primary-soft)] text-[var(--primary)] flex items-center justify-center shrink-0 transition-all duration-300 group-hover:bg-[var(--primary)] group-hover:text-white group-hover:scale-105 shadow-sm border border-[var(--border)]/30">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+              <polyline points="9 22 9 12 15 12 15 22" />
+            </svg>
+          </div>
+          <div class="min-w-0">
+            <div
+              class="text-sm font-extrabold text-[var(--text)] transition-colors duration-300 group-hover:text-[var(--primary)] mb-0.5">
+              Empresas de transporte
             </div>
-            @if (totalCargados > 0) {
-            <span class="bg-secondary text-white font-bold text-[10px] px-2 py-0.5 rounded-full">
-              {{ totalCargados }}
-            </span>
-            }
-          </a>
-        </li>
-        <li>
-          <a routerLink="/dashboard/historial"
-            routerLinkActive="bg-secondary-container text-on-secondary-container border-l-4 border-secondary-fixed font-bold opacity-90"
-            class="text-on-primary/75 hover:bg-primary-container hover:text-on-primary-container border-l-4 border-transparent flex items-center gap-stack-md px-container-padding py-stack-md w-full transition-all duration-200">
-            <span class="material-symbols-outlined" data-weight="fill">history</span>
-            <span class="font-label-md text-label-md">Historial de envíos</span>
-          </a>
-        </li>
-      </ul>
-    </nav>
-
-    <!-- Footer Profile -->
-    <div class="p-gutter border-t border-outline-variant/20 flex flex-col gap-stack-sm text-secondary-fixed-dim">
-
-      <!-- Date Details -->
-      <div
-        class="mb-2 p-2 rounded bg-primary-container/30 border border-outline-variant/10 text-xs text-primary-fixed-dim flex flex-col gap-1 leading-normal">
-        <div class="flex items-center gap-1.5">
-          <span class="material-symbols-outlined text-xs">calendar_today</span>
-          <span>Vigencia DU: 31/12/2026</span>
+            <div class="text-xs text-[var(--text-3)] leading-relaxed truncate md:whitespace-normal">Gestione el padrón
+              de empresas y transportistas</div>
+          </div>
         </div>
-        <div class="flex items-center gap-1.5 text-error-container/80">
-          <span class="material-symbols-outlined text-xs text-error-container">schedule</span>
-          <span>Límite: 29/09/2026</span>
+        <!-- Indicator chevron -->
+        <div
+          class="w-7 h-7 rounded-full bg-[var(--surface-2)] group-hover:bg-[var(--primary-soft)] text-[var(--text-3)] group-hover:text-[var(--primary)] flex items-center justify-center shrink-0 transition-all duration-300 group-hover:translate-x-1 shadow-sm border border-[var(--border)]/50">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+            stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="9 18 15 12 9 6" />
+          </svg>
         </div>
-      </div>
+      </button>
 
-      <!-- User info -->
-      <div class="flex items-center gap-stack-sm">
-        <span class="material-symbols-outlined text-sm">person</span>
-        <span class="font-label-sm text-label-sm truncate font-medium text-white">{{ usuario?.nombre }}</span>
-      </div>
-      <div class="flex items-center gap-stack-sm">
-        <span class="material-symbols-outlined text-sm">account_balance</span>
-        <span class="font-label-sm text-label-sm truncate text-white/70">{{ usuario?.entidad }}</span>
-      </div>
+      <!-- Item: Vehículos -->
+      <button
+        class="group w-full text-left bg-[var(--surface)] border border-[var(--border)] rounded-2xl p-4 shadow-[var(--shadow)] flex items-center justify-between gap-4 transition-all duration-300 hover:border-[var(--primary)] hover:shadow-lg hover:-translate-y-1 focus:outline-none focus:ring-2 focus:ring-[var(--primary)]/20 cursor-pointer"
+        (click)="goVehiculos()">
+        <div class="flex items-center gap-3.5 min-w-0">
+          <div
+            class="w-10 h-10 rounded-xl bg-[var(--primary-soft)] text-[var(--primary)] flex items-center justify-center shrink-0 transition-all duration-300 group-hover:bg-[var(--primary)] group-hover:text-white group-hover:scale-105 shadow-sm border border-[var(--border)]/30">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <path
+                d="M14 16H9m10 0h3v-3.15a1 1 0 0 0-.84-.99L16 11l-2.7-3.6a2 2 0 0 0-1.6-.8H9a2 2 0 0 0-2 2v2L3 13.4V16h3m10 0a2 2 0 1 1-4 0m4 0a2 2 0 1 0-4 0m-6 0a2 2 0 1 1-4 0m4 0a2 2 0 1 0-4 0" />
+            </svg>
+          </div>
+          <div class="min-w-0">
+            <div
+              class="text-sm font-extrabold text-[var(--text)] transition-colors duration-300 group-hover:text-[var(--primary)] mb-0.5">
+              Vehículos
+            </div>
+            <div class="text-xs text-[var(--text-3)] leading-relaxed truncate md:whitespace-normal">Administre placas,
+              TUC y vigencias por empresa</div>
+          </div>
+        </div>
+        <!-- Indicator chevron -->
+        <div
+          class="w-7 h-7 rounded-full bg-[var(--surface-2)] group-hover:bg-[var(--primary-soft)] text-[var(--text-3)] group-hover:text-[var(--primary)] flex items-center justify-center shrink-0 transition-all duration-300 group-hover:translate-x-1 shadow-sm border border-[var(--border)]/50">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+            stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="9 18 15 12 9 6" />
+          </svg>
+        </div>
+      </button>
 
-      <!-- Profile settings link -->
-      <div (click)="abrirPerfil()"
-        class="flex items-center gap-stack-sm mt-stack-sm pt-stack-sm border-t border-outline-variant/10 hover:text-white cursor-pointer transition-colors text-white/60">
-        <span class="material-symbols-outlined text-sm">manage_accounts</span>
-        <span class="font-label-sm text-label-sm">Mi Perfil / Contraseña</span>
-      </div>
-
-      <!-- Logout link -->
-      <div (click)="onLogout()"
-        class="flex items-center gap-stack-sm mt-stack-sm pt-stack-sm border-t border-outline-variant/10 hover:text-white cursor-pointer transition-colors text-white/60">
-        <span class="material-symbols-outlined text-sm">logout</span>
-        <span class="font-label-sm text-label-sm">Cerrar sesión</span>
-      </div>
+      <!-- Item: Mi perfil -->
+      <button
+        class="group w-full text-left bg-[var(--surface)] border border-[var(--border)] rounded-2xl p-4 shadow-[var(--shadow)] flex items-center justify-between gap-4 transition-all duration-300 hover:border-[var(--primary)] hover:shadow-lg hover:-translate-y-1 focus:outline-none focus:ring-2 focus:ring-[var(--primary)]/20 cursor-pointer"
+        routerLink="/perfil">
+        <div class="flex items-center gap-3.5 min-w-0">
+          <div
+            class="w-10 h-10 rounded-xl bg-[var(--primary-soft)] text-[var(--primary)] flex items-center justify-center shrink-0 transition-all duration-300 group-hover:bg-[var(--primary)] group-hover:text-white group-hover:scale-105 shadow-sm border border-[var(--border)]/30">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+              <circle cx="12" cy="7" r="4" />
+            </svg>
+          </div>
+          <div class="min-w-0">
+            <div
+              class="text-sm font-extrabold text-[var(--text)] transition-colors duration-300 group-hover:text-[var(--primary)] mb-0.5">
+              Mi perfil
+            </div>
+            <div class="text-xs text-[var(--text-3)] leading-relaxed truncate md:whitespace-normal">Información
+              institucional y cambio de contraseña</div>
+          </div>
+        </div>
+        <!-- Indicator chevron -->
+        <div
+          class="w-7 h-7 rounded-full bg-[var(--surface-2)] group-hover:bg-[var(--primary-soft)] text-[var(--text-3)] group-hover:text-[var(--primary)] flex items-center justify-center shrink-0 transition-all duration-300 group-hover:translate-x-1 shadow-sm border border-[var(--border)]/50">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+            stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="9 18 15 12 9 6" />
+          </svg>
+        </div>
+      </button>
 
     </div>
+  </div>
 
-  </aside>
+  <!-- ══════════ INFO STRIP ══════════ -->
+  <div
+    class="flex flex-col sm:flex-row gap-4 items-stretch sm:items-center bg-[var(--surface-2)] border border-[var(--border)] rounded-2xl p-3 text-xs font-semibold text-[var(--text-2)] mt-2">
 
-  <!-- Main Content Area -->
-  <div class="flex-1 ml-[260px] flex flex-col min-h-screen">
-    <router-outlet></router-outlet>
+    <div
+      class="flex items-center gap-2.5 py-1.5 px-3 rounded-xl bg-[var(--surface)] border border-[var(--border)] shadow-sm flex-1 sm:flex-initial justify-center sm:justify-start">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+        stroke-linecap="round" class="text-[var(--primary)]">
+        <rect x="3" y="4" width="18" height="18" rx="2" />
+        <path d="M16 2v4M8 2v4M3 10h18" />
+      </svg>
+      <span>Vigencia DU: <strong class="text-[var(--text)] font-extrabold ml-1">31/12/2026</strong></span>
+    </div>
+
+    <div
+      class="flex items-center gap-2.5 py-1.5 px-3 rounded-xl bg-[var(--warn-bg)] border border-[var(--border)] text-[var(--warn)] shadow-sm flex-1 sm:flex-initial justify-center sm:justify-start">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+        stroke-linecap="round" class="text-[var(--warn)]">
+        <circle cx="12" cy="12" r="10" />
+        <polyline points="12 6 12 12 16 14" />
+      </svg>
+      <span>Límite presentación: <strong class="text-[var(--warn)] font-extrabold ml-1">29/09/2026</strong></span>
+    </div>
+
   </div>
 
 </div>
-
-<!-- ══ MODAL: EDITAR PERFIL / CAMBIAR CONTRASEÑA ══════════ -->
-@if (modalPerfilOpen && usuario) {
-  <div class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4" (click)="cerrarPerfil()">
-    <div class="bg-surface-container-lowest border border-outline-variant rounded-xl shadow-lg w-full max-w-md overflow-hidden animate-in fade-in zoom-in-95 duration-200"
-         (click)="$event.stopPropagation()">
-      
-      <!-- Header -->
-      <div class="p-gutter bg-primary text-white border-b border-outline-variant/30 flex justify-between items-center">
-        <div class="flex items-center gap-stack-sm">
-          <span class="material-symbols-outlined text-2xl">manage_accounts</span>
-          <div>
-            <h3 class="font-headline-sm text-headline-sm font-bold">Perfil del Usuario</h3>
-            <p class="text-xs text-white/70">Gestionar información y credenciales</p>
-          </div>
-        </div>
-        <button (click)="cerrarPerfil()" class="text-white hover:bg-white/10 p-1 rounded-full flex items-center">
-          <span class="material-symbols-outlined">close</span>
-        </button>
-      </div>
-
-      <!-- Body -->
-      <div class="p-gutter space-y-4 text-on-surface">
-        
-        <!-- Info Cards -->
-        <div class="space-y-2.5 p-3.5 bg-surface-container-low border border-outline-variant/40 rounded-lg text-xs leading-normal">
-          <div>
-            <span class="text-on-surface-variant font-semibold uppercase tracking-wider block text-[10px]">Funcionario</span>
-            <strong class="text-sm text-primary font-bold">{{ usuario.nombre }}</strong>
-          </div>
-          <div>
-            <span class="text-on-surface-variant font-semibold uppercase tracking-wider block text-[10px]">Correo Institucional</span>
-            <span class="text-sm font-semibold">{{ usuario.email }}</span>
-          </div>
-          <div>
-            <span class="text-on-surface-variant font-semibold uppercase tracking-wider block text-[10px]">Entidad Gubernamental</span>
-            <span class="text-sm font-semibold">{{ usuario.entidad }} ({{ usuario.tipoEntidad === 'regional' ? 'Gobierno Regional' : 'Municipalidad' }})</span>
-          </div>
-          @if (usuario.documentoCargo) {
-          <div>
-            <span class="text-on-surface-variant font-semibold uppercase tracking-wider block text-[10px]">Documento de Cargo</span>
-            <span class="text-sm font-semibold text-secondary flex items-center gap-1">
-              <span class="material-symbols-outlined text-xs">attach_file</span>
-              {{ usuario.documentoCargo }}
-            </span>
-          </div>
-          }
-        </div>
-
-        <hr class="border-outline-variant/40" />
-
-        <div class="space-y-3">
-          <h4 class="font-semibold text-sm text-primary flex items-center gap-1.5">
-            <span class="material-symbols-outlined text-base">lock_reset</span>
-            Cambiar Contraseña
-          </h4>
-
-          <!-- Alert message inside modal -->
-          @if (perfilAlert) {
-            <div class="p-3 rounded text-xs leading-tight"
-                 [class.bg-error-container]="perfilAlert.type === 'error'"
-                 [class.text-on-error-container]="perfilAlert.type === 'error'"
-                 [class.bg-success-container]="perfilAlert.type === 'success'"
-                 [class.text-on-secondary-fixed-variant]="perfilAlert.type === 'success'">
-              {{ perfilAlert.message }}
-            </div>
-          }
-
-          <!-- Inputs -->
-          <div class="flex flex-col gap-baseline">
-            <label class="font-label-sm text-label-sm text-on-surface-variant">Contraseña actual</label>
-            <input type="password" [(ngModel)]="passActual" placeholder="••••••••"
-                   class="w-full border border-outline-variant rounded bg-surface-container-lowest px-3 py-2 text-body-md focus:border-secondary focus:ring-1 focus:ring-secondary outline-none" />
-          </div>
-
-          <div class="flex flex-col gap-baseline">
-            <label class="font-label-sm text-label-sm text-on-surface-variant">Nueva contraseña</label>
-            <input type="password" [(ngModel)]="passNueva" placeholder="Mínimo 6 caracteres"
-                   class="w-full border border-outline-variant rounded bg-surface-container-lowest px-3 py-2 text-body-md focus:border-secondary focus:ring-1 focus:ring-secondary outline-none" />
-          </div>
-
-          <div class="flex flex-col gap-baseline">
-            <label class="font-label-sm text-label-sm text-on-surface-variant">Confirmar nueva contraseña</label>
-            <input type="password" [(ngModel)]="passConfirmar" placeholder="Mínimo 6 caracteres"
-                   class="w-full border border-outline-variant rounded bg-surface-container-lowest px-3 py-2 text-body-md focus:border-secondary focus:ring-1 focus:ring-secondary outline-none" />
-          </div>
-        </div>
-
-      </div>
-
-      <!-- Footer -->
-      <div class="p-4 bg-surface-bright border-t border-outline-variant/30 flex justify-end gap-3">
-        <button (click)="cerrarPerfil()"
-                class="px-4 py-2 border border-outline-variant rounded hover:bg-surface-container text-on-surface font-label-md text-label-md transition-colors">
-          Cancelar
-        </button>
-        <button (click)="onSavePassword()"
-                class="px-5 py-2 bg-secondary text-white rounded hover:bg-secondary/90 flex items-center gap-1.5 font-label-md text-label-md shadow-sm transition-colors">
-          <span class="material-symbols-outlined text-sm">save</span>
-          <span>Guardar cambios</span>
-        </button>
-      </div>
-
-    </div>
-  </div>
-}

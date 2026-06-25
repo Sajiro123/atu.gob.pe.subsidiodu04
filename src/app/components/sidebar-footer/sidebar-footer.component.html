@@ -1,0 +1,46 @@
+<div class="atu-sidebar__footer">
+
+  <!-- Vigencias -->
+  <!-- <div class="atu-sidebar__dates">
+    <div class="atu-sidebar__date-row">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+        stroke-linecap="round">
+        <rect x="3" y="4" width="18" height="18" rx="2" />
+        <path d="M16 2v4M8 2v4M3 10h18" />
+      </svg>
+      Vigencia DU: 31/12/2026
+    </div>
+    <div class="atu-sidebar__date-row atu-sidebar__date-row--warn">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+        stroke-linecap="round">
+        <circle cx="12" cy="12" r="10" />
+        <polyline points="12 6 12 12 16 14" />
+      </svg>
+      Límite: 29/09/2026
+    </div>
+  </div> -->
+
+  <!-- Mi perfil -->
+  <button class="atu-nav-item atu-nav-item--action" routerLink="/perfil" routerLinkActive="atu-nav-item--active">
+    <span class="atu-nav-item__icon">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+        stroke-linecap="round" stroke-linejoin="round">
+        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+        <circle cx="12" cy="7" r="4" />
+      </svg>
+    </span>
+    <span class="atu-nav-item__label">Mi Perfil / Contraseña</span>
+  </button>
+
+  <!-- Cerrar sesión -->
+  <button class="atu-nav-item atu-nav-item--logout" (click)="onLogout()">
+    <span class="atu-nav-item__icon">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+        stroke-linecap="round" stroke-linejoin="round">
+        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9" />
+      </svg>
+    </span>
+    <span class="atu-nav-item__label">Cerrar sesión</span>
+  </button>
+
+</div>

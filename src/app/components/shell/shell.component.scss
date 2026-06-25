@@ -1,0 +1,131 @@
+/* shell.component.scss
+   Solo mantiene lo que requiere lógica dinámica (sidebar slide, responsive, backdrop).
+   El resto del shell usa clases Tailwind en el HTML.
+*/
+
+$sidebar-w: 260px;
+
+// ──────────────────────────────────────────────────────────────
+//  BACKDROP — overlay oscuro al abrir sidebar en móvil
+// ──────────────────────────────────────────────────────────────
+
+.atu-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 30, 60, 0.55);
+  backdrop-filter: blur(4px);
+  z-index: 30;
+  animation: atu-fade 0.25s ease;
+  display: none; // Oculto por defecto en desktop
+}
+
+@keyframes atu-fade {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+// ──────────────────────────────────────────────────────────────
+//  SIDEBAR — posicionamiento y transición dinámica
+// ──────────────────────────────────────────────────────────────
+
+.atu-sidebar {
+  position: fixed;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: $sidebar-w;
+  background: linear-gradient(180deg, #003A75 0%, #004C97 40%, #003f80 100%);
+  display: flex;
+  flex-direction: column;
+  z-index: 40;
+  transform: translateX(0);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 4px 0 24px rgba(0, 30, 60, 0.15);
+
+  // Botón cerrar: oculto en desktop, flex en móvil
+  &__close-btn {
+    display: none;
+  }
+
+  // Cuando sidebarOpen = false: se oculta deslizando a la izquierda
+  &:not(.atu-sidebar--open) {
+    transform: translateX(-#{$sidebar-w});
+  }
+}
+
+// ──────────────────────────────────────────────────────────────
+//  ÁREA PRINCIPAL — desplazamiento al abrir/cerrar sidebar
+// ──────────────────────────────────────────────────────────────
+
+.atu-main {
+  margin-left: $sidebar-w;
+  transition: margin-left 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+
+  &--collapsed {
+    margin-left: 0;
+  }
+}
+
+// ──────────────────────────────────────────────────────────────
+//  RESPONSIVE — móvil / tablet (≤ 900px)
+// ──────────────────────────────────────────────────────────────
+
+@media (max-width: 900px) {
+  .atu-sidebar {
+    transform: translateX(-#{$sidebar-w});
+
+    &--open {
+      transform: translateX(0);
+      box-shadow: 8px 0 40px rgba(0, 30, 60, 0.25);
+    }
+
+    &__close-btn {
+      display: flex; // Mostrar botón X en móvil
+    }
+  }
+
+  .atu-main {
+    margin-left: 0 !important;
+  }
+
+  .atu-backdrop {
+    display: block; // Mostrar overlay en móvil
+  }
+}
+
+// ──────────────────────────────────────────────────────────────
+//  DARK MODE — shell layout
+// ──────────────────────────────────────────────────────────────
+
+html.dark {
+
+  // Sidebar: ajuste de sombra para modo oscuro (más profundo)
+  .atu-sidebar {
+    box-shadow: 4px 0 32px rgba(0, 0, 0, 0.5);
+    background: linear-gradient(180deg, #001A3A 0%, #002D5C 40%, #001F42 100%);
+
+    &--open {
+      box-shadow: 8px 0 48px rgba(0, 0, 0, 0.6);
+    }
+  }
+
+  // Topbar: fondo oscuro (ya cubierto por Tailwind dark:, refuerzo aquí)
+  .atu-topbar {
+    background: #161B22;
+    border-bottom-color: #30363D;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
+  }
+
+  // Área de contenido principal
+  .atu-page-content {
+    background: #0D1117;
+    border-color: #161B22;
+    box-shadow: none;
+  }
+
+  // Backdrop más opaco en oscuro
+  .atu-backdrop {
+    background: rgba(0, 0, 0, 0.72);
+  }
+}
+

@@ -6,9 +6,55 @@ const DEMO_USERS: Usuario[] = [
   {
     email: 'demo@region.gob.pe',
     password: 'demo123',
-    nombre: 'Usuario Demo ATU',
+    nombre: 'Carlos',
+    primerApellido: 'Mendoza',
+    segundoApellido: 'Ríos',
     tipoEntidad: 'regional',
     entidad: 'Gobierno Regional de Lima',
+    tipoDocumento: 'DNI',
+    numDocumento: '42381956',
+    departamento: 'Lima',
+    provincia: 'Lima',
+    distrito: 'San Isidro',
+    telefono: '987 654 321',
+    cargo: 'Director de Transporte Regional',
+    documentoCargo: 'Resolución Directoral N° 124-2025',
+    registradoEn: new Date().toISOString()
+  },
+  {
+    email: 'maria.quispe@munihuancayo.gob.pe',
+    password: 'Maria2026!',
+    nombre: 'María Elena',
+    primerApellido: 'Quispe',
+    segundoApellido: 'Huamán',
+    tipoEntidad: 'municipal',
+    entidad: 'Municipalidad Provincial de Huancayo',
+    tipoDocumento: 'DNI',
+    numDocumento: '46729301',
+    departamento: 'Junín',
+    provincia: 'Huancayo',
+    distrito: 'Huancayo',
+    telefono: '964 123 789',
+    cargo: 'Jefa de División de Tránsito',
+    documentoCargo: 'Resolución Gerencial N° 089-2026',
+    registradoEn: new Date().toISOString()
+  },
+  {
+    email: 'jorge.valdivia@regionarequipa.gob.pe',
+    password: 'Arequipa2026',
+    nombre: 'Jorge Luis',
+    primerApellido: 'Valdivia',
+    segundoApellido: 'Paredes',
+    tipoEntidad: 'regional',
+    entidad: 'Gobierno Regional de Arequipa',
+    tipoDocumento: 'DNI',
+    numDocumento: '29403817',
+    departamento: 'Arequipa',
+    provincia: 'Arequipa',
+    distrito: 'Cayma',
+    telefono: '958 200 411',
+    cargo: 'Subgerente de Transportes',
+    documentoCargo: 'Memorándum N° 301-2026-GRA',
     registradoEn: new Date().toISOString()
   }
 ];
@@ -71,9 +117,18 @@ export class AuthService {
     const usuarios = this.getUsuarios();
     let changed = false;
     DEMO_USERS.forEach(demo => {
-      if (!usuarios.find(u => u.email.toLowerCase() === demo.email.toLowerCase())) {
+      const idx = usuarios.findIndex(u => u.email.toLowerCase() === demo.email.toLowerCase());
+      if (idx === -1) {
+        // New demo user → add it
         usuarios.push(demo);
         changed = true;
+      } else {
+        // Existing demo user → merge extended fields so new fields are always up to date
+        const merged = { ...usuarios[idx], ...demo };
+        if (JSON.stringify(usuarios[idx]) !== JSON.stringify(merged)) {
+          usuarios[idx] = merged;
+          changed = true;
+        }
       }
     });
     if (changed) this.saveUsuarios(usuarios);
@@ -118,8 +173,22 @@ export class AuthService {
     email: string; password: string; password2: string;
     nombre: string; tipoEntidad: 'regional' | 'municipal' | 'empresa'; entidad: string;
     documentoCargo?: string;
+    // Extended profile fields
+    primerApellido?: string;
+    segundoApellido?: string;
+    tipoDocumento?: string;
+    numDocumento?: string;
+    departamento?: string;
+    provincia?: string;
+    distrito?: string;
+    telefono?: string;
+    cargo?: string;
   }): { success: boolean; error?: string } {
-    const { email, password, password2, nombre, tipoEntidad, entidad, documentoCargo } = data;
+    const {
+      email, password, password2, nombre, tipoEntidad, entidad, documentoCargo,
+      primerApellido, segundoApellido, tipoDocumento, numDocumento,
+      departamento, provincia, distrito, telefono, cargo
+    } = data;
 
     if (!email || !password || !nombre || !entidad || (tipoEntidad !== 'empresa' && !documentoCargo)) {
       return { success: false, error: 'Todos los campos son obligatorios.' };
@@ -141,6 +210,8 @@ export class AuthService {
 
     const newUser: Usuario = {
       email, password, nombre, tipoEntidad, entidad, documentoCargo,
+      primerApellido, segundoApellido, tipoDocumento, numDocumento,
+      departamento, provincia, distrito, telefono, cargo,
       registradoEn: new Date().toISOString()
     };
     usuarios.push(newUser);
@@ -163,6 +234,35 @@ export class AuthService {
   // ── Logout ────────────────────────────────────────────
   logout(): void {
     localStorage.removeItem(KEY_SESSION);
+  }
+
+  // ── Update Profile ────────────────────────────────────
+  updateProfile(currentEmail: string, changes: { email?: string; telefono?: string }): { success: boolean; error?: string } {
+    const usuarios = this.getUsuarios();
+    const idx = usuarios.findIndex(u => u.email.toLowerCase() === currentEmail.toLowerCase());
+    if (idx === -1) return { success: false, error: 'Usuario no encontrado.' };
+
+    const newEmail = changes.email?.trim() ?? '';
+    if (newEmail && newEmail !== currentEmail) {
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(newEmail)) {
+        return { success: false, error: 'Formato de correo inválido.' };
+      }
+      const existe = usuarios.find(u => u.email.toLowerCase() === newEmail.toLowerCase());
+      if (existe) return { success: false, error: 'Ese correo ya está registrado por otro usuario.' };
+      usuarios[idx].email = newEmail;
+    }
+    if (changes.telefono !== undefined) {
+      usuarios[idx].telefono = changes.telefono.trim();
+    }
+    this.saveUsuarios(usuarios);
+
+    // Refresh active session
+    const session = this.getSession();
+    if (session && session.email.toLowerCase() === currentEmail.toLowerCase()) {
+      const updated = { ...session, ...usuarios[idx] };
+      localStorage.setItem(KEY_SESSION, JSON.stringify(updated));
+    }
+    return { success: true };
   }
 
   // ── Change Password ────────────────────────────────────

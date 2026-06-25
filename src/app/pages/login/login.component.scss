@@ -518,3 +518,23 @@
         }
     }
 }
+
+// Custom scrollbar for registration container
+.custom-scrollbar {
+    &::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    &::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background: var(--border-strong);
+        border-radius: 4px;
+    }
+
+    &::-webkit-scrollbar-thumb:hover {
+        background: var(--text-3);
+    }
+}

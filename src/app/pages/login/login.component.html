@@ -1,604 +1,447 @@
-<section class="min-h-screen flex flex-col lg:flex-row bg-background font-body-md text-body-md text-on-surface">
+<div style="min-height:100vh; display:flex; background:var(--bg); color:var(--text)">
 
-  <!-- ── Left Brand Panel ─────────────────────────────── -->
-  <div
-    class="w-full lg:w-1/2 bg-primary flex flex-col justify-between p-8 lg:p-12 text-white relative min-h-[400px] lg:h-screen lg:max-h-screen lg:sticky lg:top-0">
+  <!-- ── Left Side: Brand Panel / Slider ── -->
+  <div class="hidden lg:flex relative"
+    style="flex:1.1; min-width:0; overflow:hidden; background:linear-gradient(160deg,var(--primary),var(--primary-strong)); color:#fff; flex-direction:column; align-items:center; justify-content:center; text-align:center">
 
-    <!-- Top Brand Header with Logo -->
-    <div class="flex items-center gap-3">
-      <div
-        class="bg-[#003366] px-4 py-2.5 rounded-lg shadow-sm flex items-center justify-center transition-transform hover:scale-105">
-        <img src="/logo.png" alt="ATU Logo" class="h-7 w-auto object-contain" />
-      </div>
-      <div class="h-8 w-[1px] bg-white/20"></div>
-      <div>
-        <p class="font-label-sm text-label-sm text-primary-fixed-dim mt-1 leading-none">Plataforma Digital de Subsidios
-        </p>
-      </div>
+    <!-- Imágenes de fondo -->
+    @for (img of sliderImages; track img; let idx = $index) {
+    <img [src]="img" class="absolute inset-0 w-full h-full object-cover transition-opacity duration-1000"
+      [class.opacity-100]="idx === currentSlide" [class.opacity-0]="idx !== currentSlide" alt="ATU Background">
+    }
+
+    <!-- Overlay oscuro/primario para que resalte el texto y logo -->
+    <div class="absolute inset-0 mix-blend-multiply" style="background-color: var(--primary-strong); opacity: 0.85">
     </div>
+    <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>
 
-    <!-- Main Title Section -->
-    <div class="my-auto py-12">
-      <span
-        class="inline-flex items-center gap-1.5 px-3 py-1 rounded bg-secondary-container/20 border border-secondary-fixed-dim/20 text-secondary-fixed-dim font-label-sm text-label-sm mb-6 uppercase tracking-wider">
-        <span class="material-symbols-outlined text-sm" data-weight="fill">shield</span>
-        Decreto de Urgencia N° 004-2026
-      </span>
-      <h2 class="font-headline-lg text-headline-lg font-bold tracking-tight text-white leading-tight mb-4">
-        Plataforma Digital de Subsidios al Transporte
-      </h2>
-      <p class="text-body-lg text-white/80 max-w-lg mb-8">
-        Gestión eficiente, transparente e integrada de subsidios para vehículos de transporte público autorizado a nivel
-        regional y municipal.
+    <!-- Contenido encima del slider -->
+    <div class="relative z-10 flex flex-col items-center justify-center p-10 h-full w-full">
+      <div style="margin-bottom:22px">
+        <img src="images/logo-atu.png" alt="ATU - Autoridad de Transporte Urbano para Lima y Callao"
+          style="height:80px; filter:brightness(0) invert(1); object-fit:contain; drop-shadow(0 4px 12px rgba(0,0,0,.25))" />
+      </div>
+      <h2 class="text-3xl font-extrabold mb-4 text-white drop-shadow-md">Sistema de Subsidio Económico Nacional</h2>
+      <p class="text-sm opacity-90 max-w-md leading-relaxed drop-shadow-sm">
+        Plataforma oficial para la gestión y registro de empresas de transporte y vehículos elegibles (DU-004).
       </p>
 
-      <!-- Platform Features List -->
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-xl">
-        <div class="flex gap-3">
-          <div class="w-10 h-10 rounded bg-white/10 flex items-center justify-center flex-shrink-0">
-            <span class="material-symbols-outlined text-primary-fixed-dim">upload_file</span>
-          </div>
-          <div>
-            <h4 class="font-semibold text-white">Carga Masiva</h4>
-            <p class="text-sm text-white/70">Suba y procese registros en lotes mediante archivos .xlsx</p>
-          </div>
-        </div>
-
-        <div class="flex gap-3">
-          <div class="w-10 h-10 rounded bg-white/10 flex items-center justify-center flex-shrink-0">
-            <span class="material-symbols-outlined text-primary-fixed-dim">verified</span>
-          </div>
-          <div>
-            <h4 class="font-semibold text-white">Validación Automática</h4>
-            <p class="text-sm text-white/70">Cruce inmediato con TUC y autorizaciones vigentes</p>
-          </div>
-        </div>
-
-        <div class="flex gap-3">
-          <div class="w-10 h-10 rounded bg-white/10 flex items-center justify-center flex-shrink-0">
-            <span class="material-symbols-outlined text-primary-fixed-dim">send</span>
-          </div>
-          <div>
-            <h4 class="font-semibold text-white">Envío Directo</h4>
-            <p class="text-sm text-white/70">Remisión formal con firma electrónica a los servidores de ATU</p>
-          </div>
-        </div>
-
-        <div class="flex gap-3">
-          <div class="w-10 h-10 rounded bg-white/10 flex items-center justify-center flex-shrink-0">
-            <span class="material-symbols-outlined text-primary-fixed-dim">history</span>
-          </div>
-          <div>
-            <h4 class="font-semibold text-white">Trazabilidad Total</h4>
-            <p class="text-sm text-white/70">Historial completo con constancias y reportes generados</p>
-          </div>
-        </div>
+      <!-- Indicadores -->
+      <div style="display:flex; gap:8px; justify-content:center; margin-top:32px">
+        @for (img of sliderImages; track img; let idx = $index) {
+        <button (click)="setSlide(idx)"
+          class="transition-all duration-300 rounded-full cursor-pointer border-0 outline-none" [ngClass]="{
+                    'w-6 h-1.5 bg-white': idx === currentSlide,
+                    'w-1.5 h-1.5 bg-white/50 hover:bg-white/75': idx !== currentSlide
+                  }">
+        </button>
+        }
       </div>
-    </div>
-
-    <!-- Footer of Brand Panel -->
-    <div class="text-xs text-white/50 flex justify-between items-center border-t border-white/10 pt-4">
-      <span>Autoridad de Transporte Urbano para Lima y Callao - ATU</span>
-      <span>© 2026</span>
     </div>
   </div>
 
-  <!-- ── Right Form Panel ──────────────────────────────── -->
-  <div class="w-full lg:w-1/2 bg-background flex flex-col items-center justify-center p-6 lg:p-12 min-h-screen">
+  <!-- ── Right Side: Forms (Login, Registro, Recuperación) ── -->
+  <div
+    style="flex:1; min-width:0; display:flex; align-items:center; justify-content:center; padding:24px 18px; position:relative">
 
-    <div
-      class="w-full max-w-md bg-surface-container-lowest border border-outline-variant rounded-xl shadow-sm overflow-hidden flex flex-col">
+    <!-- Theme Toggle Button -->
+    <button (click)="toggleTheme()" aria-label="Cambiar tema"
+      style="position:absolute; top:18px; right:18px; display:inline-flex; align-items:center; gap:8px; background:var(--surface); border:1px solid var(--border); border-radius:999px; padding:7px 13px; cursor:pointer; color:var(--text-2); font-size:12.5px; font-weight:600; box-shadow:var(--shadow)">
+      {{ themeIcon }} {{ themeLabel }}
+    </button>
 
-      <!-- Card header -->
-      <div class="bg-primary text-white p-6 flex items-center justify-between gap-4">
-        <div class="text-left">
-          <h3 class="font-headline-sm text-headline-sm font-bold text-white leading-none">SIGT - ATU</h3>
-          <p class="font-label-sm text-label-sm text-primary-fixed-dim mt-1.5 leading-none">Plataforma Digital de
-            Subsidios</p>
+    <div style="width:100%; max-width:400px">
+
+      <!-- Brand Header -->
+      <div style="text-align:center; margin-bottom:22px">
+        <div style="margin:0 auto 14px; display:flex; align-items:center; justify-content:center">
+          <img src="images/logo-atu.png" alt="ATU - Autoridad de Transporte Urbano para Lima y Callao"
+            style="height:56px; object-fit:contain; filter:drop-shadow(0 4px 14px rgba(14,90,138,.22))" />
         </div>
-        <div
-          class="bg-[#003366] px-3.5 py-2 rounded-lg border border-outline-variant/10 shadow-sm flex items-center justify-center flex-shrink-0 transition-transform hover:scale-105">
-          <img src="/logo.png" alt="ATU Logo" class="h-6 w-auto object-contain" />
-        </div>
+        <h1 style="font-size:20px; font-weight:800; margin:0 0 4px; line-height:1.25">Subsidio Económico Nacional</h1>
+        <p style="font-size:13px; color:var(--text-3); margin:0">Acceso al Sistema</p>
       </div>
 
-      <div class="p-6 flex-1">
-        <!-- Alert message -->
+      <!-- ══ LOGIN FORM ══ -->
+      @if (activeForm === 'login') {
+      <div
+        style="background:var(--surface); border:1px solid var(--border); border-radius:18px; box-shadow:var(--shadow); padding:26px 24px">
+        <h2 style="font-size:16px; font-weight:800; margin:0 0 18px">Iniciar sesión</h2>
+
         @if (alert) {
-        <div class="mb-5 p-4 rounded text-sm flex gap-3 border" [class.bg-error-container]="alert.type === 'error'"
-          [class.text-on-error-container]="alert.type === 'error'" [class.border-error]="alert.type === 'error'"
-          [class.bg-success-container]="alert.type === 'success'"
-          [class.text-on-secondary-fixed-variant]="alert.type === 'success'"
-          [class.border-secondary]="alert.type === 'success'" [class.bg-surface-container]="alert.type === 'info'"
-          [class.text-on-surface-variant]="alert.type === 'info'"
-          [class.border-outline-variant]="alert.type === 'info'">
-          <span class="material-symbols-outlined text-lg flex-shrink-0">{{ alertIcon }}</span>
-          <div class="leading-tight">{{ alert.message }}</div>
+        <div
+          style="display:flex; align-items:center; gap:9px; background:var(--bad-bg); border:1px solid var(--bad); border-radius:10px; padding:10px 12px; margin-bottom:16px; font-size:12.5px; font-weight:600; color:var(--bad)">
+          ⚠️ {{ alert.message }}
         </div>
         }
 
-        <!-- ══ LOGIN FORM ══ -->
-        @if (activeForm === 'login') {
-        <div class="flex items-center gap-2 mb-6 text-primary">
-          <span class="material-symbols-outlined text-xl">login</span>
-          <h4 class="font-headline-sm text-headline-sm font-semibold">Iniciar sesión</h4>
-        </div>
-
-        <!-- Demo hint -->
+        <!-- Demo access hint -->
         <div
-          class="mb-5 p-3 rounded bg-surface-container border border-outline-variant flex gap-2 items-start text-on-surface-variant text-sm">
-          <span class="material-symbols-outlined text-secondary text-lg flex-shrink-0"
-            data-weight="fill">lightbulb</span>
-          <div class="leading-normal">
-            Acceso de prueba:<br>
-            Usuario: <code class="font-mono font-bold text-primary">demo&#64;region.gob.pe</code><br>
-            Clave: <code class="font-mono font-bold text-primary">demo123</code>
-          </div>
+          style="margin-bottom:16px; padding:10px 12px; border-radius:10px; background:var(--surface-2); border:1px solid var(--border); font-size:12px; color:var(--text-2); line-height:1.4">
+          💡 Acceso de prueba:<br>
+          Usuario: <code
+            style="font-family:monospace; font-weight:700; color:var(--primary)">demo&#64;region.gob.pe</code><br>
+          Clave: <code style="font-family:monospace; font-weight:700; color:var(--primary)">demo123</code>
         </div>
 
-        <!-- Form fields -->
-        <div class="space-y-4">
-          <div class="flex flex-col gap-baseline">
-            <label for="loginEmail" class="font-label-sm text-label-sm text-on-surface-variant">Correo electrónico <span
-                class="text-error">*</span></label>
-            <div class="relative">
-              <span
-                class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline-variant">mail</span>
-              <input id="loginEmail" type="email" [(ngModel)]="loginEmail" placeholder="funcionario@gob.pe"
-                autocomplete="email" (keydown)="onLoginKeydown($event)"
-                class="w-full border border-outline-variant rounded bg-surface-container-lowest pl-10 pr-4 py-2.5 text-body-md focus:border-secondary focus:ring-1 focus:ring-secondary outline-none transition-colors" />
-            </div>
-          </div>
+        <label
+          style="display:block; font-size:12.5px; font-weight:700; color:var(--text-2); margin-bottom:7px">Usuario</label>
+        <input type="text"
+          class="w-full px-4 py-2.5 bg-surface-container-lowest border border-outline-variant text-on-surface text-sm rounded-lg focus:ring-2 focus:ring-primary focus:border-primary block transition-colors"
+          [(ngModel)]="loginEmail" placeholder="Ingrese su usuario" (keydown)="onLoginKeydown($event)"
+          style="width:100%; background:#ffffff; border:1px solid var(--border); border-radius:10px; padding:12px 13px; font-size:14px; color:#000000; margin-bottom:16px; outline:none; transition: border-color 0.2s" />
 
-          <div class="flex flex-col gap-baseline">
-            <label for="loginPassword" class="font-label-sm text-label-sm text-on-surface-variant">Contraseña <span
-                class="text-error">*</span></label>
-            <div class="relative">
-              <span
-                class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline-variant">lock</span>
-              <input id="loginPassword" [type]="showPassword ? 'text' : 'password'" [(ngModel)]="loginPassword"
-                placeholder="••••••••" autocomplete="current-password" (keydown)="onLoginKeydown($event)"
-                class="w-full border border-outline-variant rounded bg-surface-container-lowest pl-10 pr-10 py-2.5 text-body-md focus:border-secondary focus:ring-1 focus:ring-secondary outline-none transition-colors" />
-              <button
-                class="absolute right-3 top-1/2 -translate-y-1/2 text-outline-variant hover:text-on-surface-variant focus:outline-none"
-                type="button" (click)="showPassword = !showPassword" tabindex="-1">
-                <span class="material-symbols-outlined text-lg">{{ showPassword ? 'visibility_off' : 'visibility'
-                  }}</span>
-              </button>
-            </div>
-          </div>
+        <label
+          style="display:block; font-size:12.5px; font-weight:700; color:var(--text-2); margin-bottom:7px">Contraseña</label>
+        <div style="position:relative; margin-bottom:8px">
+          <input [type]="showPassword ? 'text' : 'password'" [(ngModel)]="loginPassword"
+            placeholder="Ingrese su contraseña" (keydown)="onLoginKeydown($event)"
+            style="width:100%; background:#ffffff; border:1px solid var(--border); border-radius:10px; padding:12px 70px 12px 13px; font-size:14px; color:#000000; outline:none; transition: border-color 0.2s" />
+          <button type="button" (click)="showPassword = !showPassword"
+            style="position:absolute; right:8px; top:50%; transform:translateY(-50%); background:transparent; border:none; color:var(--primary); cursor:pointer; font-size:12px; font-weight:700">
+            {{ showPassword ? 'Ocultar' : 'Mostrar' }}
+          </button>
         </div>
 
-        <button
-          class="w-full mt-6 bg-secondary text-white py-3 rounded flex items-center justify-center gap-2 hover:bg-secondary/90 active:scale-[0.99] transition-all font-label-md text-label-md shadow-sm disabled:opacity-50"
-          [disabled]="isLoading" (click)="onLogin()">
+
+        <div
+          style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; font-size:12.5px">
+          <a (click)="showForm('recuperacion')"
+            style="color:var(--primary); font-weight:600; text-decoration:none; cursor:pointer">¿Olvidó su
+            contraseña?</a>
+          <!-- <a (click)="showForm('registro')"
+            style="color:var(--primary); font-weight:700; text-decoration:none; cursor:pointer">Crear una cuenta</a> -->
+        </div>
+
+        <!-- ── reCAPTCHA v2 ── -->
+        <div style="display:flex; justify-content:center; margin-bottom:18px">
+          <div id="recaptcha-container"></div>
+        </div>
+
+        <!-- Mensaje de ayuda si el captcha no fue resuelto aún -->
+        @if (!captchaResolved) {
+        <p style="text-align:center; font-size:11.5px; color:var(--text-3); margin-bottom:10px; margin-top:-8px">
+          ✅ Complete la verificación de seguridad para continuar
+        </p>
+        }
+
+        <button (click)="onLogin()" [disabled]="isLoading"
+          style="width:100%; height:44px; background:var(--primary); color:#fff; border:none; border-radius:10px; font-weight:700; font-size:14px; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; box-shadow:0 6px 16px rgba(14,90,138,0.22); transition:filter 0.15s, opacity 0.15s"
+          [style.opacity]="isLoading ? '0.75' : '1'">
           @if (isLoading) {
           <span class="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
-          <span>Verificando credenciales...</span>
+          Ingresando…
           } @else {
-          <span class="material-symbols-outlined text-sm">login</span>
-          <span>Ingresar al sistema</span>
+          Ingresar
           }
         </button>
 
-        <!-- Links -->
-        <div class="flex justify-between items-center mt-6 text-sm">
-          <a (click)="showForm('recuperacion')"
-            class="text-secondary hover:underline cursor-pointer transition-colors">¿Olvidó su contraseña?</a>
-          <a (click)="showForm('registro')"
-            class="text-secondary hover:underline font-semibold cursor-pointer transition-colors">Crear una cuenta</a>
+      </div>
+      }
+
+      <!-- ══ REGISTRO FORM ══ -->
+      @if (activeForm === 'registro') {
+      <div
+        style="background:var(--surface); border:1px solid var(--border); border-radius:18px; box-shadow:var(--shadow); padding:26px 24px; max-height: 70vh; overflow-y: auto"
+        class="custom-scrollbar">
+        <h2 style="font-size:16px; font-weight:800; margin:0 0 18px">Crear una cuenta</h2>
+
+        @if (alert) {
+        <div
+          style="display:flex; align-items:center; gap:9px; background:var(--bad-bg); border:1px solid var(--bad); border-radius:10px; padding:10px 12px; margin-bottom:16px; font-size:12.5px; font-weight:600; color:var(--bad)">
+          ⚠️ {{ alert.message }}
         </div>
         }
 
-        <!-- ══ REGISTRO FORM ══ -->
-        @if (activeForm === 'registro') {
-        <div class="flex items-center gap-2 mb-6 text-primary">
-          <span class="material-symbols-outlined text-xl">person_add</span>
-          <h4 class="font-headline-sm text-headline-sm font-semibold">Registro de funcionario</h4>
-        </div>
-
-        <div class="space-y-4">
-          <!-- Tipo de Registro -->
-          <div class="flex flex-col gap-baseline">
-            <label for="regTipoUsuario" class="font-label-sm text-label-sm text-on-surface-variant">Tipo de registro
-              <span class="text-error">*</span></label>
-            <select id="regTipoUsuario" [(ngModel)]="regTipoUsuario"
-              class="w-full border border-outline-variant rounded bg-surface-container-lowest px-3 py-2 text-body-md focus:border-secondary focus:ring-1 focus:ring-secondary outline-none">
-              <option value="municipalidad">Municipalidad / Gobierno Regional</option>
-            </select>
-          </div>
-
-          @if (regTipoUsuario === 'municipalidad') {
-          <!-- ── GOB FORM ── -->
-          <div class="flex flex-col gap-baseline">
-            <label for="regEmail" class="font-label-sm text-label-sm text-on-surface-variant">Correo institucional <span
-                class="text-error">*</span></label>
-            <div class="relative">
-              <span
-                class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline-variant">mail</span>
-              <input id="regEmail" type="email" [(ngModel)]="regEmail" placeholder="funcionario@gob.pe"
-                class="w-full border border-outline-variant rounded bg-surface-container-lowest pl-10 pr-4 py-2 text-body-md focus:border-secondary focus:ring-1 focus:ring-secondary outline-none" />
-            </div>
-          </div>
-          <!-- ── DETAILED TRANSPORTISTA FORM ── -->
-          <div class="flex flex-col gap-3 py-2 border-t border-outline-variant/30 mt-2">
-
-            <!-- Tipo Persona -->
-            <div class="flex flex-col gap-baseline">
-              <label class="font-label-sm text-label-sm text-on-surface-variant">Tipo Persona <span
-                  class="text-error">*</span></label>
-              <div class="relative">
-                <span
-                  class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline-variant">person</span>
-                <select [(ngModel)]="tpTipoPersona"
-                  class="w-full border border-outline-variant rounded bg-surface-container-lowest pl-10 pr-4 py-2 text-body-md focus:border-secondary focus:ring-1 focus:ring-secondary outline-none appearance-none">
-                  <option value="">Seleccione</option>
-                  <option value="Natural">Natural</option>
-                  <option value="Jurídica">Jurídica</option>
-                </select>
-              </div>
-            </div>
-            @if (errTipoPersona && tpTipoPersona !== undefined) {
-            <span class="text-[10px] text-error leading-none font-semibold -mt-2">{{ errTipoPersona }}</span>
-            }
-
-            <!-- Tipo Documento -->
-            <div class="flex flex-col gap-baseline">
-              <label class="font-label-sm text-label-sm text-on-surface-variant">Tipo Documento <span
-                  class="text-error">*</span></label>
-              <div class="relative">
-                <span
-                  class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline-variant">article</span>
-                <select [(ngModel)]="tpTipoDocumento"
-                  class="w-full border border-outline-variant rounded bg-surface-container-lowest pl-10 pr-4 py-2 text-body-md focus:border-secondary focus:ring-1 focus:ring-secondary outline-none appearance-none">
-                  <option value="">Seleccione</option>
-                  <option value="DNI">DNI - Doc. Nacional de Identidad</option>
-                  <option value="RUC">RUC - Reg. Único de Contribuyentes</option>
-                  <option value="Pasaporte">Pasaporte</option>
-                  <option value="Carnet de Extranjería">Carnet de Extranjería</option>
-                </select>
-              </div>
-            </div>
-            @if (errTipoDocumento && tpTipoDocumento !== undefined) {
-            <span class="text-[10px] text-error leading-none font-semibold -mt-2">{{ errTipoDocumento }}</span>
-            }
-
-            <!-- Número Documento -->
-            <div class="flex flex-col gap-baseline">
-              <label class="font-label-sm text-label-sm text-on-surface-variant">N° Documento <span
-                  class="text-error">*</span></label>
-              <div class="relative">
-                <span
-                  class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline-variant">badge</span>
-                <input type="text" [(ngModel)]="tpNumDocumento" placeholder="Número Documento"
-                  class="w-full border border-outline-variant rounded bg-surface-container-lowest pl-10 pr-10 py-2 text-body-md focus:border-secondary focus:ring-1 focus:ring-secondary outline-none" />
-                <span
-                  class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-outline-variant">search</span>
-              </div>
-            </div>
-            @if (errNumDocumento && tpNumDocumento !== '') {
-            <span class="text-[10px] text-error leading-none font-semibold -mt-2">{{ errNumDocumento }}</span>
-            }
-
-            <!-- Nombres -->
-            <div class="flex flex-col gap-baseline">
-              <label class="font-label-sm text-label-sm text-on-surface-variant">Nombres <span
-                  class="text-error">*</span></label>
-              <div class="relative">
-                <span
-                  class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline-variant">person_outline</span>
-                <input type="text" [(ngModel)]="tpNombres" placeholder="Nombres"
-                  class="w-full border border-outline-variant rounded bg-surface-container-lowest pl-10 pr-4 py-2 text-body-md focus:border-secondary focus:ring-1 focus:ring-secondary outline-none" />
-              </div>
-            </div>
-            @if (errNombres && tpNombres !== '') {
-            <span class="text-[10px] text-error leading-none font-semibold -mt-2">{{ errNombres }}</span>
-            }
-
-            <!-- Primer Apellido -->
-            <div class="flex flex-col gap-baseline">
-              <label class="font-label-sm text-label-sm text-on-surface-variant">1er Apellido <span
-                  class="text-error">*</span></label>
-              <div class="relative">
-                <span
-                  class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline-variant">person_outline</span>
-                <input type="text" [(ngModel)]="tpPrimerApellido" placeholder="Primer Apellido"
-                  class="w-full border border-outline-variant rounded bg-surface-container-lowest pl-10 pr-4 py-2 text-body-md focus:border-secondary focus:ring-1 focus:ring-secondary outline-none" />
-              </div>
-            </div>
-            @if (errPrimerApellido && tpPrimerApellido !== '') {
-            <span class="text-[10px] text-error leading-none font-semibold -mt-2">{{ errPrimerApellido }}</span>
-            }
-
-            <!-- Segundo Apellido -->
-            <div class="flex flex-col gap-baseline">
-              <label class="font-label-sm text-label-sm text-on-surface-variant">2do Apellido</label>
-              <div class="relative">
-                <span
-                  class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline-variant">person_outline</span>
-                <input type="text" [(ngModel)]="tpSegundoApellido" placeholder="Segundo Apellido"
-                  class="w-full border border-outline-variant rounded bg-surface-container-lowest pl-10 pr-4 py-2 text-body-md focus:border-secondary focus:ring-1 focus:ring-secondary outline-none" />
-              </div>
-            </div>
-            @if (errSegundoApellido && tpSegundoApellido !== '') {
-            <span class="text-[10px] text-error leading-none font-semibold -mt-2">{{ errSegundoApellido }}</span>
-            }
-
-            <!-- Email -->
-            <div class="flex flex-col gap-baseline">
-              <label class="font-label-sm text-label-sm text-on-surface-variant">Email <span
-                  class="text-error">*</span></label>
-              <div class="flex gap-1.5 items-center">
-                <div class="relative flex-1">
-                  <span
-                    class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline-variant">mail</span>
-                  <input type="email" [(ngModel)]="tpEmail" (ngModelChange)="onEmailChange()"
-                    placeholder="ejemplo@dominio.com"
-                    class="w-full border border-outline-variant rounded bg-surface-container-lowest pl-10 pr-8 py-2 text-body-md focus:border-secondary focus:ring-1 focus:ring-secondary outline-none" />
-                  @if (tpEmailVerificado && !errEmail) {
-                  <span
-                    class="material-symbols-outlined absolute right-2 top-1/2 -translate-y-1/2 text-green-600 text-base"
-                    data-weight="fill">check_circle</span>
-                  } @else if (tpEmail !== '' && errEmail) {
-                  <span class="material-symbols-outlined absolute right-2 top-1/2 -translate-y-1/2 text-error text-base"
-                    data-weight="fill">cancel</span>
-                  }
-                </div>
-                <button type="button" (click)="validarEmail()"
-                  class="px-2.5 py-2 rounded bg-secondary text-white hover:bg-secondary/90 transition-colors text-xs font-semibold shadow-sm flex items-center justify-center shrink-0">
-                  validar
-                </button>
-              </div>
-            </div>
-            @if (errEmail && tpEmail !== '') {
-            <span class="text-[10px] text-error leading-none font-semibold -mt-2">{{ errEmail }}</span>
-            }
-
-            <!-- SECCIÓN DIRECCIÓN -->
-            <fieldset class="border border-outline-variant/60 rounded-lg p-3 mt-1 flex flex-col gap-3">
-              <legend class="px-2 text-xs font-bold text-primary tracking-wide">Dirección</legend>
-
-              <!-- Departamento -->
-              <div class="flex flex-col gap-baseline">
-                <label class="font-label-sm text-label-sm text-on-surface-variant">Departamento <span
-                    class="text-error">*</span></label>
-                <div class="relative">
-                  <span
-                    class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline-variant">map</span>
-                  <select [(ngModel)]="tpDepartamento" (ngModelChange)="onDepartamentoChange()"
-                    class="w-full border border-outline-variant rounded bg-surface-container-lowest pl-10 pr-4 py-2 text-body-md focus:border-secondary focus:ring-1 focus:ring-secondary outline-none appearance-none">
-                    <option value="">Seleccione</option>
-                    @for (dpt of departamentosList; track dpt) {
-                    <option [value]="dpt">{{ dpt }}</option>
-                    }
-                  </select>
-                </div>
-              </div>
-              @if (errDepartamento && tpDepartamento !== '') {
-              <span class="text-[10px] text-error font-semibold -mt-2">{{ errDepartamento }}</span>
-              }
-
-              <!-- Provincia -->
-              <div class="flex flex-col gap-baseline">
-                <label class="font-label-sm text-label-sm text-on-surface-variant">Provincia <span
-                    class="text-error">*</span></label>
-                <div class="relative">
-                  <span
-                    class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline-variant">location_city</span>
-                  <select [(ngModel)]="tpProvincia" (ngModelChange)="onProvinciaChange()" [disabled]="!tpDepartamento"
-                    class="w-full border border-outline-variant rounded bg-surface-container-lowest pl-10 pr-4 py-2 text-body-md focus:border-secondary focus:ring-1 focus:ring-secondary outline-none appearance-none disabled:opacity-50">
-                    <option value="">Seleccione</option>
-                    @for (prov of provinciasList; track prov) {
-                    <option [value]="prov">{{ prov }}</option>
-                    }
-                  </select>
-                </div>
-              </div>
-              @if (errProvincia && tpProvincia !== '') {
-              <span class="text-[10px] text-error font-semibold -mt-2">{{ errProvincia }}</span>
-              }
-
-              <!-- Distrito -->
-              <div class="flex flex-col gap-baseline">
-                <label class="font-label-sm text-label-sm text-on-surface-variant">Distrito <span
-                    class="text-error">*</span></label>
-                <div class="relative">
-                  <span
-                    class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline-variant">apartment</span>
-                  <select [(ngModel)]="tpDistrito" [disabled]="!tpProvincia"
-                    class="w-full border border-outline-variant rounded bg-surface-container-lowest pl-10 pr-4 py-2 text-body-md focus:border-secondary focus:ring-1 focus:ring-secondary outline-none appearance-none disabled:opacity-50">
-                    <option value="">Seleccione</option>
-                    @for (dist of distritosList; track dist) {
-                    <option [value]="dist">{{ dist }}</option>
-                    }
-                  </select>
-                </div>
-              </div>
-              @if (errDistrito && tpDistrito !== '') {
-              <span class="text-[10px] text-error font-semibold -mt-2">{{ errDistrito }}</span>
-              }
-
-              <!-- Vía -->
-              <div class="flex flex-col gap-baseline">
-                <label class="font-label-sm text-label-sm text-on-surface-variant">Vía <span
-                    class="text-error">*</span></label>
-                <div class="relative">
-                  <span
-                    class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline-variant">signpost</span>
-                  <input type="text" [(ngModel)]="tpVia" placeholder="Avenida, Jirón, Calle, ..."
-                    class="w-full border border-outline-variant rounded bg-surface-container-lowest pl-10 pr-4 py-2 text-body-md focus:border-secondary focus:ring-1 focus:ring-secondary outline-none" />
-                </div>
-              </div>
-              @if (errVia && tpVia !== '') {
-              <span class="text-[10px] text-error font-semibold -mt-2">{{ errVia }}</span>
-              }
-
-              <!-- Dirección -->
-              <div class="flex flex-col gap-baseline">
-                <label class="font-label-sm text-label-sm text-on-surface-variant">Dirección <span
-                    class="text-error">*</span></label>
-                <div class="relative">
-                  <span
-                    class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline-variant">home_pin</span>
-                  <input type="text" [(ngModel)]="tpDireccion" placeholder="Nombre de la calle/vía"
-                    class="w-full border border-outline-variant rounded bg-surface-container-lowest pl-10 pr-4 py-2 text-body-md focus:border-secondary focus:ring-1 focus:ring-secondary outline-none" />
-                </div>
-              </div>
-              @if (errDireccion && tpDireccion !== '') {
-              <span class="text-[10px] text-error font-semibold -mt-2">{{ errDireccion }}</span>
-              }
-
-              <!-- Número/Mz/Lote -->
-              <div class="flex flex-col gap-baseline">
-                <label class="font-label-sm text-label-sm text-on-surface-variant">N°/Mz/Lt <span
-                    class="text-error">*</span></label>
-                <div class="relative">
-                  <span
-                    class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline-variant">tag</span>
-                  <input type="text" [(ngModel)]="tpNumeroMzLt" placeholder="123 o Mz A Lt 5"
-                    class="w-full border border-outline-variant rounded bg-surface-container-lowest pl-10 pr-4 py-2 text-body-md focus:border-secondary focus:ring-1 focus:ring-secondary outline-none" />
-                </div>
-              </div>
-              @if (errNumeroMzLt && tpNumeroMzLt !== '') {
-              <span class="text-[10px] text-error font-semibold -mt-2">{{ errNumeroMzLt }}</span>
-              }
-
-              <!-- Referencia -->
-              <div class="flex flex-col gap-baseline">
-                <label class="font-label-sm text-label-sm text-on-surface-variant">Referencia <span
-                    class="text-error">*</span></label>
-                <div class="relative">
-                  <span
-                    class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline-variant">place</span>
-                  <input type="text" [(ngModel)]="tpReferencia" placeholder="Referencia"
-                    class="w-full border border-outline-variant rounded bg-surface-container-lowest pl-10 pr-4 py-2 text-body-md focus:border-secondary focus:ring-1 focus:ring-secondary outline-none" />
-                </div>
-              </div>
-              @if (errReferencia && tpReferencia !== '') {
-              <span class="text-[10px] text-error font-semibold -mt-2">{{ errReferencia }}</span>
-              }
-            </fieldset>
-          </div>
-
-          <!-- Compartido: Contraseñas -->
-          <div class="grid grid-cols-2 gap-4">
-            <div class="flex flex-col gap-baseline">
-              <label for="regPassword" class="font-label-sm text-label-sm text-on-surface-variant">Contraseña <span
-                  class="text-error">*</span></label>
-              <div class="relative">
-                <input id="regPassword" [type]="showPassword ? 'text' : 'password'" [(ngModel)]="regPassword"
-                  placeholder="Clave"
-                  class="w-full border border-outline-variant rounded bg-surface-container-lowest px-3 py-2 text-body-md focus:border-secondary focus:ring-1 focus:ring-secondary outline-none" />
-                <button
-                  class="absolute right-2 top-1/2 -translate-y-1/2 text-outline-variant hover:text-on-surface-variant"
-                  type="button" (click)="showPassword = !showPassword" tabindex="-1">
-                  <span class="material-symbols-outlined text-base">{{ showPassword ? 'visibility_off' : 'visibility'
-                    }}</span>
-                </button>
-              </div>
-            </div>
-            <div class="flex flex-col gap-baseline">
-              <label for="regPassword2" class="font-label-sm text-label-sm text-on-surface-variant">Confirmar <span
-                  class="text-error">*</span></label>
-              <div class="relative">
-                <input id="regPassword2" [type]="showPassword2 ? 'text' : 'password'" [(ngModel)]="regPassword2"
-                  placeholder="Confirmar"
-                  class="w-full border border-outline-variant rounded bg-surface-container-lowest px-3 py-2 text-body-md focus:border-secondary focus:ring-1 focus:ring-secondary outline-none" />
-                <button
-                  class="absolute right-2 top-1/2 -translate-y-1/2 text-outline-variant hover:text-on-surface-variant"
-                  type="button" (click)="showPassword2 = !showPassword2" tabindex="-1">
-                  <span class="material-symbols-outlined text-base">{{ showPassword2 ? 'visibility_off' : 'visibility'
-                    }}</span>
-                </button>
-              </div>
-            </div>
-          </div>
-          }
+        <div style="display:flex; flex-direction:column; gap:4px; margin-bottom:14px">
+          <label style="font-size:12.5px; font-weight:700; color:var(--text-2)">Tipo de registro *</label>
+          <select [(ngModel)]="regTipoUsuario"
+            style="width:100%; background:var(--surface-2); border:1px solid var(--border); border-radius:10px; padding:10px 12px; font-size:13.5px; color:var(--text); cursor:pointer; outline:none">
+            <option value="municipalidad">Municipalidad / Gobierno Regional</option>
+          </select>
         </div>
 
         @if (regTipoUsuario === 'municipalidad') {
-        <button
-          class="w-full mt-6 bg-secondary text-white py-3 rounded flex items-center justify-center gap-2 hover:bg-secondary/90 transition-all font-label-md text-label-md shadow-sm"
-          (click)="onRegister()">
-          <span class="material-symbols-outlined text-sm"> person_add</span>
-          <span>Crear cuenta</span>
-        </button>
-        }
-        <div class="text-center mt-6 text-sm">
-          ¿Ya tiene una cuenta? <a (click)="showForm('login')"
-            class="text-secondary hover:underline font-semibold cursor-pointer">Inicie sesión aquí</a>
-        </div>
-        }
-
-        <!-- ══ RECUPERACIÓN FORM ══ -->
-        @if (activeForm === 'recuperacion') {
-        <div class="flex items-center gap-2 mb-4 text-primary">
-          <span class="material-symbols-outlined text-xl">key</span>
-          <h4 class="font-headline-sm text-headline-sm font-semibold">Recuperar contraseña</h4>
+        <!-- Correo institucional -->
+        <div style="display:flex; flex-direction:column; gap:4px; margin-bottom:14px">
+          <label style="font-size:12.5px; font-weight:700; color:var(--text-2)">Correo institucional *</label>
+          <input type="email" [(ngModel)]="regEmail" placeholder="funcionario@gob.pe"
+            style="width:100%; background:var(--surface-2); border:1px solid var(--border); border-radius:10px; padding:10px 12px; font-size:13.5px; color:var(--text); outline:none" />
         </div>
 
-        <p class="text-sm text-on-surface-variant mb-6 leading-relaxed">
-          Ingrese su correo electrónico registrado. Le enviaremos un enlace de recuperación para restablecer su clave.
-        </p>
+        <!-- Tipo Persona -->
+        <div style="display:flex; flex-direction:column; gap:4px; margin-bottom:14px">
+          <label style="font-size:12.5px; font-weight:700; color:var(--text-2)">Tipo Persona *</label>
+          <select [(ngModel)]="tpTipoPersona"
+            style="width:100%; background:var(--surface-2); border:1px solid var(--border); border-radius:10px; padding:10px 12px; font-size:13.5px; color:var(--text); cursor:pointer; outline:none">
+            <option value="">Seleccione</option>
+            <option value="Natural">Natural</option>
+            <option value="Jurídica">Jurídica</option>
+          </select>
+          @if (errTipoPersona && tpTipoPersona !== undefined) {
+          <span style="font-size:10.5px; color:var(--bad); font-weight:600">{{ errTipoPersona }}</span>
+          }
+        </div>
 
-        <div class="flex flex-col gap-baseline mb-6">
-          <label for="recEmail" class="font-label-sm text-label-sm text-on-surface-variant">Correo institucional <span
-              class="text-error">*</span></label>
-          <div class="relative">
-            <span
-              class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline-variant">mail</span>
-            <input id="recEmail" type="email" [(ngModel)]="recEmail" placeholder="funcionario@gob.pe"
-              class="w-full border border-outline-variant rounded bg-surface-container-lowest pl-10 pr-4 py-2.5 text-body-md focus:border-secondary focus:ring-1 focus:ring-secondary outline-none" />
+        <!-- Tipo Documento -->
+        <div style="display:flex; flex-direction:column; gap:4px; margin-bottom:14px">
+          <label style="font-size:12.5px; font-weight:700; color:var(--text-2)">Tipo Documento *</label>
+          <select [(ngModel)]="tpTipoDocumento"
+            style="width:100%; background:var(--surface-2); border:1px solid var(--border); border-radius:10px; padding:10px 12px; font-size:13.5px; color:var(--text); cursor:pointer; outline:none">
+            <option value="">Seleccione</option>
+            <option value="DNI">DNI - Doc. Nacional de Identidad</option>
+            <option value="RUC">RUC - Reg. Único de Contribuyentes</option>
+            <option value="Pasaporte">Pasaporte</option>
+            <option value="Carnet de Extranjería">Carnet de Extranjería</option>
+          </select>
+          @if (errTipoDocumento && tpTipoDocumento !== undefined) {
+          <span style="font-size:10.5px; color:var(--bad); font-weight:600">{{ errTipoDocumento }}</span>
+          }
+        </div>
+
+        <!-- Número Documento -->
+        <div style="display:flex; flex-direction:column; gap:4px; margin-bottom:14px">
+          <label style="font-size:12.5px; font-weight:700; color:var(--text-2)">N° Documento *</label>
+          <input type="text" [(ngModel)]="tpNumDocumento" placeholder="Número Documento"
+            style="width:100%; background:var(--surface-2); border:1px solid var(--border); border-radius:10px; padding:10px 12px; font-size:13.5px; color:var(--text); outline:none" />
+          @if (errNumDocumento && tpNumDocumento !== '') {
+          <span style="font-size:10.5px; color:var(--bad); font-weight:600">{{ errNumDocumento }}</span>
+          }
+        </div>
+
+        <!-- Nombres -->
+        <div style="display:flex; flex-direction:column; gap:4px; margin-bottom:14px">
+          <label style="font-size:12.5px; font-weight:700; color:var(--text-2)">Nombres *</label>
+          <input type="text" [(ngModel)]="tpNombres" placeholder="Nombres"
+            style="width:100%; background:var(--surface-2); border:1px solid var(--border); border-radius:10px; padding:10px 12px; font-size:13.5px; color:var(--text); outline:none" />
+          @if (errNombres && tpNombres !== '') {
+          <span style="font-size:10.5px; color:var(--bad); font-weight:600">{{ errNombres }}</span>
+          }
+        </div>
+
+        <!-- Primer Apellido -->
+        <div style="display:flex; flex-direction:column; gap:4px; margin-bottom:14px">
+          <label style="font-size:12.5px; font-weight:700; color:var(--text-2)">1er Apellido *</label>
+          <input type="text" [(ngModel)]="tpPrimerApellido" placeholder="Primer Apellido"
+            style="width:100%; background:var(--surface-2); border:1px solid var(--border); border-radius:10px; padding:10px 12px; font-size:13.5px; color:var(--text); outline:none" />
+          @if (errPrimerApellido && tpPrimerApellido !== '') {
+          <span style="font-size:10.5px; color:var(--bad); font-weight:600">{{ errPrimerApellido }}</span>
+          }
+        </div>
+
+        <!-- Segundo Apellido -->
+        <div style="display:flex; flex-direction:column; gap:4px; margin-bottom:14px">
+          <label style="font-size:12.5px; font-weight:700; color:var(--text-2)">2do Apellido</label>
+          <input type="text" [(ngModel)]="tpSegundoApellido" placeholder="Segundo Apellido"
+            style="width:100%; background:var(--surface-2); border:1px solid var(--border); border-radius:10px; padding:10px 12px; font-size:13.5px; color:var(--text); outline:none" />
+        </div>
+
+        <!-- Email Personal & Validación -->
+        <div style="display:flex; flex-direction:column; gap:4px; margin-bottom:14px">
+          <label style="font-size:12.5px; font-weight:700; color:var(--text-2)">Email *</label>
+          <div style="display:flex; gap:6px; align-items:center">
+            <div style="position:relative; flex:1">
+              <input type="email" [(ngModel)]="tpEmail" (ngModelChange)="onEmailChange()"
+                placeholder="ejemplo@dominio.com"
+                style="width:100%; background:var(--surface-2); border:1px solid var(--border); border-radius:10px; padding:10px 30px 10px 12px; font-size:13.5px; color:var(--text); outline:none" />
+              @if (tpEmailVerificado && !errEmail) {
+              <span
+                style="position:absolute; right:8px; top:50%; transform:translateY(-50%); color:var(--ok); font-size:14px">✔️</span>
+              } @else if (tpEmail !== '' && errEmail) {
+              <span
+                style="position:absolute; right:8px; top:50%; transform:translateY(-50%); color:var(--bad); font-size:14px">❌</span>
+              }
+            </div>
+            <button type="button" (click)="validarEmail()"
+              style="padding:8px 12px; background:var(--primary); color:#fff; border:none; border-radius:10px; font-size:11.5px; font-weight:700; cursor:pointer">
+              Validar
+            </button>
+          </div>
+          @if (errEmail && tpEmail !== '') {
+          <span style="font-size:10.5px; color:var(--bad); font-weight:600">{{ errEmail }}</span>
+          }
+        </div>
+
+        <!-- Dirección Fieldset -->
+        <fieldset style="border:1px solid var(--border); border-radius:10px; padding:14px 12px; margin-bottom:14px">
+          <legend
+            style="padding:0 6px; font-size:11.5px; font-weight:800; color:var(--primary); text-transform:uppercase; letter-spacing:0.5px">
+            Dirección</legend>
+
+          <!-- Departamento -->
+          <div style="display:flex; flex-direction:column; gap:4px; margin-bottom:10px">
+            <label style="font-size:11.5px; font-weight:700; color:var(--text-3)">Departamento *</label>
+            <select [(ngModel)]="tpDepartamento" (ngModelChange)="onDepartamentoChange()"
+              style="width:100%; background:var(--surface-2); border:1px solid var(--border); border-radius:8px; padding:8px 10px; font-size:12.5px; color:var(--text); cursor:pointer; outline:none">
+              <option value="">Seleccione</option>
+              @for (dpt of departamentosList; track dpt) {
+              <option [value]="dpt">{{ dpt }}</option>
+              }
+            </select>
+            @if (errDepartamento && tpDepartamento !== '') {
+            <span style="font-size:10.5px; color:var(--bad); font-weight:600">{{ errDepartamento }}</span>
+            }
+          </div>
+
+          <!-- Provincia -->
+          <div style="display:flex; flex-direction:column; gap:4px; margin-bottom:10px">
+            <label style="font-size:11.5px; font-weight:700; color:var(--text-3)">Provincia *</label>
+            <select [(ngModel)]="tpProvincia" (ngModelChange)="onProvinciaChange()" [disabled]="!tpDepartamento"
+              [style.opacity]="tpDepartamento ? 1 : 0.5"
+              style="width:100%; background:var(--surface-2); border:1px solid var(--border); border-radius:8px; padding:8px 10px; font-size:12.5px; color:var(--text); cursor:pointer; outline:none">
+              <option value="">Seleccione</option>
+              @for (prov of provinciasList; track prov) {
+              <option [value]="prov">{{ prov }}</option>
+              }
+            </select>
+            @if (errProvincia && tpProvincia !== '') {
+            <span style="font-size:10.5px; color:var(--bad); font-weight:600">{{ errProvincia }}</span>
+            }
+          </div>
+
+          <!-- Distrito -->
+          <div style="display:flex; flex-direction:column; gap:4px; margin-bottom:10px">
+            <label style="font-size:11.5px; font-weight:700; color:var(--text-3)">Distrito *</label>
+            <select [(ngModel)]="tpDistrito" [disabled]="!tpProvincia" [style.opacity]="tpProvincia ? 1 : 0.5"
+              style="width:100%; background:var(--surface-2); border:1px solid var(--border); border-radius:8px; padding:8px 10px; font-size:12.5px; color:var(--text); cursor:pointer; outline:none">
+              <option value="">Seleccione</option>
+              @for (dist of distritosList; track dist) {
+              <option [value]="dist">{{ dist }}</option>
+              }
+            </select>
+            @if (errDistrito && tpDistrito !== '') {
+            <span style="font-size:10.5px; color:var(--bad); font-weight:600">{{ errDistrito }}</span>
+            }
+          </div>
+
+          <!-- Vía -->
+          <div style="display:flex; flex-direction:column; gap:4px; margin-bottom:10px">
+            <label style="font-size:11.5px; font-weight:700; color:var(--text-3)">Vía *</label>
+            <input type="text" [(ngModel)]="tpVia" placeholder="Avenida, Jirón, Calle, ..."
+              style="width:100%; background:var(--surface-2); border:1px solid var(--border); border-radius:8px; padding:8px 10px; font-size:12.5px; color:var(--text); outline:none" />
+            @if (errVia && tpVia !== '') {
+            <span style="font-size:10.5px; color:var(--bad); font-weight:600">{{ errVia }}</span>
+            }
+          </div>
+
+          <!-- Dirección -->
+          <div style="display:flex; flex-direction:column; gap:4px; margin-bottom:10px">
+            <label style="font-size:11.5px; font-weight:700; color:var(--text-3)">Dirección *</label>
+            <input type="text" [(ngModel)]="tpDireccion" placeholder="Nombre de la calle/vía"
+              style="width:100%; background:var(--surface-2); border:1px solid var(--border); border-radius:8px; padding:8px 10px; font-size:12.5px; color:var(--text); outline:none" />
+            @if (errDireccion && tpDireccion !== '') {
+            <span style="font-size:10.5px; color:var(--bad); font-weight:600">{{ errDireccion }}</span>
+            }
+          </div>
+
+          <!-- Número/Mz/Lote -->
+          <div style="display:flex; flex-direction:column; gap:4px; margin-bottom:10px">
+            <label style="font-size:11.5px; font-weight:700; color:var(--text-3)">N°/Mz/Lt *</label>
+            <input type="text" [(ngModel)]="tpNumeroMzLt" placeholder="123 o Mz A Lt 5"
+              style="width:100%; background:var(--surface-2); border:1px solid var(--border); border-radius:8px; padding:8px 10px; font-size:12.5px; color:var(--text); outline:none" />
+            @if (errNumeroMzLt && tpNumeroMzLt !== '') {
+            <span style="font-size:10.5px; color:var(--bad); font-weight:600">{{ errNumeroMzLt }}</span>
+            }
+          </div>
+
+          <!-- Referencia -->
+          <div style="display:flex; flex-direction:column; gap:4px">
+            <label style="font-size:11.5px; font-weight:700; color:var(--text-3)">Referencia *</label>
+            <input type="text" [(ngModel)]="tpReferencia" placeholder="Referencia"
+              style="width:100%; background:var(--surface-2); border:1px solid var(--border); border-radius:8px; padding:8px 10px; font-size:12.5px; color:var(--text); outline:none" />
+            @if (errReferencia && tpReferencia !== '') {
+            <span style="font-size:10.5px; color:var(--bad); font-weight:600">{{ errReferencia }}</span>
+            }
+          </div>
+        </fieldset>
+
+        <!-- Contraseñas -->
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:14px">
+          <div style="display:flex; flex-direction:column; gap:4px">
+            <label style="font-size:12.5px; font-weight:700; color:var(--text-2)">Contraseña *</label>
+            <input [type]="showPassword ? 'text' : 'password'" [(ngModel)]="regPassword" placeholder="Clave"
+              style="width:100%; background:var(--surface-2); border:1px solid var(--border); border-radius:10px; padding:10px 12px; font-size:13.5px; color:var(--text); outline:none" />
+          </div>
+          <div style="display:flex; flex-direction:column; gap:4px">
+            <label style="font-size:12.5px; font-weight:700; color:var(--text-2)">Confirmar *</label>
+            <input [type]="showPassword2 ? 'text' : 'password'" [(ngModel)]="regPassword2" placeholder="Confirmar"
+              style="width:100%; background:var(--surface-2); border:1px solid var(--border); border-radius:10px; padding:10px 12px; font-size:13.5px; color:var(--text); outline:none" />
           </div>
         </div>
 
-        <button
-          class="w-full bg-secondary text-white py-3 rounded flex items-center justify-center gap-2 hover:bg-secondary/90 transition-all font-label-md text-label-md shadow-sm"
-          (click)="onRecovery()">
-          <span class="material-symbols-outlined text-sm">send</span>
-          <span>Enviar enlace</span>
+        <button (click)="onRegister()"
+          style="width:100%; height:44px; background:var(--primary); color:#fff; border:none; border-radius:10px; font-weight:700; font-size:14px; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; box-shadow:0 6px 16px rgba(14,90,138,0.22)">
+          Crear cuenta
         </button>
+        }
 
-        <div class="text-center mt-6 text-sm">
-          <a (click)="showForm('login')"
-            class="text-secondary hover:underline cursor-pointer flex items-center justify-center gap-1">
-            <span class="material-symbols-outlined text-sm">arrow_back</span>
-            Volver al inicio de sesión
-          </a>
+        <div style="text-align:center; margin-top:16px; font-size:12.5px">
+          ¿Ya tiene una cuenta? <a (click)="showForm('login')"
+            style="color:var(--primary); font-weight:700; text-decoration:none; cursor:pointer">Inicie sesión aquí</a>
+        </div>
+      </div>
+      }
+
+      <!-- ── RECUPERACIÓN FORM ── -->
+      @if (activeForm === 'recuperacion') {
+      <div
+        style="background:var(--surface); border:1px solid var(--border); border-radius:18px; box-shadow:var(--shadow); padding:26px 24px">
+        <h2 style="font-size:16px; font-weight:800; margin:0 0 10px">Recuperar contraseña</h2>
+        <p style="font-size:12.5px; color:var(--text-3); margin-bottom:18px; line-height:1.4">
+          Ingrese su correo electrónico registrado. Le enviaremos un enlace de recuperación para restablecer su clave.
+        </p>
+
+        @if (alert) {
+        <div
+          style="display:flex; align-items:center; gap:9px; background:var(--bad-bg); border:1px solid var(--bad); border-radius:10px; padding:10px 12px; margin-bottom:16px; font-size:12.5px; font-weight:600; color:var(--bad)">
+          ⚠️ {{ alert.message }}
         </div>
         }
 
-      </div>
+        <div style="display:flex; flex-direction:column; gap:4px; margin-bottom:18px">
+          <label style="font-size:12.5px; font-weight:700; color:var(--text-2)">Correo institucional *</label>
+          <input type="email" [(ngModel)]="recEmail" placeholder="funcionario@gob.pe"
+            style="width:100%; background:var(--surface-2); border:1px solid var(--border); border-radius:10px; padding:12px 13px; font-size:14px; color:var(--text); outline:none" />
+        </div>
 
-      <!-- Footer -->
+        <button (click)="onRecovery()"
+          style="width:100%; height:44px; background:var(--primary); color:#fff; border:none; border-radius:10px; font-weight:700; font-size:14px; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; box-shadow:0 6px 16px rgba(14,90,138,0.22); margin-bottom:16px">
+          Enviar enlace
+        </button>
+
+        <div style="text-align:center; font-size:12.5px">
+          <a (click)="showForm('login')"
+            style="color:var(--primary); font-weight:700; text-decoration:none; cursor:pointer; display:inline-flex; align-items:center; gap:4px">
+            Volver al inicio de sesión
+          </a>
+        </div>
+      </div>
+      }
+
+      <p style="text-align:center; font-size:11px; color:var(--text-3); margin:18px 0 0">
+        Sistema oficial del Estado Peruano · Uso exclusivo de funcionarios autorizados
+      </p>
+
+      <!-- Central de Atención al Cliente / Soporte -->
       <div
-        class="p-4 border-t border-surface-container-high bg-surface-container-low text-center text-xs text-on-surface-variant flex items-center justify-center gap-1.5">
-        <span class="material-symbols-outlined text-sm" data-weight="fill">lock</span>
-        <span>Acceso Seguro · Servidores Encriptados</span>
+        style="margin-top:14px; padding:12px; border-radius:10px; border:1px solid var(--border); background:var(--surface); display:flex; flex-direction:column; gap:6px; font-size:11px; color:var(--text-3); box-shadow:var(--shadow)">
+        <div style="display:flex; align-items:center; gap:6px; color:var(--primary); font-weight:700">
+          <i class="fa-solid fa-headset text-sm"></i>
+          <span>Atención al Cliente · Mesa de ayuda ATU</span>
+        </div>
+        <div style="display:flex; flex-wrap:wrap; gap:12px; margin-top:2px">
+          <div style="display:flex; align-items:center; gap:4px">
+            <i class="fa-solid fa-phone text-xs" style="color:var(--text-2)"></i>
+            <span>(01) 203-9000 anexo 4501</span>
+          </div>
+          <div style="display:flex; align-items:center; gap:4px">
+            <i class="fa-solid fa-envelope text-xs" style="color:var(--text-2)"></i>
+            <a href="mailto:soporte-sigt&#64;atu.gob.pe"
+              style="color:var(--primary); text-decoration:none; font-weight:600">soporte-sigt&#64;atu.gob.pe</a>
+          </div>
+        </div>
       </div>
 
     </div>
-
-    <!-- Central de Atención al Cliente / Soporte -->
-    <div
-      class="w-full max-w-md mt-3.5 p-3 rounded-xl border border-outline-variant/40 bg-surface-container-low flex flex-col gap-1.5 shadow-sm text-[11px] text-on-surface-variant">
-      <div class="flex items-center gap-1.5 text-primary font-bold">
-        <span class="material-symbols-outlined text-sm">support_agent</span>
-        <span>Atención al Cliente · Mesa de ayuda ATU</span>
-      </div>
-      <div class="flex flex-wrap gap-x-4 gap-y-1 mt-0.5">
-        <div class="flex items-center gap-1">
-          <span class="material-symbols-outlined text-[13px] text-secondary">phone_in_talk</span>
-          <span>(01) 203-9000 anexo 4501</span>
-        </div>
-        <div class="flex items-center gap-1">
-          <span class="material-symbols-outlined text-[13px] text-secondary">mail</span>
-          <a href="mailto:soporte-sigt&#64;atu.gob.pe"
-            class="text-secondary hover:underline font-semibold">soporte-sigt&#64;atu.gob.pe</a>
-        </div>
-      </div>
-    </div>
-
   </div>
-
-</section>
+</div>

@@ -10,6 +10,16 @@ export interface Usuario {
   entidad: string;
   documentoCargo?: string;
   registradoEn?: string;
+  // Extended profile fields (captured at registration)
+  primerApellido?: string;
+  segundoApellido?: string;
+  tipoDocumento?: string;
+  numDocumento?: string;
+  departamento?: string;
+  provincia?: string;
+  distrito?: string;
+  telefono?: string;
+  cargo?: string;
 }
 
 export interface RegistroVehicular {
